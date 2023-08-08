@@ -38,3 +38,15 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 ```shell
 make testacc
 ```
+
+## Releasing the Provider to Terraform Registry
+
+The GitHub Action will trigger and create a release for your provider whenever a new valid version tag is pushed to the repository. Terraform provider versions must follow the [Semantic Versioning](https://semver.org/) standard (vMAJOR.MINOR.PATCH).
+
+First, make the changes you want to the provider & push/merge changes to the main branch.
+
+Next, create a new tag & push the changes to github.
+
+```shell
+git tag v0.2.1 && git push origin v0.2.1
+```
