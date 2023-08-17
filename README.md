@@ -39,6 +39,20 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 make testacc
 ```
 
+## Generating Go Client from API
+
+[OpenAPI Generator](https://openapi-generator.tech/) tool is used to generate GO Client.
+
+Install OpenAPI Generator if not already by following steps [here](https://openapi-generator.tech/docs/installation)
+
+Go to `internal/provider/temboclient` directory in your terminal.
+
+Run following command to re-generate the go client code for the API. You might want to delete the contents of the directory first.
+
+```bash
+openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient
+```
+
 ## Releasing the Provider to Terraform Registry
 
 The GitHub Action will trigger and create a release for your provider whenever a new valid version tag is pushed to the repository. Terraform provider versions must follow the [Semantic Versioning](https://semver.org/) standard (vMAJOR.MINOR.PATCH).

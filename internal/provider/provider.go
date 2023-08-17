@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -119,7 +120,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 			path.Root("host"),
 			"Missing tembo API Host",
 			"The provider cannot create the tembo API client as there is a missing or empty value for the tembo API host. "+
-				"Set the host value in the configuration or use the tembo_HOST environment variable. "+
+				"Set the host value in the configuration or use the TEMBO_HOST environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
 	}
@@ -128,8 +129,8 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		resp.Diagnostics.AddAttributeError(
 			path.Root("access_token"),
 			"Missing tembo API Access Token",
-			"The provider cannot create the tembo API client as there is a missing or empty value for the tembo API password. "+
-				"Set the password value in the configuration or use the tembo_access_token environment variable. "+
+			"The provider cannot create the tembo API Access Token as there is a missing or empty value for the tembo API password. "+
+				"Set the password value in the configuration or use the TEMBO_ACCESS_TOKEN environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
 	}
@@ -138,17 +139,9 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		return
 	}
 
+	configuration := temboclient.NewConfiguration()
 	// Create a new tembo client using the configuration values
-	client, err := NewClient(&host, &access_token)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create tembo API Client",
-			"An unexpected error occurred when creating the tembo API client. "+
-				"If the error is not clear, please contact the provider developers.\n\n"+
-				"tembo Client Error: "+err.Error(),
-		)
-		return
-	}
+	client := temboclient.NewAPIClient(configuration)
 
 	// Make the tembo client available during DataSource and Resource
 	// type Configure methods.
@@ -165,5 +158,7 @@ func (p *temboProvider) DataSources(_ context.Context) []func() datasource.DataS
 
 // Resources defines the resources implemented in the provider.
 func (p *temboProvider) Resources(_ context.Context) []func() resource.Resource {
-	return nil
+	return []func() resource.Resource{
+		NewTemboClusterResource,
+	}
 }

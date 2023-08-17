@@ -1,0 +1,685 @@
+openapi: 3.0.3
+info:
+  description: CoreDB backend API
+  title: cp-webserver
+  version: 0.1.0
+servers:
+- url: /
+security:
+- jwt_token: []
+paths:
+  /api/entities/all:
+    get:
+      description: |
+        Get the raw Stack definitions for all entities
+      operationId: get_all_entities
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items: {}
+                type: array
+          description: Stack specification represented as JSON
+      summary: Get the raw Stack definitions for all entities
+      tags:
+      - entities
+  /api/entities/{entity_type}:
+    get:
+      description: |
+        Get the json-schema for an entity
+      operationId: get_entity
+      parameters:
+      - description: the type of entity
+        example: standard
+        explode: false
+        in: path
+        name: entity_type
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: json-schema for the entity
+      summary: Get the json-schema for an entity
+      tags:
+      - entities
+  /api/orgs/{org_id}/instances:
+    get:
+      description: |
+        Get all instances of all entities in an organization
+      operationId: get_all
+      parameters:
+      - description: organization id for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReadCluster'
+                type: array
+          description: All instances in your org
+      summary: Get all instances of all entities in an organization
+      tags:
+      - instances
+  /api/orgs/{org_id}/instances/{entity_type}:
+    post:
+      description: |
+        Create a new instance of an entity
+      operationId: create_instance
+      parameters:
+      - description: organization id that the instance belongs to
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: the type of entity for this instance
+        example: coredb
+        explode: false
+        in: path
+        name: entity_type
+        required: true
+        schema:
+          $ref: '#/components/schemas/EntityType'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCluster'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadCluster'
+          description: Creating new instance
+        "401":
+          content:
+            application/json:
+              schema: {}
+          description: Not authenticated
+      summary: Create a new instance of an entity
+      tags:
+      - instances
+  /api/orgs/{org_id}/instances/{entity_type}/{instance_id}:
+    delete:
+      description: |
+        Delete an existing instance of any entity_type
+      operationId: delete_instance
+      parameters:
+      - description: Organization id of the instance to delete
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Type of entity for this request
+        explode: false
+        in: path
+        name: entity_type
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier of the instance to delete
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successfully received delete request
+      summary: Delete an existing instance of any entity_type
+      tags:
+      - instances
+    get:
+      description: |
+        Gets current attributes of an existing instance
+      operationId: get_instance
+      parameters:
+      - description: Organization id of the instance to update
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Type of entity for this request
+        explode: false
+        in: path
+        name: entity_type
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier of the instance to update
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadCluster'
+          description: Current instance attributes
+      summary: Gets current attributes of an existing instance
+      tags:
+      - instances
+    put:
+      description: |
+        Update or make changes to an existing instance
+      operationId: update_instance
+      parameters:
+      - description: Organization id of the instance to update
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Type of entity for this request
+        explode: false
+        in: path
+        name: entity_type
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier of the instance to update
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: event_type
+        required: true
+        schema:
+          $ref: '#/components/schemas/UpdateEvent'
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCluster'
+        required: true
+      responses:
+        "200":
+          description: Successfully received update request
+      summary: Update or make changes to an existing instance
+      tags:
+      - instances
+components:
+  schemas:
+    ConnectionInfo:
+      properties:
+        host:
+          type: string
+        password:
+          type: string
+        port:
+          format: int32
+          type: integer
+        user:
+          type: string
+      required:
+      - host
+      - password
+      - port
+      - user
+      type: object
+    Cpu:
+      enum:
+      - "1"
+      - "2"
+      - "4"
+      - "8"
+      - "16"
+      - "32"
+      type: string
+    CreateCluster:
+      example:
+        environment: null
+        entity_type: null
+        instance_name: instance_name
+        memory: null
+        organization_id: organization_id
+        entity_properties: ""
+        cpu: null
+        storage: null
+      properties:
+        cpu:
+          $ref: '#/components/schemas/Cpu'
+        entity_properties:
+          nullable: true
+        entity_type:
+          $ref: '#/components/schemas/EntityType'
+        environment:
+          $ref: '#/components/schemas/Environment'
+        instance_name:
+          type: string
+        memory:
+          $ref: '#/components/schemas/Memory'
+        organization_id:
+          nullable: true
+          type: string
+        storage:
+          $ref: '#/components/schemas/Storage'
+      required:
+      - cpu
+      - environment
+      - instance_name
+      - memory
+      - storage
+      type: object
+    EntityType:
+      enum:
+      - Standard
+      - Messaging
+      - MachineLearning
+      - OLTP
+      type: string
+    Environment:
+      enum:
+      - dev
+      - test
+      - prod
+      type: string
+    Extension:
+      example:
+        name: name
+        description: description
+        locations:
+        - schema: schema
+          database: database
+          version: version
+          enabled: true
+        - schema: schema
+          database: database
+          version: version
+          enabled: true
+      properties:
+        description:
+          nullable: true
+          type: string
+        locations:
+          items:
+            $ref: '#/components/schemas/ExtensionInstallLocation'
+          type: array
+        name:
+          type: string
+      required:
+      - locations
+      - name
+      type: object
+    ExtensionInstallLocation:
+      example:
+        schema: schema
+        database: database
+        version: version
+        enabled: true
+      properties:
+        database:
+          type: string
+        enabled:
+          type: boolean
+        schema:
+          nullable: true
+          type: string
+        version:
+          nullable: true
+          type: string
+      required:
+      - database
+      - enabled
+      type: object
+    ExtensionInstallLocationStatus:
+      example:
+        error_message: error_message
+        schema: schema
+        database: database
+        error: true
+        version: version
+        enabled: true
+      properties:
+        database:
+          type: string
+        enabled:
+          nullable: true
+          type: boolean
+        error:
+          nullable: true
+          type: boolean
+        error_message:
+          nullable: true
+          type: string
+        schema:
+          nullable: true
+          type: string
+        version:
+          nullable: true
+          type: string
+      required:
+      - database
+      type: object
+    ExtensionStatus:
+      example:
+        name: name
+        description: description
+        locations:
+        - error_message: error_message
+          schema: schema
+          database: database
+          error: true
+          version: version
+          enabled: true
+        - error_message: error_message
+          schema: schema
+          database: database
+          error: true
+          version: version
+          enabled: true
+      properties:
+        description:
+          nullable: true
+          type: string
+        locations:
+          items:
+            $ref: '#/components/schemas/ExtensionInstallLocationStatus'
+          type: array
+        name:
+          type: string
+      required:
+      - locations
+      - name
+      type: object
+    Memory:
+      enum:
+      - 1Gi
+      - 2Gi
+      - 4Gi
+      - 8Gi
+      - 16Gi
+      - 32Gi
+      type: string
+    ReadCluster:
+      example:
+        instance_name: instance_name
+        memory: ""
+        cpu: ""
+        created_at: 2000-01-23T04:56:07.000+00:00
+        organization_name: organization_name
+        storage: ""
+        environment: null
+        extensions:
+        - name: name
+          description: description
+          locations:
+          - error_message: error_message
+            schema: schema
+            database: database
+            error: true
+            version: version
+            enabled: true
+          - error_message: error_message
+            schema: schema
+            database: database
+            error: true
+            version: version
+            enabled: true
+        - name: name
+          description: description
+          locations:
+          - error_message: error_message
+            schema: schema
+            database: database
+            error: true
+            version: version
+            enabled: true
+          - error_message: error_message
+            schema: schema
+            database: database
+            error: true
+            version: version
+            enabled: true
+        entity_type: null
+        instance_id: instance_id
+        connection_info: ""
+        last_updated_at: 2000-01-23T04:56:07.000+00:00
+        organization_id: organization_id
+        entity_properties: ""
+        trunk_installs:
+        - error_message: error_message
+          name: name
+          error: true
+          version: version
+        - error_message: error_message
+          name: name
+          error: true
+          version: version
+        state: ""
+      properties:
+        connection_info:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionInfo'
+          nullable: true
+        cpu:
+          allOf:
+          - $ref: '#/components/schemas/Cpu'
+          nullable: true
+        created_at:
+          format: date-time
+          type: string
+        entity_properties:
+          nullable: true
+        entity_type:
+          $ref: '#/components/schemas/EntityType'
+        environment:
+          $ref: '#/components/schemas/Environment'
+        extensions:
+          items:
+            $ref: '#/components/schemas/ExtensionStatus'
+          nullable: true
+          type: array
+        instance_id:
+          nullable: true
+          type: string
+        instance_name:
+          type: string
+        last_updated_at:
+          format: date-time
+          type: string
+        memory:
+          allOf:
+          - $ref: '#/components/schemas/Memory'
+          nullable: true
+        organization_id:
+          nullable: true
+          type: string
+        organization_name:
+          nullable: true
+          type: string
+        state:
+          allOf:
+          - $ref: '#/components/schemas/State'
+          nullable: true
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/Storage'
+          nullable: true
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstallStatus'
+          nullable: true
+          type: array
+      required:
+      - entity_type
+      - environment
+      - instance_name
+      type: object
+    State:
+      enum:
+      - Submitted
+      - Up
+      - Configuring
+      - Error
+      - Restarting
+      - Starting
+      - Stopping
+      - Stopped
+      - Deleting
+      - Deleted
+      type: string
+    Storage:
+      enum:
+      - 10Gi
+      - 50Gi
+      - 100Gi
+      - 200Gi
+      - 300Gi
+      - 400Gi
+      - 500Gi
+      type: string
+    TrunkInstall:
+      example:
+        name: name
+        version: version
+      properties:
+        name:
+          type: string
+        version:
+          nullable: true
+          type: string
+      required:
+      - name
+      type: object
+    TrunkInstallStatus:
+      example:
+        error_message: error_message
+        name: name
+        error: true
+        version: version
+      properties:
+        error:
+          type: boolean
+        error_message:
+          nullable: true
+          type: string
+        name:
+          type: string
+        version:
+          nullable: true
+          type: string
+      required:
+      - error
+      - name
+      type: object
+    UpdateCluster:
+      example:
+        environment: ""
+        extensions:
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        memory: ""
+        entity_properties: ""
+        trunk_installs:
+        - name: name
+          version: version
+        - name: name
+          version: version
+        cpu: ""
+        storage: ""
+      properties:
+        cpu:
+          allOf:
+          - $ref: '#/components/schemas/Cpu'
+          nullable: true
+        entity_properties:
+          nullable: true
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/Environment'
+          nullable: true
+        extensions:
+          items:
+            $ref: '#/components/schemas/Extension'
+          nullable: true
+          type: array
+        memory:
+          allOf:
+          - $ref: '#/components/schemas/Memory'
+          nullable: true
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/Storage'
+          nullable: true
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstall'
+          nullable: true
+          type: array
+      type: object
+    UpdateEvent:
+      enum:
+      - extension
+      - restart
+      - stop
+      - update
+      type: string
+  securitySchemes:
+    jwt_token:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
