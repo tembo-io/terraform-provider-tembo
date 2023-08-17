@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
@@ -15,13 +14,6 @@ import (
 var (
 	_ resource.Resource = &temboClusterResource{}
 )
-
-// temboCLusterResourceModel maps the resource schema data.
-type tembpClusterResourceModel struct {
-	CLusterName    types.String `tfsdk:"cluster_name"`
-	Organizationid types.String `tfsdk:"organization_id"`
-	Cpu            types.String `tfsdk:"cpu"`
-}
 
 // Configure adds the provider configured client to the resource.
 func (r *temboClusterResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
