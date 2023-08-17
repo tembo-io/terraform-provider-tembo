@@ -1,4 +1,4 @@
-module terraform-provider-tembo
+module github.com/tembo-io/terraform-provider-tembo
 
 go 1.19
 

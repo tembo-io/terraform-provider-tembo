@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"terraform-provider-tembo/internal/provider"
+	"github.com/tembo-io/terraform-provider-tembo/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
