@@ -63,6 +63,18 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 			"cpu": schema.StringAttribute{
 				Required: true,
 			},
+			"stack": schema.StringAttribute{
+				Required: true,
+			},
+			"environment": schema.StringAttribute{
+				Required: true,
+			},
+			"memory": schema.StringAttribute{
+				Required: true,
+			},
+			"storage": schema.StringAttribute{
+				Required: true,
+			},
 		},
 	}
 }
