@@ -3,17 +3,29 @@ package provider
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource = &temboClusterResource{}
+	_ resource.Resource              = &temboClusterResource{}
+	_ resource.ResourceWithConfigure = &temboClusterResource{}
 )
+
+// temboClusterResourceModel maps the resource schema data.
+type temboClusterResourceModel struct {
+	ClusterName    types.String `tfsdk:"cluster_name"`
+	OrganizationId types.String `tfsdk:"organization_id"`
+	CPU            types.String `tfsdk:"cpu"`
+	Stack          types.String `tfsdk:"stack"`
+	Environment    types.String `tfsdk:"environment"`
+	Memory         types.String `tfsdk:"memory"`
+	Storage        types.String `tfsdk:"storage"`
+}
 
 // Configure adds the provider configured client to the resource.
 func (r *temboClusterResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -81,14 +93,27 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	createCluster := *temboclient.NewCreateCluster(temboclient.Cpu("1"), temboclient.Environment("dev"), "InstanceName_example", temboclient.Memory("1Gi"), temboclient.Storage("10Gi")) // CreateCluster |
-	instance := r.client.InstancesApi.CreateInstance(context.Background(), "test", temboclient.STANDARD)
-
-	_, respo, err := instance.CreateCluster(createCluster).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `InstancesApi.CreateInstance``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", respo)
+	// Retrieve values from plan
+	var plan temboClusterResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
+
+	createCluster := *temboclient.NewCreateCluster(temboclient.Cpu(plan.CPU.ValueString()), temboclient.Environment(plan.Environment.ValueString()), plan.ClusterName.ValueString(), temboclient.Memory(plan.Memory.ValueString()), temboclient.Storage(plan.Storage.ValueString()))
+
+	instance := r.client.InstancesApi.CreateInstance(context.Background(), plan.OrganizationId.ValueString(), temboclient.EntityType(plan.Stack.ValueString()))
+
+	_, _, err := instance.CreateCluster(createCluster).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating Tembo Cluster:",
+			"Could not create Tembo Cluster, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
 	// Set state to fully populated data
 }
 

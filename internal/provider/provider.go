@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"net/url"
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -140,6 +141,14 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	}
 
 	configuration := temboclient.NewConfiguration()
+
+	hostUrl, err := url.Parse(host)
+	if err != nil {
+		panic(err)
+	}
+
+	configuration.Host = hostUrl.Host
+
 	// Create a new tembo client using the configuration values
 	client := temboclient.NewAPIClient(configuration)
 
