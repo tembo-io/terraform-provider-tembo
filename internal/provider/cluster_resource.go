@@ -123,7 +123,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Map response body to schema and populate Computed attribute values
-	plan.ClusterID = types.StringValue(cluster.GetIn)
+	plan.ClusterID = types.StringValue(cluster.GetInstanceId())
 	plan.ClusterName = types.StringValue(cluster.InstanceName)
 
 	plan.OrganizationId = types.StringValue(cluster.GetOrganizationId())

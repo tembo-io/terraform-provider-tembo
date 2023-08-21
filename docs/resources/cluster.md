@@ -24,3 +24,8 @@ description: |-
 - `organization_id` (String)
 - `stack` (String)
 - `storage` (String)
+
+### Read-Only
+
+- `cluster_id` (String)
+- `last_updated` (String)
