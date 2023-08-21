@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -18,6 +19,7 @@ var (
 
 // temboClusterResourceModel maps the resource schema data.
 type temboClusterResourceModel struct {
+	ClusterID      types.String `tfsdk:"cluster_id"`
 	ClusterName    types.String `tfsdk:"cluster_name"`
 	OrganizationId types.String `tfsdk:"organization_id"`
 	CPU            types.String `tfsdk:"cpu"`
@@ -25,6 +27,7 @@ type temboClusterResourceModel struct {
 	Environment    types.String `tfsdk:"environment"`
 	Memory         types.String `tfsdk:"memory"`
 	Storage        types.String `tfsdk:"storage"`
+	LastUpdated    types.String `tfsdk:"last_updated"`
 }
 
 // Configure adds the provider configured client to the resource.
@@ -66,6 +69,12 @@ func (r *temboClusterResource) Metadata(_ context.Context, req resource.Metadata
 func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"cluster_id": schema.StringAttribute{
+				Computed: true,
+			},
+			"last_updated": schema.StringAttribute{
+				Computed: true,
+			},
 			"cluster_name": schema.StringAttribute{
 				Required: true,
 			},
@@ -102,10 +111,9 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	createCluster := *temboclient.NewCreateCluster(temboclient.Cpu(plan.CPU.ValueString()), temboclient.Environment(plan.Environment.ValueString()), plan.ClusterName.ValueString(), temboclient.Memory(plan.Memory.ValueString()), temboclient.Storage(plan.Storage.ValueString()))
+	instance := r.client.InstancesApi.CreateInstance(ctx, plan.OrganizationId.ValueString(), temboclient.EntityType(plan.Stack.ValueString()))
 
-	instance := r.client.InstancesApi.CreateInstance(context.Background(), plan.OrganizationId.ValueString(), temboclient.EntityType(plan.Stack.ValueString()))
-
-	_, _, err := instance.CreateCluster(createCluster).Execute()
+	cluster, _, err := instance.CreateCluster(createCluster).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating Tembo Cluster:",
@@ -114,7 +122,26 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
+	// Map response body to schema and populate Computed attribute values
+	plan.ClusterID = types.StringValue(cluster.GetIn)
+	plan.ClusterName = types.StringValue(cluster.InstanceName)
+
+	plan.OrganizationId = types.StringValue(cluster.GetOrganizationId())
+
+	plan.CPU = types.StringValue(string(cluster.GetCpu()))
+	plan.Stack = types.StringValue(string(cluster.EntityType))
+	plan.Environment = types.StringValue(string(cluster.GetEnvironment()))
+	plan.Memory = types.StringValue(string(cluster.GetMemory()))
+
+	plan.Storage = types.StringValue(string(cluster.GetStorage()))
+	plan.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
+
 	// Set state to fully populated data
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // Read refreshes the Terraform state with the latest data.

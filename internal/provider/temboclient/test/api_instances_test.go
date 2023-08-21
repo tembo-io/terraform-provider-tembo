@@ -11,10 +11,12 @@ package temboclient
 
 import (
 	"context"
+	"testing"
+
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
 )
 
 func Test_temboclient_InstancesApiService(t *testing.T) {
@@ -24,7 +26,7 @@ func Test_temboclient_InstancesApiService(t *testing.T) {
 
 	t.Run("Test InstancesApiService CreateInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var entityType EntityType
@@ -39,7 +41,7 @@ func Test_temboclient_InstancesApiService(t *testing.T) {
 
 	t.Run("Test InstancesApiService DeleteInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var entityType string
@@ -54,7 +56,7 @@ func Test_temboclient_InstancesApiService(t *testing.T) {
 
 	t.Run("Test InstancesApiService GetAll", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 
@@ -68,7 +70,7 @@ func Test_temboclient_InstancesApiService(t *testing.T) {
 
 	t.Run("Test InstancesApiService GetInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var entityType string
@@ -84,7 +86,7 @@ func Test_temboclient_InstancesApiService(t *testing.T) {
 
 	t.Run("Test InstancesApiService UpdateInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var entityType string
