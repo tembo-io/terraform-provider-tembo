@@ -28,6 +28,7 @@ type temboClusterResourceModel struct {
 	Memory         types.String `tfsdk:"memory"`
 	Storage        types.String `tfsdk:"storage"`
 	LastUpdated    types.String `tfsdk:"last_updated"`
+	State          types.String `tfsdk:"state"`
 }
 
 // Configure adds the provider configured client to the resource.
@@ -96,6 +97,9 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 			"storage": schema.StringAttribute{
 				Required: true,
 			},
+			"state": schema.StringAttribute{
+				Computed: true,
+			},
 		},
 	}
 }
@@ -103,13 +107,14 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 // Create creates the resource and sets the initial Terraform state.
 func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
-	var plan temboClusterResourceModel
+	var plan *temboClusterResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	// Call API to Create Tembo Cluster
 	createCluster := *temboclient.NewCreateCluster(temboclient.Cpu(plan.CPU.ValueString()), temboclient.Environment(plan.Environment.ValueString()), plan.ClusterName.ValueString(), temboclient.Memory(plan.Memory.ValueString()), temboclient.Storage(plan.Storage.ValueString()))
 	instance := r.client.InstancesApi.CreateInstance(ctx, plan.OrganizationId.ValueString(), temboclient.EntityType(plan.Stack.ValueString()))
 
@@ -123,18 +128,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Map response body to schema and populate Computed attribute values
-	plan.ClusterID = types.StringValue(cluster.GetInstanceId())
-	plan.ClusterName = types.StringValue(cluster.InstanceName)
-
-	plan.OrganizationId = types.StringValue(cluster.GetOrganizationId())
-
-	plan.CPU = types.StringValue(string(cluster.GetCpu()))
-	plan.Stack = types.StringValue(string(cluster.EntityType))
-	plan.Environment = types.StringValue(string(cluster.GetEnvironment()))
-	plan.Memory = types.StringValue(string(cluster.GetMemory()))
-
-	plan.Storage = types.StringValue(string(cluster.GetStorage()))
-	plan.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
+	setTemboClusterResourceModel(plan, cluster, true)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -146,6 +140,49 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 
 // Read refreshes the Terraform state with the latest data.
 func (r *temboClusterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	// Get current state
+	var state *temboClusterResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Get refreshed Cluster value from API
+	cluster, _, err := r.client.InstancesApi.GetInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Tembo Cluster",
+			"Could not read Tembo Cluster ID "+state.ClusterID.ValueString()+": "+err.Error(),
+		)
+		return
+	}
+
+	// Overwrite items with refreshed state
+	setTemboClusterResourceModel(state, cluster, false)
+
+	// Set refreshed state
+	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+}
+
+func setTemboClusterResourceModel(clusterResourceModel *temboClusterResourceModel, cluster *temboclient.ReadCluster, updateComputedValue bool) {
+	if updateComputedValue {
+		clusterResourceModel.ClusterID = types.StringValue(cluster.GetInstanceId())
+		clusterResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
+	}
+
+	clusterResourceModel.ClusterName = types.StringValue(cluster.InstanceName)
+	clusterResourceModel.OrganizationId = types.StringValue(cluster.GetOrganizationId())
+	clusterResourceModel.CPU = types.StringValue(string(cluster.GetCpu()))
+	clusterResourceModel.Stack = types.StringValue(string(cluster.EntityType))
+	clusterResourceModel.Environment = types.StringValue(string(cluster.GetEnvironment()))
+	clusterResourceModel.Memory = types.StringValue(string(cluster.GetMemory()))
+	clusterResourceModel.Storage = types.StringValue(string(cluster.GetStorage()))
+	clusterResourceModel.State = types.StringValue(string(cluster.GetState()))
 }
 
 // Update updates the resource and sets the updated Terraform state on success.

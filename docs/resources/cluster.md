@@ -29,3 +29,4 @@ description: |-
 
 - `cluster_id` (String)
 - `last_updated` (String)
+- `state` (String)
