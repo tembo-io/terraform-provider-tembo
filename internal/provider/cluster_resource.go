@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -127,6 +128,15 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
+	// Wait until it's created
+	//timeoutInMinutes := int(15)
+	for getClusterState(r, ctx, cluster, resp) != temboclient.UP {
+		time.Sleep(10 * time.Second)
+		log.Printf("[INFO] Tembo cluster %s is getting created", plan.ClusterName)
+	}
+
+	log.Printf("[INFO] Tembo cluster %s has been created", plan.ClusterName)
+
 	// Map response body to schema and populate Computed attribute values
 	setTemboClusterResourceModel(plan, cluster, true)
 
@@ -136,6 +146,19 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
+}
+
+func getClusterState(r *temboClusterResource, ctx context.Context, cluster *temboclient.ReadCluster, resp *resource.CreateResponse) temboclient.State {
+	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, cluster.GetOrganizationId(), string(cluster.EntityType), cluster.GetInstanceId()).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Tembo Cluster",
+			"Could not read Tembo Cluster ID "+cluster.GetInstanceId()+": "+err.Error(),
+		)
+		return temboclient.ERROR
+	}
+
+	return refreshCluster.GetState()
 }
 
 // Read refreshes the Terraform state with the latest data.
