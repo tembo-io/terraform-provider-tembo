@@ -147,6 +147,8 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		panic(err)
 	}
 
+	configuration.Scheme = "https"
+
 	configuration.Host = hostUrl.Host
 
 	// Create a new tembo client using the configuration values

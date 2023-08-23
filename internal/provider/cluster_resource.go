@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -137,7 +138,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Wait until it's created
-	for getClusterState(r, ctx, cluster, resp) != temboclient.UP {
+	for getClusterState(r, ctx, cluster.GetOrganizationId(), string(cluster.EntityType), cluster.GetInstanceId(), resp.Diagnostics) != temboclient.UP {
 		time.Sleep(10 * time.Second)
 		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", plan.ClusterName)
 	}
@@ -156,12 +157,13 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 }
 
-func getClusterState(r *temboClusterResource, ctx context.Context, cluster *temboclient.ReadCluster, resp *resource.CreateResponse) temboclient.State {
-	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, cluster.GetOrganizationId(), string(cluster.EntityType), cluster.GetInstanceId()).Execute()
+func getClusterState(r *temboClusterResource, ctx context.Context,
+	organizationId string, stack string, clusterId string, diagnostics diag.Diagnostics) temboclient.State {
+	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
 	if err != nil {
-		resp.Diagnostics.AddError(
+		diagnostics.AddError(
 			"Error Reading Tembo Cluster",
-			"Could not read Tembo Cluster ID "+cluster.GetInstanceId()+": "+err.Error(),
+			"Could not read Tembo Cluster ID "+clusterId+": "+err.Error(),
 		)
 		return temboclient.ERROR
 	}
@@ -222,4 +224,29 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Retrieve values from state
+	var state temboClusterResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Delete existing Tembo Cluster
+	_, err := (*r.client.InstancesApi).DeleteInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Deleting Tembo Cluster",
+			"Could not delete cluster, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
+	// Wait until it's created
+	for getClusterState(r, ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString(), resp.Diagnostics) != temboclient.DELETED {
+		time.Sleep(10 * time.Second)
+		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", state.ClusterName)
+	}
+
+	log.Printf("[INFO] Tembo cluster %s has been successfully deleted", state.ClusterName)
 }
