@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -115,8 +116,16 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Call API to Create Tembo Cluster
-	createCluster := *temboclient.NewCreateCluster(temboclient.Cpu(plan.CPU.ValueString()), temboclient.Environment(plan.Environment.ValueString()), plan.ClusterName.ValueString(), temboclient.Memory(plan.Memory.ValueString()), temboclient.Storage(plan.Storage.ValueString()))
-	instance := r.client.InstancesApi.CreateInstance(ctx, plan.OrganizationId.ValueString(), temboclient.EntityType(plan.Stack.ValueString()))
+	createCluster := *temboclient.NewCreateCluster(
+		temboclient.Cpu(plan.CPU.ValueString()),
+		temboclient.Environment(plan.Environment.ValueString()),
+		plan.ClusterName.ValueString(),
+		temboclient.Memory(plan.Memory.ValueString()),
+		temboclient.Storage(plan.Storage.ValueString()))
+
+	instance := r.client.InstancesApi.CreateInstance(ctx,
+		plan.OrganizationId.ValueString(),
+		temboclient.EntityType(plan.Stack.ValueString()))
 
 	cluster, _, err := instance.CreateCluster(createCluster).Execute()
 	if err != nil {
@@ -127,7 +136,16 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
+	// Wait until it's created
+	for getClusterState(r, ctx, cluster, resp) != temboclient.UP {
+		time.Sleep(10 * time.Second)
+		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", plan.ClusterName)
+	}
+
+	log.Printf("[INFO] Tembo cluster %s has been successfully created", plan.ClusterName)
+
 	// Map response body to schema and populate Computed attribute values
+	cluster.SetState(temboclient.UP)
 	setTemboClusterResourceModel(plan, cluster, true)
 
 	// Set state to fully populated data
@@ -136,6 +154,19 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
+}
+
+func getClusterState(r *temboClusterResource, ctx context.Context, cluster *temboclient.ReadCluster, resp *resource.CreateResponse) temboclient.State {
+	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, cluster.GetOrganizationId(), string(cluster.EntityType), cluster.GetInstanceId()).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Tembo Cluster",
+			"Could not read Tembo Cluster ID "+cluster.GetInstanceId()+": "+err.Error(),
+		)
+		return temboclient.ERROR
+	}
+
+	return refreshCluster.GetState()
 }
 
 // Read refreshes the Terraform state with the latest data.
