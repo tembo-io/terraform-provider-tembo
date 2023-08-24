@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
@@ -74,6 +76,9 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 		Attributes: map[string]schema.Attribute{
 			"cluster_id": schema.StringAttribute{
 				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"last_updated": schema.StringAttribute{
 				Computed: true,
@@ -101,6 +106,9 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 			},
 			"state": schema.StringAttribute{
 				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}
@@ -109,7 +117,7 @@ func (r *temboClusterResource) Schema(_ context.Context, _ resource.SchemaReques
 // Create creates the resource and sets the initial Terraform state.
 func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
-	var plan *temboClusterResourceModel
+	var plan temboClusterResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -147,7 +155,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 
 	// Map response body to schema and populate Computed attribute values
 	cluster.SetState(temboclient.UP)
-	setTemboClusterResourceModel(plan, cluster, true)
+	setTemboClusterResourceModel(&plan, cluster, true)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -155,20 +163,6 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-}
-
-func getClusterState(r *temboClusterResource, ctx context.Context,
-	organizationId string, stack string, clusterId string, diagnostics diag.Diagnostics) temboclient.State {
-	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
-	if err != nil {
-		diagnostics.AddError(
-			"Error Reading Tembo Cluster",
-			"Could not read Tembo Cluster ID "+clusterId+": "+err.Error(),
-		)
-		return temboclient.ERROR
-	}
-
-	return refreshCluster.GetState()
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -204,10 +198,10 @@ func (r *temboClusterResource) Read(ctx context.Context, req resource.ReadReques
 
 func setTemboClusterResourceModel(clusterResourceModel *temboClusterResourceModel, cluster *temboclient.ReadCluster, updateComputedValue bool) {
 	if updateComputedValue {
-		clusterResourceModel.ClusterID = types.StringValue(cluster.GetInstanceId())
 		clusterResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
 	}
 
+	clusterResourceModel.ClusterID = types.StringValue(cluster.GetInstanceId())
 	clusterResourceModel.ClusterName = types.StringValue(cluster.InstanceName)
 	clusterResourceModel.OrganizationId = types.StringValue(cluster.GetOrganizationId())
 	clusterResourceModel.CPU = types.StringValue(string(cluster.GetCpu()))
@@ -220,6 +214,62 @@ func setTemboClusterResourceModel(clusterResourceModel *temboClusterResourceMode
 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan temboClusterResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Generate API request body from plan
+	updateCluster := *temboclient.NewUpdateCluster()
+	updateCluster.SetCpu(temboclient.Cpu(plan.CPU.ValueString()))
+	updateCluster.SetEnvironment(temboclient.Environment(plan.Environment.ValueString()))
+	updateCluster.SetMemory(temboclient.Memory((plan.Memory.ValueString())))
+	updateCluster.SetStorage(temboclient.Storage((plan.Storage.ValueString())))
+
+	log.Printf("[INFO] Tembo clusterID %s", plan)
+
+	// Update existing order
+	_, err := r.client.InstancesApi.UpdateInstance(
+		ctx,
+		plan.OrganizationId.ValueString(),
+		plan.Stack.ValueString(),
+		plan.ClusterID.ValueString()).EventType(temboclient.UpdateEvent("update")).UpdateCluster(updateCluster).Execute()
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Tembo Cluster",
+			"Could not update Tembo Cluster ID "+plan.ClusterID.ValueString()+": "+err.Error(),
+		)
+		return
+	}
+
+	// Wait until it's updated
+	for getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString(), resp.Diagnostics) != temboclient.UP {
+		time.Sleep(10 * time.Second)
+		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", plan.ClusterName)
+	}
+
+	// Fetch updated items from GetOrder as UpdateOrder items are not populated.
+	cluster, _, err := r.client.InstancesApi.GetInstance(ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString()).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Tembo Cluster",
+			"Could not read Tembo Cluster ID "+plan.ClusterID.ValueString()+": "+err.Error(),
+		)
+		return
+	}
+
+	// Update resource state with updated items and timestamp
+	setTemboClusterResourceModel(&plan, cluster, true)
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // Delete deletes the resource and removes the Terraform state on success.
@@ -249,4 +299,18 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 	}
 
 	log.Printf("[INFO] Tembo cluster %s has been successfully deleted", state.ClusterName)
+}
+
+func getClusterState(r *temboClusterResource, ctx context.Context,
+	organizationId string, stack string, clusterId string, diagnostics diag.Diagnostics) temboclient.State {
+	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
+	if err != nil {
+		diagnostics.AddError(
+			"Error Reading Tembo Cluster",
+			"Could not read Tembo Cluster ID "+clusterId+": "+err.Error(),
+		)
+		return temboclient.ERROR
+	}
+
+	return refreshCluster.GetState()
 }
