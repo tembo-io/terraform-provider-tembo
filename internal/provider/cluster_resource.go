@@ -146,7 +146,13 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	// Wait until it's created
-	for getClusterState(r, ctx, cluster.GetOrganizationId(), string(cluster.EntityType), cluster.GetInstanceId(), resp.Diagnostics) != temboclient.UP {
+	for {
+		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), cluster.GetInstanceId(), &resp.Diagnostics)
+
+		if clusterState == temboclient.ERROR || clusterState == temboclient.UP {
+			break
+		}
+
 		time.Sleep(10 * time.Second)
 		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", plan.ClusterName)
 	}
@@ -247,7 +253,13 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Wait until it's updated
-	for getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString(), resp.Diagnostics) != temboclient.UP {
+	for {
+		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString(), &resp.Diagnostics)
+
+		if clusterState == temboclient.ERROR || clusterState == temboclient.UP {
+			break
+		}
+
 		time.Sleep(10 * time.Second)
 		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", plan.ClusterName)
 	}
@@ -292,21 +304,27 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 		return
 	}
 
-	// Wait until it's created
-	for getClusterState(r, ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString(), resp.Diagnostics) != temboclient.DELETED {
+	// Wait until it's deleted
+	for {
+		clusterState := getClusterState(r, ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString(), &resp.Diagnostics)
+
+		if clusterState == temboclient.ERROR || clusterState == temboclient.DELETED {
+			break
+		}
+
 		time.Sleep(10 * time.Second)
-		log.Printf("[INFO] Waiting for Tembo cluster %s to be UP", state.ClusterName)
+		log.Printf("[INFO] Waiting for Tembo cluster %s to be DELETED", state.ClusterName)
 	}
 
 	log.Printf("[INFO] Tembo cluster %s has been successfully deleted", state.ClusterName)
 }
 
 func getClusterState(r *temboClusterResource, ctx context.Context,
-	organizationId string, stack string, clusterId string, diagnostics diag.Diagnostics) temboclient.State {
+	organizationId string, stack string, clusterId string, diagnostics *diag.Diagnostics) temboclient.State {
 	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
 	if err != nil {
 		diagnostics.AddError(
-			"Error Reading Tembo Cluster",
+			"Error Reading Tembo Cluster State",
 			"Could not read Tembo Cluster ID "+clusterId+": "+err.Error(),
 		)
 		return temboclient.ERROR
