@@ -65,7 +65,7 @@ type temboClusterResource struct {
 	temboClusterConfig clusterConfig
 }
 
-// Resource Data
+// Tembo CLuster Configuration.
 type clusterConfig struct {
 	client      *temboclient.APIClient
 	accessToken string
@@ -138,7 +138,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		temboclient.Memory(plan.Memory.ValueString()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
-	// TODO: Figure out a better way to set this so it doens't have to be be called in each method
+	// TODO: Figure out a better way to set this so it doens't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
 
 	instance := r.temboClusterConfig.client.InstancesApi.CreateInstance(ctx,
@@ -154,7 +154,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	// Wait until it's created
+	// Wait until it's created.
 	for {
 		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), cluster.GetInstanceId(), &resp.Diagnostics)
 
