@@ -35,24 +35,24 @@ type temboClusterResourceModel struct {
 	State          types.String `tfsdk:"state"`
 }
 
-// Configure adds the provider configured client to the resource.
-func (r *temboClusterResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+// Configure adds the provider configured data to the resource.
+func (r *temboClusterResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 
-	client, ok := req.ProviderData.(*temboclient.APIClient)
+	temboClusterConfig, ok := req.ProviderData.(clusterConfig)
 
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *tembo.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *clusterConfig, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
 	}
 
-	r.client = client
+	r.temboClusterConfig = temboClusterConfig
 }
 
 // NewTemboClusterResource is a helper function to simplify the provider implementation.
@@ -62,7 +62,13 @@ func NewTemboClusterResource() resource.Resource {
 
 // temboClusterResource is the resource implementation.
 type temboClusterResource struct {
-	client *temboclient.APIClient
+	temboClusterConfig clusterConfig
+}
+
+// Tembo CLuster Configuration.
+type clusterConfig struct {
+	client      *temboclient.APIClient
+	accessToken string
 }
 
 // Metadata returns the resource type name.
@@ -132,7 +138,10 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		temboclient.Memory(plan.Memory.ValueString()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
-	instance := r.client.InstancesApi.CreateInstance(ctx,
+	// TODO: Figure out a better way to set this so it doens't have to be be called in each method.
+	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
+
+	instance := r.temboClusterConfig.client.InstancesApi.CreateInstance(ctx,
 		plan.OrganizationId.ValueString(),
 		temboclient.EntityType(plan.Stack.ValueString()))
 
@@ -145,7 +154,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	// Wait until it's created
+	// Wait until it's created.
 	for {
 		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), cluster.GetInstanceId(), &resp.Diagnostics)
 
@@ -181,8 +190,9 @@ func (r *temboClusterResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
+	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
 	// Get refreshed Cluster value from API
-	cluster, _, err := r.client.InstancesApi.GetInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
+	cluster, _, err := r.temboClusterConfig.client.InstancesApi.GetInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Tembo Cluster",
@@ -237,8 +247,10 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 
 	log.Printf("[INFO] Tembo clusterID %s", plan)
 
+	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
+
 	// Update existing order
-	_, err := r.client.InstancesApi.UpdateInstance(
+	_, err := r.temboClusterConfig.client.InstancesApi.UpdateInstance(
 		ctx,
 		plan.OrganizationId.ValueString(),
 		plan.Stack.ValueString(),
@@ -265,7 +277,7 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Fetch updated items from GetOrder as UpdateOrder items are not populated.
-	cluster, _, err := r.client.InstancesApi.GetInstance(ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString()).Execute()
+	cluster, _, err := r.temboClusterConfig.client.InstancesApi.GetInstance(ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Tembo Cluster",
@@ -294,8 +306,10 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 		return
 	}
 
+	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
+
 	// Delete existing Tembo Cluster
-	_, err := (*r.client.InstancesApi).DeleteInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
+	_, err := (*r.temboClusterConfig.client.InstancesApi).DeleteInstance(ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Deleting Tembo Cluster",
@@ -321,7 +335,7 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 
 func getClusterState(r *temboClusterResource, ctx context.Context,
 	organizationId string, stack string, clusterId string, diagnostics *diag.Diagnostics) temboclient.State {
-	refreshCluster, _, err := r.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
+	refreshCluster, _, err := r.temboClusterConfig.client.InstancesApi.GetInstance(ctx, organizationId, stack, clusterId).Execute()
 	if err != nil {
 		diagnostics.AddError(
 			"Error Reading Tembo Cluster State",
