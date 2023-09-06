@@ -157,7 +157,10 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	// Make the tembo client available during DataSource and Resource
 	// type Configure methods.
 	resp.DataSourceData = client
-	resp.ResourceData = client
+	resp.ResourceData = clusterConfig{
+		client:      client,
+		accessToken: access_token,
+	}
 }
 
 // DataSources defines the data sources implemented in the provider.
