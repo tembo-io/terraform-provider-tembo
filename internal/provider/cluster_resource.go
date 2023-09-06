@@ -138,6 +138,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 		temboclient.Memory(plan.Memory.ValueString()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
+	// TODO: Figure out a better way to set this so it doens't have to be be called in each method
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
 
 	instance := r.temboClusterConfig.client.InstancesApi.CreateInstance(ctx,
