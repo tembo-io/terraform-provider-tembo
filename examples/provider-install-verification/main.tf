@@ -7,5 +7,3 @@ terraform {
 }
 
 provider "tembo" {}
-
-data "tembo_example" "example" {}

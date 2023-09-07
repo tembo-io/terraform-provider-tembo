@@ -165,9 +165,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 // DataSources defines the data sources implemented in the provider.
 func (p *temboProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewExampleDataSource,
-	}
+	return []func() datasource.DataSource{}
 }
 
 // Resources defines the resources implemented in the provider.
