@@ -272,9 +272,6 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 			return
 		}
 
-		log.Printf("[INFO] updateCluster Cpu %s", updateCluster.GetCpu())
-		log.Printf("[INFO] Cluster Cpu %s", cluster.GetCpu())
-
 		if updateCluster.GetCpu() == cluster.GetCpu() &&
 			updateCluster.GetMemory() == cluster.GetMemory() &&
 			updateCluster.GetStorage() == cluster.GetStorage() {
