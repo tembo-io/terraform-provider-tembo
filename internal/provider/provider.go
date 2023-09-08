@@ -107,7 +107,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	if !config.Host.IsNull() {
 		host = config.Host.ValueString()
-	} else {
+	} else if host == "" {
 		host = "https://api.coredb.io"
 	}
 
