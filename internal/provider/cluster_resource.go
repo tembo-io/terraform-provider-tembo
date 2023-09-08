@@ -249,7 +249,7 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboClusterConfig.accessToken)
 
-	// Update existing order
+	// Update existing Cluster
 	_, err := r.temboClusterConfig.client.InstancesApi.UpdateInstance(
 		ctx,
 		plan.OrganizationId.ValueString(),
