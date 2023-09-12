@@ -1,11 +1,11 @@
-# \EntitiesApi
+# \StackApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetAllEntities**](EntitiesApi.md#GetAllEntities) | **Get** /api/entities/all | Get the raw Stack definitions for all entities
-[**GetEntity**](EntitiesApi.md#GetEntity) | **Get** /api/entities/{entity_type} | Get the json-schema for an entity
+[**GetAllEntities**](StackApi.md#GetAllEntities) | **Get** /api/v1/stacks | Attributes for all stacks
+[**GetEntity**](StackApi.md#GetEntity) | **Get** /api/v1/stacks/{type} | Get the attributes of a single stack
 
 
 
@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 > []interface{} GetAllEntities(ctx).Execute()
 
-Get the raw Stack definitions for all entities
+Attributes for all stacks
 
 
 
@@ -33,13 +33,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.EntitiesApi.GetAllEntities(context.Background()).Execute()
+    resp, r, err := apiClient.StackApi.GetAllEntities(context.Background()).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `EntitiesApi.GetAllEntities``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `StackApi.GetAllEntities``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `GetAllEntities`: []interface{}
-    fmt.Fprintf(os.Stdout, "Response from `EntitiesApi.GetAllEntities`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `StackApi.GetAllEntities`: %v\n", resp)
 }
 ```
 
@@ -72,9 +72,9 @@ Other parameters are passed through a pointer to a apiGetAllEntitiesRequest stru
 
 ## GetEntity
 
-> interface{} GetEntity(ctx, entityType).Execute()
+> interface{} GetEntity(ctx, type_).Execute()
 
-Get the json-schema for an entity
+Get the attributes of a single stack
 
 
 
@@ -91,17 +91,17 @@ import (
 )
 
 func main() {
-    entityType := "standard" // string | the type of entity
+    type_ := openapiclient.EntityType("Standard") // EntityType | the type of entity
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.EntitiesApi.GetEntity(context.Background(), entityType).Execute()
+    resp, r, err := apiClient.StackApi.GetEntity(context.Background(), type_).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `EntitiesApi.GetEntity``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `StackApi.GetEntity``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `GetEntity`: interface{}
-    fmt.Fprintf(os.Stdout, "Response from `EntitiesApi.GetEntity`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `StackApi.GetEntity`: %v\n", resp)
 }
 ```
 
@@ -111,7 +111,7 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**entityType** | **string** | the type of entity | 
+**type_** | [**EntityType**](.md) | the type of entity | 
 
 ### Other Parameters
 

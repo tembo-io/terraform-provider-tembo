@@ -14,13 +14,12 @@ import (
 	"encoding/json"
 )
 
-// checks if the UpdateCluster type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UpdateCluster{}
+// checks if the PatchInstance type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PatchInstance{}
 
-// UpdateCluster struct for UpdateCluster
-type UpdateCluster struct {
+// PatchInstance struct for PatchInstance
+type PatchInstance struct {
 	Cpu NullableCpu `json:"cpu,omitempty"`
-	EntityProperties interface{} `json:"entity_properties,omitempty"`
 	Environment NullableEnvironment `json:"environment,omitempty"`
 	Extensions []Extension `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
@@ -31,25 +30,25 @@ type UpdateCluster struct {
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
 }
 
-// NewUpdateCluster instantiates a new UpdateCluster object
+// NewPatchInstance instantiates a new PatchInstance object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateCluster() *UpdateCluster {
-	this := UpdateCluster{}
+func NewPatchInstance() *PatchInstance {
+	this := PatchInstance{}
 	return &this
 }
 
-// NewUpdateClusterWithDefaults instantiates a new UpdateCluster object
+// NewPatchInstanceWithDefaults instantiates a new PatchInstance object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUpdateClusterWithDefaults() *UpdateCluster {
-	this := UpdateCluster{}
+func NewPatchInstanceWithDefaults() *PatchInstance {
+	this := PatchInstance{}
 	return &this
 }
 
 // GetCpu returns the Cpu field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetCpu() Cpu {
+func (o *PatchInstance) GetCpu() Cpu {
 	if o == nil || IsNil(o.Cpu.Get()) {
 		var ret Cpu
 		return ret
@@ -60,7 +59,7 @@ func (o *UpdateCluster) GetCpu() Cpu {
 // GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetCpuOk() (*Cpu, bool) {
+func (o *PatchInstance) GetCpuOk() (*Cpu, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,7 +67,7 @@ func (o *UpdateCluster) GetCpuOk() (*Cpu, bool) {
 }
 
 // HasCpu returns a boolean if a field has been set.
-func (o *UpdateCluster) HasCpu() bool {
+func (o *PatchInstance) HasCpu() bool {
 	if o != nil && o.Cpu.IsSet() {
 		return true
 	}
@@ -77,54 +76,21 @@ func (o *UpdateCluster) HasCpu() bool {
 }
 
 // SetCpu gets a reference to the given NullableCpu and assigns it to the Cpu field.
-func (o *UpdateCluster) SetCpu(v Cpu) {
+func (o *PatchInstance) SetCpu(v Cpu) {
 	o.Cpu.Set(&v)
 }
 // SetCpuNil sets the value for Cpu to be an explicit nil
-func (o *UpdateCluster) SetCpuNil() {
+func (o *PatchInstance) SetCpuNil() {
 	o.Cpu.Set(nil)
 }
 
 // UnsetCpu ensures that no value is present for Cpu, not even an explicit nil
-func (o *UpdateCluster) UnsetCpu() {
+func (o *PatchInstance) UnsetCpu() {
 	o.Cpu.Unset()
 }
 
-// GetEntityProperties returns the EntityProperties field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetEntityProperties() interface{} {
-	if o == nil {
-		var ret interface{}
-		return ret
-	}
-	return o.EntityProperties
-}
-
-// GetEntityPropertiesOk returns a tuple with the EntityProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetEntityPropertiesOk() (*interface{}, bool) {
-	if o == nil || IsNil(o.EntityProperties) {
-		return nil, false
-	}
-	return &o.EntityProperties, true
-}
-
-// HasEntityProperties returns a boolean if a field has been set.
-func (o *UpdateCluster) HasEntityProperties() bool {
-	if o != nil && IsNil(o.EntityProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetEntityProperties gets a reference to the given interface{} and assigns it to the EntityProperties field.
-func (o *UpdateCluster) SetEntityProperties(v interface{}) {
-	o.EntityProperties = v
-}
-
 // GetEnvironment returns the Environment field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetEnvironment() Environment {
+func (o *PatchInstance) GetEnvironment() Environment {
 	if o == nil || IsNil(o.Environment.Get()) {
 		var ret Environment
 		return ret
@@ -135,7 +101,7 @@ func (o *UpdateCluster) GetEnvironment() Environment {
 // GetEnvironmentOk returns a tuple with the Environment field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetEnvironmentOk() (*Environment, bool) {
+func (o *PatchInstance) GetEnvironmentOk() (*Environment, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -143,7 +109,7 @@ func (o *UpdateCluster) GetEnvironmentOk() (*Environment, bool) {
 }
 
 // HasEnvironment returns a boolean if a field has been set.
-func (o *UpdateCluster) HasEnvironment() bool {
+func (o *PatchInstance) HasEnvironment() bool {
 	if o != nil && o.Environment.IsSet() {
 		return true
 	}
@@ -152,21 +118,21 @@ func (o *UpdateCluster) HasEnvironment() bool {
 }
 
 // SetEnvironment gets a reference to the given NullableEnvironment and assigns it to the Environment field.
-func (o *UpdateCluster) SetEnvironment(v Environment) {
+func (o *PatchInstance) SetEnvironment(v Environment) {
 	o.Environment.Set(&v)
 }
 // SetEnvironmentNil sets the value for Environment to be an explicit nil
-func (o *UpdateCluster) SetEnvironmentNil() {
+func (o *PatchInstance) SetEnvironmentNil() {
 	o.Environment.Set(nil)
 }
 
 // UnsetEnvironment ensures that no value is present for Environment, not even an explicit nil
-func (o *UpdateCluster) UnsetEnvironment() {
+func (o *PatchInstance) UnsetEnvironment() {
 	o.Environment.Unset()
 }
 
 // GetExtensions returns the Extensions field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetExtensions() []Extension {
+func (o *PatchInstance) GetExtensions() []Extension {
 	if o == nil {
 		var ret []Extension
 		return ret
@@ -177,7 +143,7 @@ func (o *UpdateCluster) GetExtensions() []Extension {
 // GetExtensionsOk returns a tuple with the Extensions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetExtensionsOk() ([]Extension, bool) {
+func (o *PatchInstance) GetExtensionsOk() ([]Extension, bool) {
 	if o == nil || IsNil(o.Extensions) {
 		return nil, false
 	}
@@ -185,7 +151,7 @@ func (o *UpdateCluster) GetExtensionsOk() ([]Extension, bool) {
 }
 
 // HasExtensions returns a boolean if a field has been set.
-func (o *UpdateCluster) HasExtensions() bool {
+func (o *PatchInstance) HasExtensions() bool {
 	if o != nil && IsNil(o.Extensions) {
 		return true
 	}
@@ -194,12 +160,12 @@ func (o *UpdateCluster) HasExtensions() bool {
 }
 
 // SetExtensions gets a reference to the given []Extension and assigns it to the Extensions field.
-func (o *UpdateCluster) SetExtensions(v []Extension) {
+func (o *PatchInstance) SetExtensions(v []Extension) {
 	o.Extensions = v
 }
 
 // GetExtraDomainsRw returns the ExtraDomainsRw field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetExtraDomainsRw() []string {
+func (o *PatchInstance) GetExtraDomainsRw() []string {
 	if o == nil {
 		var ret []string
 		return ret
@@ -210,7 +176,7 @@ func (o *UpdateCluster) GetExtraDomainsRw() []string {
 // GetExtraDomainsRwOk returns a tuple with the ExtraDomainsRw field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetExtraDomainsRwOk() ([]string, bool) {
+func (o *PatchInstance) GetExtraDomainsRwOk() ([]string, bool) {
 	if o == nil || IsNil(o.ExtraDomainsRw) {
 		return nil, false
 	}
@@ -218,7 +184,7 @@ func (o *UpdateCluster) GetExtraDomainsRwOk() ([]string, bool) {
 }
 
 // HasExtraDomainsRw returns a boolean if a field has been set.
-func (o *UpdateCluster) HasExtraDomainsRw() bool {
+func (o *PatchInstance) HasExtraDomainsRw() bool {
 	if o != nil && IsNil(o.ExtraDomainsRw) {
 		return true
 	}
@@ -227,12 +193,12 @@ func (o *UpdateCluster) HasExtraDomainsRw() bool {
 }
 
 // SetExtraDomainsRw gets a reference to the given []string and assigns it to the ExtraDomainsRw field.
-func (o *UpdateCluster) SetExtraDomainsRw(v []string) {
+func (o *PatchInstance) SetExtraDomainsRw(v []string) {
 	o.ExtraDomainsRw = v
 }
 
 // GetMemory returns the Memory field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetMemory() Memory {
+func (o *PatchInstance) GetMemory() Memory {
 	if o == nil || IsNil(o.Memory.Get()) {
 		var ret Memory
 		return ret
@@ -243,7 +209,7 @@ func (o *UpdateCluster) GetMemory() Memory {
 // GetMemoryOk returns a tuple with the Memory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetMemoryOk() (*Memory, bool) {
+func (o *PatchInstance) GetMemoryOk() (*Memory, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -251,7 +217,7 @@ func (o *UpdateCluster) GetMemoryOk() (*Memory, bool) {
 }
 
 // HasMemory returns a boolean if a field has been set.
-func (o *UpdateCluster) HasMemory() bool {
+func (o *PatchInstance) HasMemory() bool {
 	if o != nil && o.Memory.IsSet() {
 		return true
 	}
@@ -260,21 +226,21 @@ func (o *UpdateCluster) HasMemory() bool {
 }
 
 // SetMemory gets a reference to the given NullableMemory and assigns it to the Memory field.
-func (o *UpdateCluster) SetMemory(v Memory) {
+func (o *PatchInstance) SetMemory(v Memory) {
 	o.Memory.Set(&v)
 }
 // SetMemoryNil sets the value for Memory to be an explicit nil
-func (o *UpdateCluster) SetMemoryNil() {
+func (o *PatchInstance) SetMemoryNil() {
 	o.Memory.Set(nil)
 }
 
 // UnsetMemory ensures that no value is present for Memory, not even an explicit nil
-func (o *UpdateCluster) UnsetMemory() {
+func (o *PatchInstance) UnsetMemory() {
 	o.Memory.Unset()
 }
 
 // GetPostgresConfigs returns the PostgresConfigs field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetPostgresConfigs() []PgConfig {
+func (o *PatchInstance) GetPostgresConfigs() []PgConfig {
 	if o == nil {
 		var ret []PgConfig
 		return ret
@@ -285,7 +251,7 @@ func (o *UpdateCluster) GetPostgresConfigs() []PgConfig {
 // GetPostgresConfigsOk returns a tuple with the PostgresConfigs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetPostgresConfigsOk() ([]PgConfig, bool) {
+func (o *PatchInstance) GetPostgresConfigsOk() ([]PgConfig, bool) {
 	if o == nil || IsNil(o.PostgresConfigs) {
 		return nil, false
 	}
@@ -293,7 +259,7 @@ func (o *UpdateCluster) GetPostgresConfigsOk() ([]PgConfig, bool) {
 }
 
 // HasPostgresConfigs returns a boolean if a field has been set.
-func (o *UpdateCluster) HasPostgresConfigs() bool {
+func (o *PatchInstance) HasPostgresConfigs() bool {
 	if o != nil && IsNil(o.PostgresConfigs) {
 		return true
 	}
@@ -302,12 +268,12 @@ func (o *UpdateCluster) HasPostgresConfigs() bool {
 }
 
 // SetPostgresConfigs gets a reference to the given []PgConfig and assigns it to the PostgresConfigs field.
-func (o *UpdateCluster) SetPostgresConfigs(v []PgConfig) {
+func (o *PatchInstance) SetPostgresConfigs(v []PgConfig) {
 	o.PostgresConfigs = v
 }
 
 // GetReplicas returns the Replicas field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetReplicas() int32 {
+func (o *PatchInstance) GetReplicas() int32 {
 	if o == nil || IsNil(o.Replicas.Get()) {
 		var ret int32
 		return ret
@@ -318,7 +284,7 @@ func (o *UpdateCluster) GetReplicas() int32 {
 // GetReplicasOk returns a tuple with the Replicas field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetReplicasOk() (*int32, bool) {
+func (o *PatchInstance) GetReplicasOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -326,7 +292,7 @@ func (o *UpdateCluster) GetReplicasOk() (*int32, bool) {
 }
 
 // HasReplicas returns a boolean if a field has been set.
-func (o *UpdateCluster) HasReplicas() bool {
+func (o *PatchInstance) HasReplicas() bool {
 	if o != nil && o.Replicas.IsSet() {
 		return true
 	}
@@ -335,21 +301,21 @@ func (o *UpdateCluster) HasReplicas() bool {
 }
 
 // SetReplicas gets a reference to the given NullableInt32 and assigns it to the Replicas field.
-func (o *UpdateCluster) SetReplicas(v int32) {
+func (o *PatchInstance) SetReplicas(v int32) {
 	o.Replicas.Set(&v)
 }
 // SetReplicasNil sets the value for Replicas to be an explicit nil
-func (o *UpdateCluster) SetReplicasNil() {
+func (o *PatchInstance) SetReplicasNil() {
 	o.Replicas.Set(nil)
 }
 
 // UnsetReplicas ensures that no value is present for Replicas, not even an explicit nil
-func (o *UpdateCluster) UnsetReplicas() {
+func (o *PatchInstance) UnsetReplicas() {
 	o.Replicas.Unset()
 }
 
 // GetStorage returns the Storage field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetStorage() Storage {
+func (o *PatchInstance) GetStorage() Storage {
 	if o == nil || IsNil(o.Storage.Get()) {
 		var ret Storage
 		return ret
@@ -360,7 +326,7 @@ func (o *UpdateCluster) GetStorage() Storage {
 // GetStorageOk returns a tuple with the Storage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetStorageOk() (*Storage, bool) {
+func (o *PatchInstance) GetStorageOk() (*Storage, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -368,7 +334,7 @@ func (o *UpdateCluster) GetStorageOk() (*Storage, bool) {
 }
 
 // HasStorage returns a boolean if a field has been set.
-func (o *UpdateCluster) HasStorage() bool {
+func (o *PatchInstance) HasStorage() bool {
 	if o != nil && o.Storage.IsSet() {
 		return true
 	}
@@ -377,21 +343,21 @@ func (o *UpdateCluster) HasStorage() bool {
 }
 
 // SetStorage gets a reference to the given NullableStorage and assigns it to the Storage field.
-func (o *UpdateCluster) SetStorage(v Storage) {
+func (o *PatchInstance) SetStorage(v Storage) {
 	o.Storage.Set(&v)
 }
 // SetStorageNil sets the value for Storage to be an explicit nil
-func (o *UpdateCluster) SetStorageNil() {
+func (o *PatchInstance) SetStorageNil() {
 	o.Storage.Set(nil)
 }
 
 // UnsetStorage ensures that no value is present for Storage, not even an explicit nil
-func (o *UpdateCluster) UnsetStorage() {
+func (o *PatchInstance) UnsetStorage() {
 	o.Storage.Unset()
 }
 
 // GetTrunkInstalls returns the TrunkInstalls field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *UpdateCluster) GetTrunkInstalls() []TrunkInstall {
+func (o *PatchInstance) GetTrunkInstalls() []TrunkInstall {
 	if o == nil {
 		var ret []TrunkInstall
 		return ret
@@ -402,7 +368,7 @@ func (o *UpdateCluster) GetTrunkInstalls() []TrunkInstall {
 // GetTrunkInstallsOk returns a tuple with the TrunkInstalls field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UpdateCluster) GetTrunkInstallsOk() ([]TrunkInstall, bool) {
+func (o *PatchInstance) GetTrunkInstallsOk() ([]TrunkInstall, bool) {
 	if o == nil || IsNil(o.TrunkInstalls) {
 		return nil, false
 	}
@@ -410,7 +376,7 @@ func (o *UpdateCluster) GetTrunkInstallsOk() ([]TrunkInstall, bool) {
 }
 
 // HasTrunkInstalls returns a boolean if a field has been set.
-func (o *UpdateCluster) HasTrunkInstalls() bool {
+func (o *PatchInstance) HasTrunkInstalls() bool {
 	if o != nil && IsNil(o.TrunkInstalls) {
 		return true
 	}
@@ -419,11 +385,11 @@ func (o *UpdateCluster) HasTrunkInstalls() bool {
 }
 
 // SetTrunkInstalls gets a reference to the given []TrunkInstall and assigns it to the TrunkInstalls field.
-func (o *UpdateCluster) SetTrunkInstalls(v []TrunkInstall) {
+func (o *PatchInstance) SetTrunkInstalls(v []TrunkInstall) {
 	o.TrunkInstalls = v
 }
 
-func (o UpdateCluster) MarshalJSON() ([]byte, error) {
+func (o PatchInstance) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -431,13 +397,10 @@ func (o UpdateCluster) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UpdateCluster) ToMap() (map[string]interface{}, error) {
+func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Cpu.IsSet() {
 		toSerialize["cpu"] = o.Cpu.Get()
-	}
-	if o.EntityProperties != nil {
-		toSerialize["entity_properties"] = o.EntityProperties
 	}
 	if o.Environment.IsSet() {
 		toSerialize["environment"] = o.Environment.Get()
@@ -466,38 +429,38 @@ func (o UpdateCluster) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableUpdateCluster struct {
-	value *UpdateCluster
+type NullablePatchInstance struct {
+	value *PatchInstance
 	isSet bool
 }
 
-func (v NullableUpdateCluster) Get() *UpdateCluster {
+func (v NullablePatchInstance) Get() *PatchInstance {
 	return v.value
 }
 
-func (v *NullableUpdateCluster) Set(val *UpdateCluster) {
+func (v *NullablePatchInstance) Set(val *PatchInstance) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUpdateCluster) IsSet() bool {
+func (v NullablePatchInstance) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUpdateCluster) Unset() {
+func (v *NullablePatchInstance) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUpdateCluster(val *UpdateCluster) *NullableUpdateCluster {
-	return &NullableUpdateCluster{value: val, isSet: true}
+func NewNullablePatchInstance(val *PatchInstance) *NullablePatchInstance {
+	return &NullablePatchInstance{value: val, isSet: true}
 }
 
-func (v NullableUpdateCluster) MarshalJSON() ([]byte, error) {
+func (v NullablePatchInstance) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUpdateCluster) UnmarshalJSON(src []byte) error {
+func (v *NullablePatchInstance) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

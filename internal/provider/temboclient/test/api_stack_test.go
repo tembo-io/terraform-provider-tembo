@@ -1,7 +1,7 @@
 /*
-cp-webserver
+Tembo Cloud
 
-Testing EntitiesApiService
+Testing StackApiService
 
 */
 
@@ -17,16 +17,16 @@ import (
 	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
 )
 
-func Test_temboclient_EntitiesApiService(t *testing.T) {
+func Test_temboclient_StackApiService(t *testing.T) {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
 
-	t.Run("Test EntitiesApiService GetAllEntities", func(t *testing.T) {
+	t.Run("Test StackApiService GetAllEntities", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
-		resp, httpRes, err := apiClient.EntitiesApi.GetAllEntities(context.Background()).Execute()
+		resp, httpRes, err := apiClient.StackApi.GetAllEntities(context.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -34,13 +34,13 @@ func Test_temboclient_EntitiesApiService(t *testing.T) {
 
 	})
 
-	t.Run("Test EntitiesApiService GetEntity", func(t *testing.T) {
+	t.Run("Test StackApiService GetEntity", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
-		var entityType string
+		var type_ EntityType
 
-		resp, httpRes, err := apiClient.EntitiesApi.GetEntity(context.Background(), entityType).Execute()
+		resp, httpRes, err := apiClient.StackApi.GetEntity(context.Background(), type_).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

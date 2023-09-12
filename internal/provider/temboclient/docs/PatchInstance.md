@@ -1,11 +1,10 @@
-# UpdateCluster
+# PatchInstance
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Cpu** | Pointer to [**NullableCpu**](Cpu.md) |  | [optional] 
-**EntityProperties** | Pointer to **interface{}** |  | [optional] 
 **Environment** | Pointer to [**NullableEnvironment**](Environment.md) |  | [optional] 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
@@ -17,371 +16,336 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewUpdateCluster
+### NewPatchInstance
 
-`func NewUpdateCluster() *UpdateCluster`
+`func NewPatchInstance() *PatchInstance`
 
-NewUpdateCluster instantiates a new UpdateCluster object
+NewPatchInstance instantiates a new PatchInstance object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewUpdateClusterWithDefaults
+### NewPatchInstanceWithDefaults
 
-`func NewUpdateClusterWithDefaults() *UpdateCluster`
+`func NewPatchInstanceWithDefaults() *PatchInstance`
 
-NewUpdateClusterWithDefaults instantiates a new UpdateCluster object
+NewPatchInstanceWithDefaults instantiates a new PatchInstance object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetCpu
 
-`func (o *UpdateCluster) GetCpu() Cpu`
+`func (o *PatchInstance) GetCpu() Cpu`
 
 GetCpu returns the Cpu field if non-nil, zero value otherwise.
 
 ### GetCpuOk
 
-`func (o *UpdateCluster) GetCpuOk() (*Cpu, bool)`
+`func (o *PatchInstance) GetCpuOk() (*Cpu, bool)`
 
 GetCpuOk returns a tuple with the Cpu field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCpu
 
-`func (o *UpdateCluster) SetCpu(v Cpu)`
+`func (o *PatchInstance) SetCpu(v Cpu)`
 
 SetCpu sets Cpu field to given value.
 
 ### HasCpu
 
-`func (o *UpdateCluster) HasCpu() bool`
+`func (o *PatchInstance) HasCpu() bool`
 
 HasCpu returns a boolean if a field has been set.
 
 ### SetCpuNil
 
-`func (o *UpdateCluster) SetCpuNil(b bool)`
+`func (o *PatchInstance) SetCpuNil(b bool)`
 
  SetCpuNil sets the value for Cpu to be an explicit nil
 
 ### UnsetCpu
-`func (o *UpdateCluster) UnsetCpu()`
+`func (o *PatchInstance) UnsetCpu()`
 
 UnsetCpu ensures that no value is present for Cpu, not even an explicit nil
-### GetEntityProperties
-
-`func (o *UpdateCluster) GetEntityProperties() interface{}`
-
-GetEntityProperties returns the EntityProperties field if non-nil, zero value otherwise.
-
-### GetEntityPropertiesOk
-
-`func (o *UpdateCluster) GetEntityPropertiesOk() (*interface{}, bool)`
-
-GetEntityPropertiesOk returns a tuple with the EntityProperties field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEntityProperties
-
-`func (o *UpdateCluster) SetEntityProperties(v interface{})`
-
-SetEntityProperties sets EntityProperties field to given value.
-
-### HasEntityProperties
-
-`func (o *UpdateCluster) HasEntityProperties() bool`
-
-HasEntityProperties returns a boolean if a field has been set.
-
-### SetEntityPropertiesNil
-
-`func (o *UpdateCluster) SetEntityPropertiesNil(b bool)`
-
- SetEntityPropertiesNil sets the value for EntityProperties to be an explicit nil
-
-### UnsetEntityProperties
-`func (o *UpdateCluster) UnsetEntityProperties()`
-
-UnsetEntityProperties ensures that no value is present for EntityProperties, not even an explicit nil
 ### GetEnvironment
 
-`func (o *UpdateCluster) GetEnvironment() Environment`
+`func (o *PatchInstance) GetEnvironment() Environment`
 
 GetEnvironment returns the Environment field if non-nil, zero value otherwise.
 
 ### GetEnvironmentOk
 
-`func (o *UpdateCluster) GetEnvironmentOk() (*Environment, bool)`
+`func (o *PatchInstance) GetEnvironmentOk() (*Environment, bool)`
 
 GetEnvironmentOk returns a tuple with the Environment field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEnvironment
 
-`func (o *UpdateCluster) SetEnvironment(v Environment)`
+`func (o *PatchInstance) SetEnvironment(v Environment)`
 
 SetEnvironment sets Environment field to given value.
 
 ### HasEnvironment
 
-`func (o *UpdateCluster) HasEnvironment() bool`
+`func (o *PatchInstance) HasEnvironment() bool`
 
 HasEnvironment returns a boolean if a field has been set.
 
 ### SetEnvironmentNil
 
-`func (o *UpdateCluster) SetEnvironmentNil(b bool)`
+`func (o *PatchInstance) SetEnvironmentNil(b bool)`
 
  SetEnvironmentNil sets the value for Environment to be an explicit nil
 
 ### UnsetEnvironment
-`func (o *UpdateCluster) UnsetEnvironment()`
+`func (o *PatchInstance) UnsetEnvironment()`
 
 UnsetEnvironment ensures that no value is present for Environment, not even an explicit nil
 ### GetExtensions
 
-`func (o *UpdateCluster) GetExtensions() []Extension`
+`func (o *PatchInstance) GetExtensions() []Extension`
 
 GetExtensions returns the Extensions field if non-nil, zero value otherwise.
 
 ### GetExtensionsOk
 
-`func (o *UpdateCluster) GetExtensionsOk() (*[]Extension, bool)`
+`func (o *PatchInstance) GetExtensionsOk() (*[]Extension, bool)`
 
 GetExtensionsOk returns a tuple with the Extensions field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExtensions
 
-`func (o *UpdateCluster) SetExtensions(v []Extension)`
+`func (o *PatchInstance) SetExtensions(v []Extension)`
 
 SetExtensions sets Extensions field to given value.
 
 ### HasExtensions
 
-`func (o *UpdateCluster) HasExtensions() bool`
+`func (o *PatchInstance) HasExtensions() bool`
 
 HasExtensions returns a boolean if a field has been set.
 
 ### SetExtensionsNil
 
-`func (o *UpdateCluster) SetExtensionsNil(b bool)`
+`func (o *PatchInstance) SetExtensionsNil(b bool)`
 
  SetExtensionsNil sets the value for Extensions to be an explicit nil
 
 ### UnsetExtensions
-`func (o *UpdateCluster) UnsetExtensions()`
+`func (o *PatchInstance) UnsetExtensions()`
 
 UnsetExtensions ensures that no value is present for Extensions, not even an explicit nil
 ### GetExtraDomainsRw
 
-`func (o *UpdateCluster) GetExtraDomainsRw() []string`
+`func (o *PatchInstance) GetExtraDomainsRw() []string`
 
 GetExtraDomainsRw returns the ExtraDomainsRw field if non-nil, zero value otherwise.
 
 ### GetExtraDomainsRwOk
 
-`func (o *UpdateCluster) GetExtraDomainsRwOk() (*[]string, bool)`
+`func (o *PatchInstance) GetExtraDomainsRwOk() (*[]string, bool)`
 
 GetExtraDomainsRwOk returns a tuple with the ExtraDomainsRw field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExtraDomainsRw
 
-`func (o *UpdateCluster) SetExtraDomainsRw(v []string)`
+`func (o *PatchInstance) SetExtraDomainsRw(v []string)`
 
 SetExtraDomainsRw sets ExtraDomainsRw field to given value.
 
 ### HasExtraDomainsRw
 
-`func (o *UpdateCluster) HasExtraDomainsRw() bool`
+`func (o *PatchInstance) HasExtraDomainsRw() bool`
 
 HasExtraDomainsRw returns a boolean if a field has been set.
 
 ### SetExtraDomainsRwNil
 
-`func (o *UpdateCluster) SetExtraDomainsRwNil(b bool)`
+`func (o *PatchInstance) SetExtraDomainsRwNil(b bool)`
 
  SetExtraDomainsRwNil sets the value for ExtraDomainsRw to be an explicit nil
 
 ### UnsetExtraDomainsRw
-`func (o *UpdateCluster) UnsetExtraDomainsRw()`
+`func (o *PatchInstance) UnsetExtraDomainsRw()`
 
 UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
 ### GetMemory
 
-`func (o *UpdateCluster) GetMemory() Memory`
+`func (o *PatchInstance) GetMemory() Memory`
 
 GetMemory returns the Memory field if non-nil, zero value otherwise.
 
 ### GetMemoryOk
 
-`func (o *UpdateCluster) GetMemoryOk() (*Memory, bool)`
+`func (o *PatchInstance) GetMemoryOk() (*Memory, bool)`
 
 GetMemoryOk returns a tuple with the Memory field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMemory
 
-`func (o *UpdateCluster) SetMemory(v Memory)`
+`func (o *PatchInstance) SetMemory(v Memory)`
 
 SetMemory sets Memory field to given value.
 
 ### HasMemory
 
-`func (o *UpdateCluster) HasMemory() bool`
+`func (o *PatchInstance) HasMemory() bool`
 
 HasMemory returns a boolean if a field has been set.
 
 ### SetMemoryNil
 
-`func (o *UpdateCluster) SetMemoryNil(b bool)`
+`func (o *PatchInstance) SetMemoryNil(b bool)`
 
  SetMemoryNil sets the value for Memory to be an explicit nil
 
 ### UnsetMemory
-`func (o *UpdateCluster) UnsetMemory()`
+`func (o *PatchInstance) UnsetMemory()`
 
 UnsetMemory ensures that no value is present for Memory, not even an explicit nil
 ### GetPostgresConfigs
 
-`func (o *UpdateCluster) GetPostgresConfigs() []PgConfig`
+`func (o *PatchInstance) GetPostgresConfigs() []PgConfig`
 
 GetPostgresConfigs returns the PostgresConfigs field if non-nil, zero value otherwise.
 
 ### GetPostgresConfigsOk
 
-`func (o *UpdateCluster) GetPostgresConfigsOk() (*[]PgConfig, bool)`
+`func (o *PatchInstance) GetPostgresConfigsOk() (*[]PgConfig, bool)`
 
 GetPostgresConfigsOk returns a tuple with the PostgresConfigs field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPostgresConfigs
 
-`func (o *UpdateCluster) SetPostgresConfigs(v []PgConfig)`
+`func (o *PatchInstance) SetPostgresConfigs(v []PgConfig)`
 
 SetPostgresConfigs sets PostgresConfigs field to given value.
 
 ### HasPostgresConfigs
 
-`func (o *UpdateCluster) HasPostgresConfigs() bool`
+`func (o *PatchInstance) HasPostgresConfigs() bool`
 
 HasPostgresConfigs returns a boolean if a field has been set.
 
 ### SetPostgresConfigsNil
 
-`func (o *UpdateCluster) SetPostgresConfigsNil(b bool)`
+`func (o *PatchInstance) SetPostgresConfigsNil(b bool)`
 
  SetPostgresConfigsNil sets the value for PostgresConfigs to be an explicit nil
 
 ### UnsetPostgresConfigs
-`func (o *UpdateCluster) UnsetPostgresConfigs()`
+`func (o *PatchInstance) UnsetPostgresConfigs()`
 
 UnsetPostgresConfigs ensures that no value is present for PostgresConfigs, not even an explicit nil
 ### GetReplicas
 
-`func (o *UpdateCluster) GetReplicas() int32`
+`func (o *PatchInstance) GetReplicas() int32`
 
 GetReplicas returns the Replicas field if non-nil, zero value otherwise.
 
 ### GetReplicasOk
 
-`func (o *UpdateCluster) GetReplicasOk() (*int32, bool)`
+`func (o *PatchInstance) GetReplicasOk() (*int32, bool)`
 
 GetReplicasOk returns a tuple with the Replicas field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetReplicas
 
-`func (o *UpdateCluster) SetReplicas(v int32)`
+`func (o *PatchInstance) SetReplicas(v int32)`
 
 SetReplicas sets Replicas field to given value.
 
 ### HasReplicas
 
-`func (o *UpdateCluster) HasReplicas() bool`
+`func (o *PatchInstance) HasReplicas() bool`
 
 HasReplicas returns a boolean if a field has been set.
 
 ### SetReplicasNil
 
-`func (o *UpdateCluster) SetReplicasNil(b bool)`
+`func (o *PatchInstance) SetReplicasNil(b bool)`
 
  SetReplicasNil sets the value for Replicas to be an explicit nil
 
 ### UnsetReplicas
-`func (o *UpdateCluster) UnsetReplicas()`
+`func (o *PatchInstance) UnsetReplicas()`
 
 UnsetReplicas ensures that no value is present for Replicas, not even an explicit nil
 ### GetStorage
 
-`func (o *UpdateCluster) GetStorage() Storage`
+`func (o *PatchInstance) GetStorage() Storage`
 
 GetStorage returns the Storage field if non-nil, zero value otherwise.
 
 ### GetStorageOk
 
-`func (o *UpdateCluster) GetStorageOk() (*Storage, bool)`
+`func (o *PatchInstance) GetStorageOk() (*Storage, bool)`
 
 GetStorageOk returns a tuple with the Storage field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStorage
 
-`func (o *UpdateCluster) SetStorage(v Storage)`
+`func (o *PatchInstance) SetStorage(v Storage)`
 
 SetStorage sets Storage field to given value.
 
 ### HasStorage
 
-`func (o *UpdateCluster) HasStorage() bool`
+`func (o *PatchInstance) HasStorage() bool`
 
 HasStorage returns a boolean if a field has been set.
 
 ### SetStorageNil
 
-`func (o *UpdateCluster) SetStorageNil(b bool)`
+`func (o *PatchInstance) SetStorageNil(b bool)`
 
  SetStorageNil sets the value for Storage to be an explicit nil
 
 ### UnsetStorage
-`func (o *UpdateCluster) UnsetStorage()`
+`func (o *PatchInstance) UnsetStorage()`
 
 UnsetStorage ensures that no value is present for Storage, not even an explicit nil
 ### GetTrunkInstalls
 
-`func (o *UpdateCluster) GetTrunkInstalls() []TrunkInstall`
+`func (o *PatchInstance) GetTrunkInstalls() []TrunkInstall`
 
 GetTrunkInstalls returns the TrunkInstalls field if non-nil, zero value otherwise.
 
 ### GetTrunkInstallsOk
 
-`func (o *UpdateCluster) GetTrunkInstallsOk() (*[]TrunkInstall, bool)`
+`func (o *PatchInstance) GetTrunkInstallsOk() (*[]TrunkInstall, bool)`
 
 GetTrunkInstallsOk returns a tuple with the TrunkInstalls field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTrunkInstalls
 
-`func (o *UpdateCluster) SetTrunkInstalls(v []TrunkInstall)`
+`func (o *PatchInstance) SetTrunkInstalls(v []TrunkInstall)`
 
 SetTrunkInstalls sets TrunkInstalls field to given value.
 
 ### HasTrunkInstalls
 
-`func (o *UpdateCluster) HasTrunkInstalls() bool`
+`func (o *PatchInstance) HasTrunkInstalls() bool`
 
 HasTrunkInstalls returns a boolean if a field has been set.
 
 ### SetTrunkInstallsNil
 
-`func (o *UpdateCluster) SetTrunkInstallsNil(b bool)`
+`func (o *PatchInstance) SetTrunkInstallsNil(b bool)`
 
  SetTrunkInstallsNil sets the value for TrunkInstalls to be an explicit nil
 
 ### UnsetTrunkInstalls
-`func (o *UpdateCluster) UnsetTrunkInstalls()`
+`func (o *PatchInstance) UnsetTrunkInstalls()`
 
 UnsetTrunkInstalls ensures that no value is present for TrunkInstalls, not even an explicit nil
 

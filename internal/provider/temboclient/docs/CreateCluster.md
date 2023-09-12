@@ -8,9 +8,12 @@ Name | Type | Description | Notes
 **EntityProperties** | Pointer to **interface{}** |  | [optional] 
 **EntityType** | Pointer to [**EntityType**](EntityType.md) |  | [optional] 
 **Environment** | [**Environment**](Environment.md) |  | 
+**ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **InstanceName** | **string** |  | 
 **Memory** | [**Memory**](Memory.md) |  | 
 **OrganizationId** | Pointer to **NullableString** |  | [optional] 
+**PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
+**Replicas** | Pointer to **NullableInt32** |  | [optional] 
 **Storage** | [**Storage**](Storage.md) |  | 
 
 ## Methods
@@ -132,6 +135,41 @@ and a boolean to check if the value has been set.
 SetEnvironment sets Environment field to given value.
 
 
+### GetExtraDomainsRw
+
+`func (o *CreateCluster) GetExtraDomainsRw() []string`
+
+GetExtraDomainsRw returns the ExtraDomainsRw field if non-nil, zero value otherwise.
+
+### GetExtraDomainsRwOk
+
+`func (o *CreateCluster) GetExtraDomainsRwOk() (*[]string, bool)`
+
+GetExtraDomainsRwOk returns a tuple with the ExtraDomainsRw field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExtraDomainsRw
+
+`func (o *CreateCluster) SetExtraDomainsRw(v []string)`
+
+SetExtraDomainsRw sets ExtraDomainsRw field to given value.
+
+### HasExtraDomainsRw
+
+`func (o *CreateCluster) HasExtraDomainsRw() bool`
+
+HasExtraDomainsRw returns a boolean if a field has been set.
+
+### SetExtraDomainsRwNil
+
+`func (o *CreateCluster) SetExtraDomainsRwNil(b bool)`
+
+ SetExtraDomainsRwNil sets the value for ExtraDomainsRw to be an explicit nil
+
+### UnsetExtraDomainsRw
+`func (o *CreateCluster) UnsetExtraDomainsRw()`
+
+UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
 ### GetInstanceName
 
 `func (o *CreateCluster) GetInstanceName() string`
@@ -207,6 +245,76 @@ HasOrganizationId returns a boolean if a field has been set.
 `func (o *CreateCluster) UnsetOrganizationId()`
 
 UnsetOrganizationId ensures that no value is present for OrganizationId, not even an explicit nil
+### GetPostgresConfigs
+
+`func (o *CreateCluster) GetPostgresConfigs() []PgConfig`
+
+GetPostgresConfigs returns the PostgresConfigs field if non-nil, zero value otherwise.
+
+### GetPostgresConfigsOk
+
+`func (o *CreateCluster) GetPostgresConfigsOk() (*[]PgConfig, bool)`
+
+GetPostgresConfigsOk returns a tuple with the PostgresConfigs field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPostgresConfigs
+
+`func (o *CreateCluster) SetPostgresConfigs(v []PgConfig)`
+
+SetPostgresConfigs sets PostgresConfigs field to given value.
+
+### HasPostgresConfigs
+
+`func (o *CreateCluster) HasPostgresConfigs() bool`
+
+HasPostgresConfigs returns a boolean if a field has been set.
+
+### SetPostgresConfigsNil
+
+`func (o *CreateCluster) SetPostgresConfigsNil(b bool)`
+
+ SetPostgresConfigsNil sets the value for PostgresConfigs to be an explicit nil
+
+### UnsetPostgresConfigs
+`func (o *CreateCluster) UnsetPostgresConfigs()`
+
+UnsetPostgresConfigs ensures that no value is present for PostgresConfigs, not even an explicit nil
+### GetReplicas
+
+`func (o *CreateCluster) GetReplicas() int32`
+
+GetReplicas returns the Replicas field if non-nil, zero value otherwise.
+
+### GetReplicasOk
+
+`func (o *CreateCluster) GetReplicasOk() (*int32, bool)`
+
+GetReplicasOk returns a tuple with the Replicas field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReplicas
+
+`func (o *CreateCluster) SetReplicas(v int32)`
+
+SetReplicas sets Replicas field to given value.
+
+### HasReplicas
+
+`func (o *CreateCluster) HasReplicas() bool`
+
+HasReplicas returns a boolean if a field has been set.
+
+### SetReplicasNil
+
+`func (o *CreateCluster) SetReplicasNil(b bool)`
+
+ SetReplicasNil sets the value for Replicas to be an explicit nil
+
+### UnsetReplicas
+`func (o *CreateCluster) UnsetReplicas()`
+
+UnsetReplicas ensures that no value is present for Replicas, not even an explicit nil
 ### GetStorage
 
 `func (o *CreateCluster) GetStorage() Storage`

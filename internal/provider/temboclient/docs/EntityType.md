@@ -5,9 +5,11 @@
 
 * `STANDARD` (value: `"Standard"`)
 
-* `MESSAGING` (value: `"Messaging"`)
+* `MESSAGE_QUEUE` (value: `"MessageQueue"`)
 
 * `MACHINE_LEARNING` (value: `"MachineLearning"`)
+
+* `OLAP` (value: `"OLAP"`)
 
 * `OLTP` (value: `"OLTP"`)
 
