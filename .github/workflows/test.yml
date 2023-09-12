@@ -75,6 +75,6 @@ jobs:
       - env:
           TF_ACC: "1"
           TEMBO_ACCESS_TOKEN: ${{ secrets.TEMBO_ACCESS_TOKEN }}
-          ORGANIZATION_ID: ${{ secrets.ORGANIZATION_ID }}
+          ORG_ID: ${{ secrets.ORG_ID }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
