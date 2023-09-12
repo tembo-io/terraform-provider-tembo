@@ -156,7 +156,7 @@ func (r *temboClusterResource) Create(ctx context.Context, req resource.CreateRe
 
 	// Wait until it's created.
 	for {
-		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), cluster.GetInstanceId(), &resp.Diagnostics)
+		clusterState := getClusterState(r, ctx, plan.OrganizationId.ValueString(), cluster.GetInstanceId(), &resp.Diagnostics)
 
 		if clusterState == temboclient.ERROR || clusterState == temboclient.UP {
 			break
@@ -266,7 +266,7 @@ func (r *temboClusterResource) Update(ctx context.Context, req resource.UpdateRe
 
 	// Wait until it's updated
 	for {
-		cluster, err := getCluster(r, ctx, plan.OrganizationId.ValueString(), plan.Stack.ValueString(), plan.ClusterID.ValueString(), &resp.Diagnostics)
+		cluster, err := getCluster(r, ctx, plan.OrganizationId.ValueString(), plan.ClusterID.ValueString(), &resp.Diagnostics)
 
 		if err != nil {
 			return
@@ -316,7 +316,7 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	// Wait until it's deleted
 	for {
-		clusterState := getClusterState(r, ctx, state.OrganizationId.ValueString(), state.Stack.ValueString(), state.ClusterID.ValueString(), &resp.Diagnostics)
+		clusterState := getClusterState(r, ctx, state.OrganizationId.ValueString(), state.ClusterID.ValueString(), &resp.Diagnostics)
 
 		if clusterState == temboclient.ERROR || clusterState == temboclient.DELETED {
 			break
@@ -330,7 +330,7 @@ func (r *temboClusterResource) Delete(ctx context.Context, req resource.DeleteRe
 }
 
 func getClusterState(r *temboClusterResource, ctx context.Context,
-	organizationId string, stack string, clusterId string, diagnostics *diag.Diagnostics) temboclient.State {
+	organizationId string, clusterId string, diagnostics *diag.Diagnostics) temboclient.State {
 	refreshCluster, _, err := r.temboClusterConfig.client.InstanceApi.GetInstance(ctx, organizationId, clusterId).Execute()
 	if err != nil {
 		diagnostics.AddError(
@@ -344,7 +344,7 @@ func getClusterState(r *temboClusterResource, ctx context.Context,
 }
 
 func getCluster(r *temboClusterResource, ctx context.Context,
-	organizationId string, stack string, clusterId string, diagnostics *diag.Diagnostics) (temboclient.Instance, error) {
+	organizationId string, clusterId string, diagnostics *diag.Diagnostics) (temboclient.Instance, error) {
 	refreshCluster, _, err := r.temboClusterConfig.client.InstanceApi.GetInstance(ctx, organizationId, clusterId).Execute()
 	if err != nil {
 		diagnostics.AddError(
