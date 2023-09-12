@@ -11,12 +11,14 @@ Name | Type | Description | Notes
 **EntityType** | [**EntityType**](EntityType.md) |  | 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Extensions** | Pointer to [**[]ExtensionStatus**](ExtensionStatus.md) |  | [optional] 
+**ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **InstanceId** | Pointer to **NullableString** |  | [optional] 
 **InstanceName** | **string** |  | 
 **LastUpdatedAt** | Pointer to **time.Time** |  | [optional] 
 **Memory** | Pointer to [**NullableMemory**](Memory.md) |  | [optional] 
 **OrganizationId** | Pointer to **NullableString** |  | [optional] 
 **OrganizationName** | Pointer to **NullableString** |  | [optional] 
+**Replicas** | Pointer to **NullableInt32** |  | [optional] 
 **State** | Pointer to [**NullableState**](State.md) |  | [optional] 
 **Storage** | Pointer to [**NullableStorage**](Storage.md) |  | [optional] 
 **TrunkInstalls** | Pointer to [**[]TrunkInstallStatus**](TrunkInstallStatus.md) |  | [optional] 
@@ -245,6 +247,41 @@ HasExtensions returns a boolean if a field has been set.
 `func (o *ReadCluster) UnsetExtensions()`
 
 UnsetExtensions ensures that no value is present for Extensions, not even an explicit nil
+### GetExtraDomainsRw
+
+`func (o *ReadCluster) GetExtraDomainsRw() []string`
+
+GetExtraDomainsRw returns the ExtraDomainsRw field if non-nil, zero value otherwise.
+
+### GetExtraDomainsRwOk
+
+`func (o *ReadCluster) GetExtraDomainsRwOk() (*[]string, bool)`
+
+GetExtraDomainsRwOk returns a tuple with the ExtraDomainsRw field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExtraDomainsRw
+
+`func (o *ReadCluster) SetExtraDomainsRw(v []string)`
+
+SetExtraDomainsRw sets ExtraDomainsRw field to given value.
+
+### HasExtraDomainsRw
+
+`func (o *ReadCluster) HasExtraDomainsRw() bool`
+
+HasExtraDomainsRw returns a boolean if a field has been set.
+
+### SetExtraDomainsRwNil
+
+`func (o *ReadCluster) SetExtraDomainsRwNil(b bool)`
+
+ SetExtraDomainsRwNil sets the value for ExtraDomainsRw to be an explicit nil
+
+### UnsetExtraDomainsRw
+`func (o *ReadCluster) UnsetExtraDomainsRw()`
+
+UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
 ### GetInstanceId
 
 `func (o *ReadCluster) GetInstanceId() string`
@@ -430,6 +467,41 @@ HasOrganizationName returns a boolean if a field has been set.
 `func (o *ReadCluster) UnsetOrganizationName()`
 
 UnsetOrganizationName ensures that no value is present for OrganizationName, not even an explicit nil
+### GetReplicas
+
+`func (o *ReadCluster) GetReplicas() int32`
+
+GetReplicas returns the Replicas field if non-nil, zero value otherwise.
+
+### GetReplicasOk
+
+`func (o *ReadCluster) GetReplicasOk() (*int32, bool)`
+
+GetReplicasOk returns a tuple with the Replicas field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReplicas
+
+`func (o *ReadCluster) SetReplicas(v int32)`
+
+SetReplicas sets Replicas field to given value.
+
+### HasReplicas
+
+`func (o *ReadCluster) HasReplicas() bool`
+
+HasReplicas returns a boolean if a field has been set.
+
+### SetReplicasNil
+
+`func (o *ReadCluster) SetReplicasNil(b bool)`
+
+ SetReplicasNil sets the value for Replicas to be an explicit nil
+
+### UnsetReplicas
+`func (o *ReadCluster) UnsetReplicas()`
+
+UnsetReplicas ensures that no value is present for Replicas, not even an explicit nil
 ### GetState
 
 `func (o *ReadCluster) GetState() State`

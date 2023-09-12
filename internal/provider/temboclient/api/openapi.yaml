@@ -1,57 +1,38 @@
 openapi: 3.0.3
 info:
-  description: CoreDB backend API
-  title: cp-webserver
-  version: 0.1.0
+  description: Platform API for Tembo Cloud
+  title: Tembo Cloud
+  version: v1.0.0-alpha
 servers:
 - url: /
 security:
 - jwt_token: []
 paths:
-  /api/entities/all:
+  /api/v1/orgs/instances/schema:
     get:
       description: |
-        Get the raw Stack definitions for all entities
-      operationId: get_all_entities
+        Get the json-schema for an instance
+      operationId: get_schema
       responses:
         "200":
           content:
             application/json:
               schema:
-                items: {}
-                type: array
-          description: Stack specification represented as JSON
-      summary: Get the raw Stack definitions for all entities
-      tags:
-      - entities
-  /api/entities/{entity_type}:
-    get:
-      description: |
-        Get the json-schema for an entity
-      operationId: get_entity
-      parameters:
-      - description: the type of entity
-        example: standard
-        explode: false
-        in: path
-        name: entity_type
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: json-schema for a Tembo Instance
+        "401":
           content:
             application/json:
-              schema: {}
-          description: json-schema for the entity
-      summary: Get the json-schema for an entity
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Get the json-schema for an instance
       tags:
-      - entities
-  /api/orgs/{org_id}/instances:
+      - instance
+  /api/v1/orgs/{org_id}/instances:
     get:
       description: |
-        Get all instances of all entities in an organization
+        Get all Tembo instances in an organization
       operationId: get_all
       parameters:
       - description: organization id for the request
@@ -68,19 +49,36 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ReadCluster'
+                  $ref: '#/components/schemas/Instance'
                 type: array
           description: All instances in your org
-      summary: Get all instances of all entities in an organization
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid org_id
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Get all Tembo instances in an organization
       tags:
-      - instances
-  /api/orgs/{org_id}/instances/{entity_type}:
+      - instance
     post:
       description: |
-        Create a new instance of an entity
+        Create a new Tembo instance
       operationId: create_instance
       parameters:
-      - description: organization id that the instance belongs to
+      - description: Organization ID that owns the Tembo instance
         explode: false
         in: path
         name: org_id
@@ -88,40 +86,50 @@ paths:
         schema:
           type: string
         style: simple
-      - description: the type of entity for this instance
-        example: coredb
-        explode: false
-        in: path
-        name: entity_type
-        required: true
-        schema:
-          $ref: '#/components/schemas/EntityType'
-        style: simple
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateCluster'
+              $ref: '#/components/schemas/CreateInstance'
         required: true
       responses:
-        "200":
+        "202":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadCluster'
-          description: Creating new instance
-        "401":
+                $ref: '#/components/schemas/Instance'
+          description: Creating new Tembo instance
+        "400":
           content:
             application/json:
-              schema: {}
-          description: Not authenticated
-      summary: Create a new instance of an entity
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request parameters
+        "401":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Naming conflict
+      summary: Create a new Tembo instance
       tags:
-      - instances
-  /api/orgs/{org_id}/instances/{entity_type}/{instance_id}:
+      - instance
+  /api/v1/orgs/{org_id}/instances/{instance_id}:
     delete:
       description: |
-        Delete an existing instance of any entity_type
+        Delete an existing Tembo instance
       operationId: delete_instance
       parameters:
       - description: Organization id of the instance to delete
@@ -132,15 +140,7 @@ paths:
         schema:
           type: string
         style: simple
-      - description: Type of entity for this request
-        explode: false
-        in: path
-        name: entity_type
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Unique identifier of the instance to delete
+      - description: Delete this instance id
         explode: false
         in: path
         name: instance_id
@@ -149,17 +149,45 @@ paths:
           type: string
         style: simple
       responses:
-        "200":
-          description: Successfully received delete request
-      summary: Delete an existing instance of any entity_type
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+          description: Deleting instance
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request parameters
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid state transition
+      summary: Delete an existing Tembo instance
       tags:
-      - instances
+      - instance
     get:
       description: |
-        Gets current attributes of an existing instance
+        Get an existing Tembo instance
       operationId: get_instance
       parameters:
-      - description: Organization id of the instance to update
+      - description: Organization ID that owns the instance
         explode: false
         in: path
         name: org_id
@@ -167,16 +195,7 @@ paths:
         schema:
           type: string
         style: simple
-      - description: Type of entity for this request
-        explode: false
-        in: path
-        name: entity_type
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Unique identifier of the instance to update
-        explode: false
+      - explode: false
         in: path
         name: instance_id
         required: true
@@ -188,17 +207,35 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadCluster'
-          description: Current instance attributes
-      summary: Gets current attributes of an existing instance
+                $ref: '#/components/schemas/Instance'
+          description: The requested Tembo instance
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid org_id
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Get an existing Tembo instance
       tags:
-      - instances
-    put:
+      - instance
+    patch:
       description: |
-        Update or make changes to an existing instance
-      operationId: update_instance
+        Update attributes on an existing Tembo instance
+      operationId: patch_instance
       parameters:
-      - description: Organization id of the instance to update
+      - description: Organization ID that owns the instance
         explode: false
         in: path
         name: org_id
@@ -206,18 +243,64 @@ paths:
         schema:
           type: string
         style: simple
-      - description: Type of entity for this request
-        explode: false
+      - explode: false
         in: path
-        name: entity_type
+        name: instance_id
         required: true
         schema:
           type: string
         style: simple
-      - description: Unique identifier of the instance to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchInstance'
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+          description: Updating attributes on the instance
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request parameters
+        "401":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid state transition
+      summary: Update attributes on an existing Tembo instance
+      tags:
+      - instance
+    post:
+      description: |-
+        Lifecycle events for a Tembo instance
+
+        Currently only supports restart
+      operationId: instance_event
+      parameters:
+      - description: Organization ID that owns the Tembo instance
         explode: false
         in: path
-        name: instance_id
+        name: org_id
         required: true
         schema:
           type: string
@@ -227,22 +310,166 @@ paths:
         name: event_type
         required: true
         schema:
-          $ref: '#/components/schemas/UpdateEvent'
+          $ref: '#/components/schemas/InstanceEvent'
         style: form
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+          description: Replace the attributes of the Tembo instance
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid state transition
+      summary: Lifecycle events for a Tembo instance
+      tags:
+      - instance
+    put:
+      description: |
+        Replace all attributes of an existing Tembo instance
+      operationId: put_instance
+      parameters:
+      - description: Organization ID that owns the Tembo instance
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateCluster'
+              $ref: '#/components/schemas/UpdateInstance'
         required: true
       responses:
-        "200":
-          description: Successfully received update request
-      summary: Update or make changes to an existing instance
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+          description: Replace the attributes of the Tembo instance
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request parameters
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid state transition
+      summary: Replace all attributes of an existing Tembo instance
       tags:
-      - instances
+      - instance
+  /api/v1/stacks:
+    get:
+      description: |
+        Attributes for all stacks
+      operationId: get_all_entities
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items: {}
+                type: array
+          description: Stack specification represented as JSON
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Attributes for all stacks
+      tags:
+      - stack
+  /api/v1/stacks/{type}:
+    get:
+      description: |
+        Get the attributes of a single stack
+      operationId: get_entity
+      parameters:
+      - description: the type of entity
+        example: standard
+        explode: false
+        in: path
+        name: type
+        required: true
+        schema:
+          $ref: '#/components/schemas/EntityType'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: Specification of the entity
+        "400":
+          content:
+            application/json:
+              schema: {}
+          description: Invalid Stack
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Get the attributes of a single stack
+      tags:
+      - stack
 components:
   schemas:
+    CloudProvider:
+      enum:
+      - aws
+      type: string
     ConnectionInfo:
       properties:
         host:
@@ -270,15 +497,6 @@ components:
       - "32"
       type: string
     CreateCluster:
-      example:
-        environment: null
-        entity_type: null
-        instance_name: instance_name
-        memory: null
-        organization_id: organization_id
-        entity_properties: ""
-        cpu: null
-        storage: null
       properties:
         cpu:
           $ref: '#/components/schemas/Cpu'
@@ -288,6 +506,11 @@ components:
           $ref: '#/components/schemas/EntityType'
         environment:
           $ref: '#/components/schemas/Environment'
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
         instance_name:
           type: string
         memory:
@@ -295,6 +518,15 @@ components:
         organization_id:
           nullable: true
           type: string
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          allOf:
+          - $ref: '#/components/schemas/Replicas'
+          nullable: true
         storage:
           $ref: '#/components/schemas/Storage'
       required:
@@ -304,11 +536,101 @@ components:
       - memory
       - storage
       type: object
+    CreateInstance:
+      example:
+        environment: null
+        extensions:
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        extra_domains_rw:
+        - extra_domains_rw
+        - extra_domains_rw
+        instance_name: instance_name
+        memory: null
+        stack_type: null
+        postgres_configs:
+        - name: name
+          value: value
+        - name: name
+          value: value
+        replicas: 0
+        trunk_installs:
+        - name: name
+          version: version
+        - name: name
+          version: version
+        cpu: null
+        storage: null
+      properties:
+        cpu:
+          $ref: '#/components/schemas/Cpu'
+        environment:
+          $ref: '#/components/schemas/Environment'
+        extensions:
+          items:
+            $ref: '#/components/schemas/Extension'
+          nullable: true
+          type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        instance_name:
+          type: string
+        memory:
+          $ref: '#/components/schemas/Memory'
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          format: int32
+          type: integer
+        stack_type:
+          $ref: '#/components/schemas/EntityType'
+        storage:
+          $ref: '#/components/schemas/Storage'
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstall'
+          nullable: true
+          type: array
+      required:
+      - cpu
+      - environment
+      - instance_name
+      - memory
+      - stack_type
+      - storage
+      type: object
     EntityType:
       enum:
       - Standard
-      - Messaging
+      - MessageQueue
       - MachineLearning
+      - OLAP
       - OLTP
       type: string
     Environment:
@@ -317,6 +639,15 @@ components:
       - test
       - prod
       type: string
+    ErrorResponseSchema:
+      example:
+        error: error
+      properties:
+        error:
+          type: string
+      required:
+      - error
+      type: object
     Extension:
       example:
         name: name
@@ -425,23 +756,38 @@ components:
       - locations
       - name
       type: object
-    Memory:
-      enum:
-      - 1Gi
-      - 2Gi
-      - 4Gi
-      - 8Gi
-      - 16Gi
-      - 32Gi
-      type: string
-    ReadCluster:
+    Infrastructure:
+      properties:
+        cpu:
+          $ref: '#/components/schemas/Cpu'
+        instance_type:
+          $ref: '#/components/schemas/InstanceTypes'
+        memory:
+          $ref: '#/components/schemas/Memory'
+        provider:
+          $ref: '#/components/schemas/CloudProvider'
+        region:
+          type: string
+        storage_class:
+          $ref: '#/components/schemas/StorageClass'
+        storage_size:
+          $ref: '#/components/schemas/Storage'
+      required:
+      - cpu
+      - instance_type
+      - memory
+      - storage_class
+      - storage_size
+      type: object
+    Instance:
       example:
         instance_name: instance_name
-        memory: ""
-        cpu: ""
+        memory: null
+        replicas: 0
+        cpu: null
         created_at: 2000-01-23T04:56:07.000+00:00
         organization_name: organization_name
-        storage: ""
+        storage: null
         environment: null
         extensions:
         - name: name
@@ -474,12 +820,19 @@ components:
             error: true
             version: version
             enabled: true
-        entity_type: null
+        extra_domains_rw:
+        - extra_domains_rw
+        - extra_domains_rw
         instance_id: instance_id
+        stack_type: null
         connection_info: ""
         last_updated_at: 2000-01-23T04:56:07.000+00:00
+        postgres_configs:
+        - name: name
+          value: value
+        - name: name
+          value: value
         organization_id: organization_id
-        entity_properties: ""
         trunk_installs:
         - error_message: error_message
           name: name
@@ -489,7 +842,190 @@ components:
           name: name
           error: true
           version: version
-        state: ""
+        state: null
+      properties:
+        connection_info:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionInfo'
+          nullable: true
+        cpu:
+          $ref: '#/components/schemas/Cpu'
+        created_at:
+          format: date-time
+          type: string
+        environment:
+          $ref: '#/components/schemas/Environment'
+        extensions:
+          items:
+            $ref: '#/components/schemas/ExtensionStatus'
+          nullable: true
+          type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        instance_id:
+          type: string
+        instance_name:
+          type: string
+        last_updated_at:
+          format: date-time
+          type: string
+        memory:
+          $ref: '#/components/schemas/Memory'
+        organization_id:
+          type: string
+        organization_name:
+          type: string
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          format: int32
+          type: integer
+        stack_type:
+          $ref: '#/components/schemas/EntityType'
+        state:
+          $ref: '#/components/schemas/State'
+        storage:
+          $ref: '#/components/schemas/Storage'
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstallStatus'
+          nullable: true
+          type: array
+      required:
+      - cpu
+      - environment
+      - instance_id
+      - instance_name
+      - memory
+      - organization_id
+      - organization_name
+      - replicas
+      - stack_type
+      - state
+      - storage
+      type: object
+    InstanceEvent:
+      enum:
+      - restart
+      type: string
+    InstanceTypes:
+      enum:
+      - GeneralPurpose
+      type: string
+    Memory:
+      enum:
+      - 1Gi
+      - 2Gi
+      - 4Gi
+      - 8Gi
+      - 16Gi
+      - 32Gi
+      type: string
+    PatchInstance:
+      example:
+        environment: ""
+        extensions:
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        extra_domains_rw:
+        - extra_domains_rw
+        - extra_domains_rw
+        memory: ""
+        postgres_configs:
+        - name: name
+          value: value
+        - name: name
+          value: value
+        replicas: ""
+        trunk_installs:
+        - name: name
+          version: version
+        - name: name
+          version: version
+        cpu: ""
+        storage: ""
+      properties:
+        cpu:
+          allOf:
+          - $ref: '#/components/schemas/Cpu'
+          nullable: true
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/Environment'
+          nullable: true
+        extensions:
+          items:
+            $ref: '#/components/schemas/Extension'
+          nullable: true
+          type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        memory:
+          allOf:
+          - $ref: '#/components/schemas/Memory'
+          nullable: true
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          allOf:
+          - $ref: '#/components/schemas/Replicas'
+          nullable: true
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/Storage'
+          nullable: true
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstall'
+          nullable: true
+          type: array
+      type: object
+    PgConfig:
+      example:
+        name: name
+        value: value
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      required:
+      - name
+      - value
+      type: object
+    ReadCluster:
       properties:
         connection_info:
           allOf:
@@ -513,6 +1049,11 @@ components:
             $ref: '#/components/schemas/ExtensionStatus'
           nullable: true
           type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
         instance_id:
           nullable: true
           type: string
@@ -531,6 +1072,10 @@ components:
         organization_name:
           nullable: true
           type: string
+        replicas:
+          allOf:
+          - $ref: '#/components/schemas/Replicas'
+          nullable: true
         state:
           allOf:
           - $ref: '#/components/schemas/State'
@@ -549,6 +1094,9 @@ components:
       - environment
       - instance_name
       type: object
+    Replicas:
+      format: int32
+      type: integer
     State:
       enum:
       - Submitted
@@ -571,6 +1119,10 @@ components:
       - 300Gi
       - 400Gi
       - 500Gi
+      type: string
+    StorageClass:
+      enum:
+      - gp3
       type: string
     TrunkInstall:
       example:
@@ -607,40 +1159,6 @@ components:
       - name
       type: object
     UpdateCluster:
-      example:
-        environment: ""
-        extensions:
-        - name: name
-          description: description
-          locations:
-          - schema: schema
-            database: database
-            version: version
-            enabled: true
-          - schema: schema
-            database: database
-            version: version
-            enabled: true
-        - name: name
-          description: description
-          locations:
-          - schema: schema
-            database: database
-            version: version
-            enabled: true
-          - schema: schema
-            database: database
-            version: version
-            enabled: true
-        memory: ""
-        entity_properties: ""
-        trunk_installs:
-        - name: name
-          version: version
-        - name: name
-          version: version
-        cpu: ""
-        storage: ""
       properties:
         cpu:
           allOf:
@@ -657,9 +1175,23 @@ components:
             $ref: '#/components/schemas/Extension'
           nullable: true
           type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
         memory:
           allOf:
           - $ref: '#/components/schemas/Memory'
+          nullable: true
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          allOf:
+          - $ref: '#/components/schemas/Replicas'
           nullable: true
         storage:
           allOf:
@@ -671,13 +1203,88 @@ components:
           nullable: true
           type: array
       type: object
-    UpdateEvent:
-      enum:
-      - extension
-      - restart
-      - stop
-      - update
-      type: string
+    UpdateInstance:
+      example:
+        environment: null
+        extensions:
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        - name: name
+          description: description
+          locations:
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+          - schema: schema
+            database: database
+            version: version
+            enabled: true
+        extra_domains_rw:
+        - extra_domains_rw
+        - extra_domains_rw
+        memory: null
+        postgres_configs:
+        - name: name
+          value: value
+        - name: name
+          value: value
+        replicas: 0
+        trunk_installs:
+        - name: name
+          version: version
+        - name: name
+          version: version
+        cpu: null
+        storage: null
+      properties:
+        cpu:
+          $ref: '#/components/schemas/Cpu'
+        environment:
+          $ref: '#/components/schemas/Environment'
+        extensions:
+          items:
+            $ref: '#/components/schemas/Extension'
+          nullable: true
+          type: array
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        memory:
+          $ref: '#/components/schemas/Memory'
+        postgres_configs:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
+        replicas:
+          format: int32
+          type: integer
+        storage:
+          $ref: '#/components/schemas/Storage'
+        trunk_installs:
+          items:
+            $ref: '#/components/schemas/TrunkInstall'
+          nullable: true
+          type: array
+      required:
+      - cpu
+      - environment
+      - memory
+      - replicas
+      - storage
+      type: object
   securitySchemes:
     jwt_token:
       bearerFormat: JWT
