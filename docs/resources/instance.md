@@ -25,6 +25,10 @@ description: |-
 - `stack_type` (String)
 - `storage` (String)
 
+### Optional
+
+- `replicas` (Number)
+
 ### Read-Only
 
 - `instance_id` (String)

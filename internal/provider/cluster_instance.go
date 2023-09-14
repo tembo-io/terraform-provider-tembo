@@ -3,12 +3,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -21,6 +24,10 @@ var (
 	_ resource.ResourceWithConfigure = &temboInstanceResource{}
 )
 
+const (
+	DefaultReplicas = 1
+)
+
 // temboInstanceResourceModel maps the resource schema data.
 type temboInstanceResourceModel struct {
 	InstanceID   types.String `tfsdk:"instance_id"`
@@ -29,6 +36,7 @@ type temboInstanceResourceModel struct {
 	CPU          types.String `tfsdk:"cpu"`
 	StackType    types.String `tfsdk:"stack_type"`
 	Environment  types.String `tfsdk:"environment"`
+	Replicas     types.Int64  `tfsdk:"replicas"`
 	Memory       types.String `tfsdk:"memory"`
 	Storage      types.String `tfsdk:"storage"`
 	LastUpdated  types.String `tfsdk:"last_updated"`
@@ -101,6 +109,11 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 			"stack_type": schema.StringAttribute{
 				Required: true,
 			},
+			"replicas": schema.Int64Attribute{
+				Optional: true,
+				Computed: true,
+				Default:  int64default.StaticInt64(DefaultReplicas),
+			},
 			"environment": schema.StringAttribute{
 				Required: true,
 			},
@@ -139,17 +152,21 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		temboclient.EntityType(plan.StackType.ValueString()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
+	if !plan.Replicas.IsNull() {
+		createInstance.SetReplicas(int32(plan.Replicas.ValueInt64()))
+	}
+
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	instanceRequest := r.temboInstanceConfig.client.InstanceApi.CreateInstance(ctx,
 		plan.OrgId.ValueString())
 
-	instance, _, err := instanceRequest.CreateInstance(createInstance).Execute()
+	instance, response, err := instanceRequest.CreateInstance(createInstance).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating Tembo Instance:",
-			"Could not create Tembo Instance, unexpected error: "+err.Error(),
+			"Could not create Tembo Instance, unexpected error: "+getErrorFromResponse(response),
 		)
 		return
 	}
@@ -192,11 +209,11 @@ func (r *temboInstanceResource) Read(ctx context.Context, req resource.ReadReque
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 	// Get refreshed Instance value from API
-	instance, _, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
+	instance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Tembo Instance",
-			"Could not read Tembo Instance ID "+state.InstanceID.ValueString()+": "+err.Error(),
+			"Could not read Tembo Instance ID "+state.InstanceID.ValueString()+": "+getErrorFromResponse(response),
 		)
 		return
 	}
@@ -226,6 +243,7 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 	instanceResourceModel.Memory = types.StringValue(string(instance.GetMemory()))
 	instanceResourceModel.Storage = types.StringValue(string(instance.GetStorage()))
 	instanceResourceModel.State = types.StringValue(string(instance.GetState()))
+	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
 }
 
 // Update updates the resource and sets the updated Terraform state on success.
@@ -243,7 +261,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 		temboclient.Cpu(plan.CPU.ValueString()),
 		temboclient.Environment(plan.Environment.ValueString()),
 		temboclient.Memory((plan.Memory.ValueString())),
-		1,
+		int32(plan.Replicas.ValueInt64()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
 	log.Printf("[INFO] Tembo instanceID %s", plan)
@@ -251,7 +269,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	// Update existing Instance
-	_, _, err := r.temboInstanceConfig.client.InstanceApi.PutInstance(
+	_, response, err := r.temboInstanceConfig.client.InstanceApi.PutInstance(
 		ctx,
 		plan.OrgId.ValueString(),
 		plan.InstanceID.ValueString()).UpdateInstance(updateInstance).Execute()
@@ -259,7 +277,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Tembo Instance",
-			"Could not update Tembo Instance ID "+plan.InstanceID.ValueString()+": "+err.Error(),
+			"Could not update Tembo Instance ID "+plan.InstanceID.ValueString()+": "+getErrorFromResponse(response),
 		)
 		return
 	}
@@ -274,8 +292,9 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 
 		if updateInstance.GetCpu() == instance.GetCpu() &&
 			updateInstance.GetMemory() == instance.GetMemory() &&
-			updateInstance.GetStorage() == instance.GetStorage() {
-
+			updateInstance.GetStorage() == instance.GetStorage() &&
+			updateInstance.GetReplicas() == instance.GetReplicas() &&
+			instance.GetState() == temboclient.UP {
 			// Update resource state with updated items and timestamp
 			setTemboInstanceResourceModel(&plan, &instance, true)
 			break
@@ -305,11 +324,12 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	// Delete existing Tembo Instance
-	_, _, err := (*r.temboInstanceConfig.client.InstanceApi).DeleteInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
+	_, response, err := (*r.temboInstanceConfig.client.InstanceApi).DeleteInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
 	if err != nil {
+
 		resp.Diagnostics.AddError(
 			"Error Deleting Tembo Instance",
-			"Could not delete instance, unexpected error: "+err.Error(),
+			"Could not delete instance, unexpected error: "+getErrorFromResponse(response),
 		)
 		return
 	}
@@ -329,13 +349,20 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 	log.Printf("[INFO] Tembo instance %s has been successfully deleted", state.InstanceName)
 }
 
+func getErrorFromResponse(response *http.Response) string {
+	localVarBody, _ := io.ReadAll(response.Body)
+	response.Body.Close()
+
+	return string(localVarBody)
+}
+
 func getInstanceState(r *temboInstanceResource, ctx context.Context,
 	orgId string, instanceId string, diagnostics *diag.Diagnostics) temboclient.State {
-	refreshInstance, _, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
+	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		diagnostics.AddError(
 			"Error Reading Tembo Instance State",
-			"Could not read Tembo Instance ID "+instanceId+": "+err.Error(),
+			"Could not read Tembo Instance ID "+instanceId+": "+getErrorFromResponse(response),
 		)
 		return temboclient.ERROR
 	}
@@ -345,11 +372,11 @@ func getInstanceState(r *temboInstanceResource, ctx context.Context,
 
 func getInstance(r *temboInstanceResource, ctx context.Context,
 	orgId string, instanceId string, diagnostics *diag.Diagnostics) (temboclient.Instance, error) {
-	refreshInstance, _, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
+	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		diagnostics.AddError(
 			"Error Reading Tembo Instance State",
-			"Could not read Tembo Instance ID "+instanceId+": "+err.Error(),
+			"Could not read Tembo Instance ID "+instanceId+": "+getErrorFromResponse(response),
 		)
 	}
 

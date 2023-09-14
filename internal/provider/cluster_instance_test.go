@@ -26,6 +26,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "org_id", orgId),
 					resource.TestCheckResourceAttr("tembo_instance.test", "cpu", "1"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "stack_type", "Standard"),
+					resource.TestCheckResourceAttr("tembo_instance.test", "replicas", "1"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "environment", "dev"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "memory", "4Gi"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
@@ -42,6 +43,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "org_id", orgId),
 					resource.TestCheckResourceAttr("tembo_instance.test", "cpu", "2"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "stack_type", "Standard"),
+					resource.TestCheckResourceAttr("tembo_instance.test", "replicas", "2"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "environment", "dev"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "memory", "8Gi"),
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
@@ -61,6 +63,7 @@ resource "tembo_instance" "test" {
 	org_id          = "%v"
 	cpu             = "1"
 	stack_type      = "Standard"
+	replicas        = 1
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
@@ -75,6 +78,7 @@ resource "tembo_instance" "test" {
 	org_id 			= "%v"
 	cpu             = "2"
 	stack_type      = "Standard"
+	replicas        = 2
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"

@@ -9,13 +9,14 @@ terraform {
 provider "tembo" {}
 
 resource "tembo_instance" "adarsh_db" {
-  instance_name = "adarsh-tf-provid9"
+  instance_name = "test-tf-provider-16"
   org_id        = "org_2UdhszNbCVhLAXkZm30nz8pL778"
   cpu           = "1"
   stack_type    = "Standard"
   environment   = "dev"
   memory        = "4Gi"
   storage       = "10Gi"
+  replicas      = 1
 }
 
 output "instance" {
