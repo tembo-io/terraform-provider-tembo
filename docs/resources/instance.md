@@ -27,6 +27,8 @@ description: |-
 
 ### Optional
 
+- `extra_domains_rw` (List of String)
+- `postgres_configs` (Attributes List) (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number)
 
 ### Read-Only
@@ -34,3 +36,11 @@ description: |-
 - `instance_id` (String)
 - `last_updated` (String)
 - `state` (String)
+
+<a id="nestedatt--postgres_configs"></a>
+### Nested Schema for `postgres_configs`
+
+Required:
+
+- `name` (String)
+- `value` (String)

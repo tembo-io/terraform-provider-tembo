@@ -17,6 +17,17 @@ resource "tembo_instance" "adarsh_db" {
   memory        = "4Gi"
   storage       = "10Gi"
   replicas      = 1
+  # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
+  postgres_configs = [
+    {
+      name  = "max_connections"
+      value = "200"
+    },
+    {
+      name  = "wal_buffers"
+      value = "10"
+    }
+  ]
 }
 
 output "instance" {

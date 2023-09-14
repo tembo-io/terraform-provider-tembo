@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
@@ -30,17 +31,24 @@ const (
 
 // temboInstanceResourceModel maps the resource schema data.
 type temboInstanceResourceModel struct {
-	InstanceID   types.String `tfsdk:"instance_id"`
-	InstanceName types.String `tfsdk:"instance_name"`
-	OrgId        types.String `tfsdk:"org_id"`
-	CPU          types.String `tfsdk:"cpu"`
-	StackType    types.String `tfsdk:"stack_type"`
-	Environment  types.String `tfsdk:"environment"`
-	Replicas     types.Int64  `tfsdk:"replicas"`
-	Memory       types.String `tfsdk:"memory"`
-	Storage      types.String `tfsdk:"storage"`
-	LastUpdated  types.String `tfsdk:"last_updated"`
-	State        types.String `tfsdk:"state"`
+	InstanceID      types.String     `tfsdk:"instance_id"`
+	InstanceName    types.String     `tfsdk:"instance_name"`
+	OrgId           types.String     `tfsdk:"org_id"`
+	CPU             types.String     `tfsdk:"cpu"`
+	StackType       types.String     `tfsdk:"stack_type"`
+	Environment     types.String     `tfsdk:"environment"`
+	Replicas        types.Int64      `tfsdk:"replicas"`
+	Memory          types.String     `tfsdk:"memory"`
+	Storage         types.String     `tfsdk:"storage"`
+	LastUpdated     types.String     `tfsdk:"last_updated"`
+	State           types.String     `tfsdk:"state"`
+	ExtraDomainsRw  []types.String   `tfsdk:"extra_domains_rw"`
+	PostgresConfigs []PostGresConfig `tfsdk:"postgres_configs"`
+}
+
+type PostGresConfig struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 // Configure adds the provider configured data to the resource.
@@ -129,6 +137,23 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"extra_domains_rw": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"postgres_configs": schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Required: true,
+						},
+						"value": schema.StringAttribute{
+							Required: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -155,6 +180,10 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 	if !plan.Replicas.IsNull() {
 		createInstance.SetReplicas(int32(plan.Replicas.ValueInt64()))
 	}
+
+	createInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
+
+	createInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -244,6 +273,22 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 	instanceResourceModel.Storage = types.StringValue(string(instance.GetStorage()))
 	instanceResourceModel.State = types.StringValue(string(instance.GetState()))
 	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
+
+	if len(instance.ExtraDomainsRw) > 0 {
+		var localExtraDomainsRw []basetypes.StringValue
+		for _, domain := range instance.ExtraDomainsRw {
+			localExtraDomainsRw = append(localExtraDomainsRw, types.StringValue(domain))
+		}
+		instanceResourceModel.ExtraDomainsRw = localExtraDomainsRw
+	}
+
+	if len(instance.PostgresConfigs) > 0 {
+		var localPGConfigs []PostGresConfig
+		for _, pgConfig := range instance.PostgresConfigs {
+			localPGConfigs = append(localPGConfigs, PostGresConfig{Name: types.StringValue(pgConfig.Name), Value: types.StringValue(pgConfig.Value)})
+		}
+		instanceResourceModel.PostgresConfigs = localPGConfigs
+	}
 }
 
 // Update updates the resource and sets the updated Terraform state on success.
@@ -263,6 +308,9 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 		temboclient.Memory((plan.Memory.ValueString())),
 		int32(plan.Replicas.ValueInt64()),
 		temboclient.Storage(plan.Storage.ValueString()))
+
+	updateInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
+	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
 	log.Printf("[INFO] Tembo instanceID %s", plan)
 
@@ -347,6 +395,26 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 	}
 
 	log.Printf("[INFO] Tembo instance %s has been successfully deleted", state.InstanceName)
+}
+
+func getExtraDomainRW(extraDomainRWs []basetypes.StringValue) []string {
+	var localExtraDomainRW []string
+	if len(extraDomainRWs) > 0 {
+		for _, extraDomainRW := range extraDomainRWs {
+			localExtraDomainRW = append(localExtraDomainRW, extraDomainRW.ValueString())
+		}
+	}
+	return localExtraDomainRW
+}
+
+func getPgConfig(postgresConfigs []PostGresConfig) []temboclient.PgConfig {
+	var localPGConfigs []temboclient.PgConfig
+	if len(postgresConfigs) > 0 {
+		for _, pgConfig := range postgresConfigs {
+			localPGConfigs = append(localPGConfigs, temboclient.PgConfig{Name: pgConfig.Name.ValueString(), Value: pgConfig.Value.ValueString()})
+		}
+	}
+	return localPGConfigs
 }
 
 func getErrorFromResponse(response *http.Response) string {
