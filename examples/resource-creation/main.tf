@@ -20,11 +20,11 @@ resource "tembo_instance" "adarsh_db" {
   # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
   postgres_configs = [
     {
-      name = "max_connections"
+      name  = "max_connections"
       value = "200"
     },
     {
-      name = "wal_buffers"
+      name  = "wal_buffers"
       value = "10"
     }
   ]
