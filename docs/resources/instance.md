@@ -30,6 +30,7 @@ description: |-
 - `extra_domains_rw` (List of String)
 - `postgres_configs` (Attributes List) (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number)
+- `trunk_installs` (Attributes List) (see [below for nested schema](#nestedatt--trunk_installs))
 
 ### Read-Only
 
@@ -43,4 +44,19 @@ description: |-
 Required:
 
 - `name` (String)
+
+Optional:
+
 - `value` (String)
+
+
+<a id="nestedatt--trunk_installs"></a>
+### Nested Schema for `trunk_installs`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `version` (String)
