@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -204,7 +203,7 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 
 	createInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
-	createInstance.SetTrunkInstalls(getTrunkInstall(plan.TrunkInstalls))
+	createInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -230,10 +229,7 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		}
 
 		time.Sleep(10 * time.Second)
-		log.Printf("[INFO] Waiting for Tembo instance %s to be UP", plan.InstanceName)
 	}
-
-	log.Printf("[INFO] Tembo instance %s has been successfully created", plan.InstanceName)
 
 	// Map response body to schema and populate Computed attribute values
 	instance.SetState(temboclient.UP)
@@ -299,9 +295,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 
 	updateInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
 	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
-	updateInstance.SetTrunkInstalls(getTrunkInstall(plan.TrunkInstalls))
-
-	log.Printf("[INFO] Tembo instanceID %s", plan)
+	updateInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -337,8 +331,6 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 			break
 		}
 		time.Sleep(10 * time.Second)
-
-		log.Printf("[INFO] Waiting for Tembo instance %s to be updated", plan.InstanceName)
 	}
 
 	diags = resp.State.Set(ctx, plan)
@@ -380,10 +372,7 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 		}
 
 		time.Sleep(10 * time.Second)
-		log.Printf("[INFO] Waiting for Tembo instance %s to be DELETED", state.InstanceName)
 	}
-
-	log.Printf("[INFO] Tembo instance %s has been successfully deleted", state.InstanceName)
 }
 
 func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,
@@ -451,17 +440,17 @@ func getPgConfig(postgresConfigs []PostGresConfig) []temboclient.PgConfig {
 	return localPGConfigs
 }
 
-func getTrunkInstall(trunkInstalls []TrunkInstall) []temboclient.TrunkInstall {
+func getTemboTrunkInstalls(trunkInstalls []TrunkInstall) []temboclient.TrunkInstall {
 	var localTrunkInstalls []temboclient.TrunkInstall
 	if len(trunkInstalls) > 0 {
 		for _, trunkInstall := range trunkInstalls {
-			localTrunkInstalls = append(localTrunkInstalls, fetchTrunkInstall(trunkInstall))
+			localTrunkInstalls = append(localTrunkInstalls, getTemboTrunkInstall(trunkInstall))
 		}
 	}
 	return localTrunkInstalls
 }
 
-func fetchTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
+func getTemboTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
 	localTrunkInstall := temboclient.TrunkInstall{
 		Name: trunkInstall.Name.ValueString(),
 	}
