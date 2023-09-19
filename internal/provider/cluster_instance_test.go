@@ -75,12 +75,27 @@ resource "tembo_instance" "test" {
 		  value = "200"
 		}
 	  ]
-	  trunk_installs = [
-		{
-          name    = "pgmq"
-		  version = "0.24.0"
-		}
-	  ]
+	trunk_installs = [
+	{
+		name    = "pgmq"
+		version = "0.24.0"
+	}]
+	extensions = [{
+	name        = "plperl"
+	description = "PL/Perl procedural language"
+		locations = [{
+			database = "app"
+			schema   = "public"
+			version  = "1.0"
+			enabled  = false
+			},
+			{
+			database = "postgres"
+			schema   = "public"
+			version  = "1.0"
+			enabled  = true
+		}]
+	}]
   }
 	`, instanceName, orgId)
 }
@@ -114,8 +129,45 @@ resource "tembo_instance" "test" {
 		{
           name    = "pg_stat_statements"
 		  version = "1.10.0"
+		}]
+	extensions = [{
+	name        = "plperl"
+	description = "PL/Perl procedural language"
+		locations = [{
+			database = "app"
+			schema   = "public"
+			version  = "1.0"
+			enabled  = false
+			},
+			{
+			database = "postgres"
+			schema   = "public"
+			version  = "1.0"
+			enabled  = true
+		}]
+	},
+	{
+		"name" : "pltclu",
+		"description" : "PL/TclU untrusted procedural language",
+		"locations" : [
+		{
+			"database" : "app",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
 		},
-	  ]
+		{
+			"database" : "postgres",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
+		}
+		]
+	}]
   }
 	`, instanceName, orgId)
 }

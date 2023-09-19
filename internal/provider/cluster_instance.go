@@ -44,6 +44,7 @@ type temboInstanceResourceModel struct {
 	ExtraDomainsRw  []types.String   `tfsdk:"extra_domains_rw"`
 	PostgresConfigs []PostGresConfig `tfsdk:"postgres_configs"`
 	TrunkInstalls   []TrunkInstall   `tfsdk:"trunk_installs"`
+	Extensions      []Extension      `tfsdk:"extensions"`
 }
 
 type PostGresConfig struct {
@@ -54,6 +55,19 @@ type PostGresConfig struct {
 type TrunkInstall struct {
 	Name    types.String `tfsdk:"name"`
 	Version types.String `tfsdk:"version"`
+}
+
+type Extension struct {
+	Description types.String               `tfsdk:"description"`
+	Locations   []ExtensionInstallLocation `tfsdk:"locations"`
+	Name        string                     `tfsdk:"name"`
+}
+
+type ExtensionInstallLocation struct {
+	Database types.String `tfsdk:"database"`
+	Enabled  types.Bool   `tfsdk:"enabled"`
+	Schema   types.String `tfsdk:"schema"`
+	Version  types.String `tfsdk:"version"`
 }
 
 // Configure adds the provider configured data to the resource.
@@ -172,6 +186,38 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 					},
 				},
 			},
+			"extensions": schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Required: true,
+						},
+						"description": schema.StringAttribute{
+							Optional: true,
+						},
+						"locations": schema.ListNestedAttribute{
+							Required: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"database": schema.StringAttribute{
+										Required: true,
+									},
+									"enabled": schema.BoolAttribute{
+										Required: true,
+									},
+									"schema": schema.StringAttribute{
+										Optional: true,
+									},
+									"version": schema.StringAttribute{
+										Optional: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -204,6 +250,8 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 	createInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
 	createInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
+
+	createInstance.SetExtensions(getTemboExtensions(plan.Extensions))
 
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -296,6 +344,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	updateInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
 	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 	updateInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
+	updateInstance.SetExtensions(getTemboExtensions(plan.Extensions))
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -376,8 +425,8 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,
-	instance *temboclient.Instance, updateComputedValue bool, diagnostics *diag.Diagnostics) {
-	if updateComputedValue {
+	instance *temboclient.Instance, isUpdateMode bool, diagnostics *diag.Diagnostics) {
+	if isUpdateMode {
 		instanceResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
 	}
 
@@ -408,7 +457,7 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.PostgresConfigs = localPGConfigs
 	}
 
-	if len(instance.TrunkInstalls) > 0 {
+	if isUpdateMode && len(instance.TrunkInstalls) > 0 {
 		for _, trunkInstall := range instance.TrunkInstalls {
 			if trunkInstall.Error {
 				diagnostics.AddError(
@@ -418,6 +467,22 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 			}
 		}
 	}
+
+	if isUpdateMode && len(instance.Extensions) > 0 {
+		for _, extension := range instance.Extensions {
+			if len(extension.Locations) > 0 {
+				for _, elocation := range extension.Locations {
+					if elocation.GetError() {
+						diagnostics.AddError(
+							"Error with Extension Installation:",
+							"unexpected error: "+elocation.GetErrorMessage(),
+						)
+					}
+				}
+			}
+		}
+	}
+
 }
 
 func getExtraDomainRW(extraDomainRWs []basetypes.StringValue) []string {
@@ -457,6 +522,46 @@ func getTemboTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
 	localTrunkInstall.SetVersion(trunkInstall.Version.ValueString())
 
 	return localTrunkInstall
+}
+
+func getTemboExtensions(extensions []Extension) []temboclient.Extension {
+	var tcExtensions []temboclient.Extension
+
+	if len(extensions) > 0 {
+		for i := 0; i <= len(extensions)-1; i += 1 {
+			tcExtensions = append(tcExtensions, getTemboExtension(extensions[i]))
+		}
+	}
+	return tcExtensions
+}
+
+func getTemboExtension(extension Extension) temboclient.Extension {
+	ext := temboclient.Extension{
+		Name: extension.Name,
+	}
+
+	ext.SetDescription(extension.Description.ValueString())
+
+	var location []temboclient.ExtensionInstallLocation
+
+	if extension.Locations == nil {
+		return ext
+	}
+
+	for i := 0; i <= len(extension.Locations)-1; i += 1 {
+		eil := temboclient.ExtensionInstallLocation{
+			Database: extension.Locations[i].Database.ValueString(),
+			Enabled:  extension.Locations[i].Enabled.ValueBool(),
+		}
+
+		eil.SetSchema(extension.Locations[i].Schema.ValueString())
+		eil.SetVersion(extension.Locations[i].Version.ValueString())
+
+		location = append(location, eil)
+	}
+	ext.SetLocations(location)
+
+	return ext
 }
 
 func getErrorFromResponse(response *http.Response) string {

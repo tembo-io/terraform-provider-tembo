@@ -27,6 +27,7 @@ description: |-
 
 ### Optional
 
+- `extensions` (Attributes List) (see [below for nested schema](#nestedatt--extensions))
 - `extra_domains_rw` (List of String)
 - `postgres_configs` (Attributes List) (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number)
@@ -37,6 +38,33 @@ description: |-
 - `instance_id` (String)
 - `last_updated` (String)
 - `state` (String)
+
+<a id="nestedatt--extensions"></a>
+### Nested Schema for `extensions`
+
+Required:
+
+- `locations` (Attributes List) (see [below for nested schema](#nestedatt--extensions--locations))
+- `name` (String)
+
+Optional:
+
+- `description` (String)
+
+<a id="nestedatt--extensions--locations"></a>
+### Nested Schema for `extensions.locations`
+
+Required:
+
+- `database` (String)
+- `enabled` (Boolean)
+
+Optional:
+
+- `schema` (String)
+- `version` (String)
+
+
 
 <a id="nestedatt--postgres_configs"></a>
 ### Nested Schema for `postgres_configs`
