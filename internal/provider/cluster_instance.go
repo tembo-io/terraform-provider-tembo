@@ -425,8 +425,8 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,
-	instance *temboclient.Instance, updateComputedValue bool, diagnostics *diag.Diagnostics) {
-	if updateComputedValue {
+	instance *temboclient.Instance, isUpdateMode bool, diagnostics *diag.Diagnostics) {
+	if isUpdateMode {
 		instanceResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
 	}
 
@@ -457,7 +457,7 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.PostgresConfigs = localPGConfigs
 	}
 
-	if len(instance.TrunkInstalls) > 0 {
+	if isUpdateMode && len(instance.TrunkInstalls) > 0 {
 		for _, trunkInstall := range instance.TrunkInstalls {
 			if trunkInstall.Error {
 				diagnostics.AddError(
@@ -468,7 +468,7 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		}
 	}
 
-	if len(instance.Extensions) > 0 {
+	if isUpdateMode && len(instance.Extensions) > 0 {
 		for _, extension := range instance.Extensions {
 			if len(extension.Locations) > 0 {
 				for _, elocation := range extension.Locations {
