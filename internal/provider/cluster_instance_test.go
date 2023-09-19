@@ -75,6 +75,12 @@ resource "tembo_instance" "test" {
 		  value = "200"
 		}
 	  ]
+	  trunk_installs = [
+		{
+          name    = "pgmq"
+		  version = "0.24.0"
+		}
+	  ]
   }
 	`, instanceName, orgId)
 }
@@ -99,6 +105,16 @@ resource "tembo_instance" "test" {
 		  name = "wal_buffers"
 		  value = "10"
 		}
+	  ]
+	trunk_installs = [
+		{
+          name    = "pgmq"
+		  version = "0.24.0"
+		},
+		{
+          name    = "pg_stat_statements"
+		  version = "1.10.0"
+		},
 	  ]
   }
 	`, instanceName, orgId)

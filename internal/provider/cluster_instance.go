@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -44,11 +43,17 @@ type temboInstanceResourceModel struct {
 	State           types.String     `tfsdk:"state"`
 	ExtraDomainsRw  []types.String   `tfsdk:"extra_domains_rw"`
 	PostgresConfigs []PostGresConfig `tfsdk:"postgres_configs"`
+	TrunkInstalls   []TrunkInstall   `tfsdk:"trunk_installs"`
 }
 
 type PostGresConfig struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
+}
+
+type TrunkInstall struct {
+	Name    types.String `tfsdk:"name"`
+	Version types.String `tfsdk:"version"`
 }
 
 // Configure adds the provider configured data to the resource.
@@ -149,7 +154,20 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 							Required: true,
 						},
 						"value": schema.StringAttribute{
+							Optional: true,
+						},
+					},
+				},
+			},
+			"trunk_installs": schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
 							Required: true,
+						},
+						"version": schema.StringAttribute{
+							Optional: true,
 						},
 					},
 				},
@@ -185,6 +203,8 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 
 	createInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
+	createInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
+
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -209,14 +229,11 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		}
 
 		time.Sleep(10 * time.Second)
-		log.Printf("[INFO] Waiting for Tembo instance %s to be UP", plan.InstanceName)
 	}
-
-	log.Printf("[INFO] Tembo instance %s has been successfully created", plan.InstanceName)
 
 	// Map response body to schema and populate Computed attribute values
 	instance.SetState(temboclient.UP)
-	setTemboInstanceResourceModel(&plan, instance, true)
+	setTemboInstanceResourceModel(&plan, instance, true, &resp.Diagnostics)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -248,46 +265,13 @@ func (r *temboInstanceResource) Read(ctx context.Context, req resource.ReadReque
 	}
 
 	// Overwrite items with refreshed state
-	setTemboInstanceResourceModel(state, instance, false)
+	setTemboInstanceResourceModel(state, instance, false, &resp.Diagnostics)
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
-	}
-}
-
-func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel, instance *temboclient.Instance, updateComputedValue bool) {
-	if updateComputedValue {
-		instanceResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
-	}
-
-	instanceResourceModel.InstanceID = types.StringValue(instance.GetInstanceId())
-	instanceResourceModel.InstanceName = types.StringValue(instance.InstanceName)
-	instanceResourceModel.OrgId = types.StringValue(instance.GetOrganizationId())
-	instanceResourceModel.CPU = types.StringValue(string(instance.GetCpu()))
-	instanceResourceModel.StackType = types.StringValue(string(instance.StackType))
-	instanceResourceModel.Environment = types.StringValue(string(instance.GetEnvironment()))
-	instanceResourceModel.Memory = types.StringValue(string(instance.GetMemory()))
-	instanceResourceModel.Storage = types.StringValue(string(instance.GetStorage()))
-	instanceResourceModel.State = types.StringValue(string(instance.GetState()))
-	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
-
-	if len(instance.ExtraDomainsRw) > 0 {
-		var localExtraDomainsRw []basetypes.StringValue
-		for _, domain := range instance.ExtraDomainsRw {
-			localExtraDomainsRw = append(localExtraDomainsRw, types.StringValue(domain))
-		}
-		instanceResourceModel.ExtraDomainsRw = localExtraDomainsRw
-	}
-
-	if len(instance.PostgresConfigs) > 0 {
-		var localPGConfigs []PostGresConfig
-		for _, pgConfig := range instance.PostgresConfigs {
-			localPGConfigs = append(localPGConfigs, PostGresConfig{Name: types.StringValue(pgConfig.Name), Value: types.StringValue(pgConfig.Value)})
-		}
-		instanceResourceModel.PostgresConfigs = localPGConfigs
 	}
 }
 
@@ -311,8 +295,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 
 	updateInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
 	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
-
-	log.Printf("[INFO] Tembo instanceID %s", plan)
+	updateInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -344,12 +327,10 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 			updateInstance.GetReplicas() == instance.GetReplicas() &&
 			instance.GetState() == temboclient.UP {
 			// Update resource state with updated items and timestamp
-			setTemboInstanceResourceModel(&plan, &instance, true)
+			setTemboInstanceResourceModel(&plan, &instance, true, &resp.Diagnostics)
 			break
 		}
 		time.Sleep(10 * time.Second)
-
-		log.Printf("[INFO] Waiting for Tembo instance %s to be updated", plan.InstanceName)
 	}
 
 	diags = resp.State.Set(ctx, plan)
@@ -391,10 +372,52 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 		}
 
 		time.Sleep(10 * time.Second)
-		log.Printf("[INFO] Waiting for Tembo instance %s to be DELETED", state.InstanceName)
+	}
+}
+
+func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,
+	instance *temboclient.Instance, updateComputedValue bool, diagnostics *diag.Diagnostics) {
+	if updateComputedValue {
+		instanceResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
 	}
 
-	log.Printf("[INFO] Tembo instance %s has been successfully deleted", state.InstanceName)
+	instanceResourceModel.InstanceID = types.StringValue(instance.GetInstanceId())
+	instanceResourceModel.InstanceName = types.StringValue(instance.InstanceName)
+	instanceResourceModel.OrgId = types.StringValue(instance.GetOrganizationId())
+	instanceResourceModel.CPU = types.StringValue(string(instance.GetCpu()))
+	instanceResourceModel.StackType = types.StringValue(string(instance.StackType))
+	instanceResourceModel.Environment = types.StringValue(string(instance.GetEnvironment()))
+	instanceResourceModel.Memory = types.StringValue(string(instance.GetMemory()))
+	instanceResourceModel.Storage = types.StringValue(string(instance.GetStorage()))
+	instanceResourceModel.State = types.StringValue(string(instance.GetState()))
+	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
+
+	if len(instance.ExtraDomainsRw) > 0 {
+		var localExtraDomainsRw []basetypes.StringValue
+		for _, domain := range instance.ExtraDomainsRw {
+			localExtraDomainsRw = append(localExtraDomainsRw, types.StringValue(domain))
+		}
+		instanceResourceModel.ExtraDomainsRw = localExtraDomainsRw
+	}
+
+	if len(instance.PostgresConfigs) > 0 {
+		var localPGConfigs []PostGresConfig
+		for _, pgConfig := range instance.PostgresConfigs {
+			localPGConfigs = append(localPGConfigs, PostGresConfig{Name: types.StringValue(pgConfig.Name), Value: types.StringValue(pgConfig.Value)})
+		}
+		instanceResourceModel.PostgresConfigs = localPGConfigs
+	}
+
+	if len(instance.TrunkInstalls) > 0 {
+		for _, trunkInstall := range instance.TrunkInstalls {
+			if trunkInstall.Error {
+				diagnostics.AddError(
+					"Error with Trunk Install:",
+					"unexpected error: "+trunkInstall.GetErrorMessage(),
+				)
+			}
+		}
+	}
 }
 
 func getExtraDomainRW(extraDomainRWs []basetypes.StringValue) []string {
@@ -415,6 +438,25 @@ func getPgConfig(postgresConfigs []PostGresConfig) []temboclient.PgConfig {
 		}
 	}
 	return localPGConfigs
+}
+
+func getTemboTrunkInstalls(trunkInstalls []TrunkInstall) []temboclient.TrunkInstall {
+	var localTrunkInstalls []temboclient.TrunkInstall
+	if len(trunkInstalls) > 0 {
+		for _, trunkInstall := range trunkInstalls {
+			localTrunkInstalls = append(localTrunkInstalls, getTemboTrunkInstall(trunkInstall))
+		}
+	}
+	return localTrunkInstalls
+}
+
+func getTemboTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
+	localTrunkInstall := temboclient.TrunkInstall{
+		Name: trunkInstall.Name.ValueString(),
+	}
+	localTrunkInstall.SetVersion(trunkInstall.Version.ValueString())
+
+	return localTrunkInstall
 }
 
 func getErrorFromResponse(response *http.Response) string {
