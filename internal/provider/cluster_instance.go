@@ -465,7 +465,7 @@ func fetchTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
 	localTrunkInstall := temboclient.TrunkInstall{
 		Name: trunkInstall.Name.ValueString(),
 	}
-	localTrunkInstall.SetVersion(string(trunkInstall.Version.ValueString()))
+	localTrunkInstall.SetVersion(trunkInstall.Version.ValueString())
 
 	return localTrunkInstall
 }

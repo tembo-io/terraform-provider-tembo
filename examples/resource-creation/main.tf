@@ -30,7 +30,7 @@ resource "tembo_instance" "adarsh_db" {
   ]
   trunk_installs = [
     {
-      name = "pgmq"
+      name    = "pgmq"
       version = "0.24.0"
     }
   ]
