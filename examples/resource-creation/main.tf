@@ -34,6 +34,44 @@ resource "tembo_instance" "adarsh_db" {
       version = "0.24.0"
     }
   ]
+  extensions = [{
+    name        = "plperl"
+    description = "PL/Perl procedural language"
+    locations = [{
+      database = "app"
+      schema   = "public"
+      version  = "1.0"
+      enabled  = false
+      },
+      {
+        database = "postgres"
+        schema   = "public"
+        version  = "1.0"
+        enabled  = true
+    }]
+    },
+    {
+      "name" : "pltclu",
+      "description" : "PL/TclU untrusted procedural language",
+      "locations" : [
+        {
+          "database" : "app",
+          "schema" : "public",
+          "version" : "1.0",
+          "enabled" : false,
+          "error" : false,
+          "error_message" : null
+        },
+        {
+          "database" : "postgres",
+          "schema" : "public",
+          "version" : "1.0",
+          "enabled" : false,
+          "error" : false,
+          "error_message" : null
+        }
+      ]
+  }]
 }
 
 output "instance" {
