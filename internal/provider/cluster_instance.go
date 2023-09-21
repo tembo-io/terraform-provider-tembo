@@ -7,12 +7,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
@@ -22,6 +24,14 @@ import (
 var (
 	_ resource.Resource              = &temboInstanceResource{}
 	_ resource.ResourceWithConfigure = &temboInstanceResource{}
+)
+
+var (
+	cpuOptions     = []string{"1", "2", "4", "8", "16", "32"}
+	envOptions     = []string{"dev", "test", "prod"}
+	memoryOptions  = []string{"1Gi", "2Gi", "4Gi", "8Gi", "16Gi", "32Gi"}
+	stackOptions   = []string{"Standard", "MessageQueue", "MachineLearning", "OLAP", "OLTP"}
+	storageOptions = []string{"10Gi", "50Gi", "100Gi", "200Gi", "300Gi", "400Gi", "500Gi"}
 )
 
 const (
@@ -127,15 +137,20 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 			},
 			"instance_name": schema.StringAttribute{
 				Required: true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtMost(20),
+				},
 			},
 			"org_id": schema.StringAttribute{
 				Required: true,
 			},
 			"cpu": schema.StringAttribute{
-				Required: true,
+				Required:   true,
+				Validators: []validator.String{stringvalidator.OneOf(cpuOptions...)},
 			},
 			"stack_type": schema.StringAttribute{
-				Required: true,
+				Required:   true,
+				Validators: []validator.String{stringvalidator.OneOf(stackOptions...)},
 			},
 			"replicas": schema.Int64Attribute{
 				Optional: true,
@@ -143,13 +158,16 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				Default:  int64default.StaticInt64(DefaultReplicas),
 			},
 			"environment": schema.StringAttribute{
-				Required: true,
+				Required:   true,
+				Validators: []validator.String{stringvalidator.OneOf(envOptions...)},
 			},
 			"memory": schema.StringAttribute{
-				Required: true,
+				Required:   true,
+				Validators: []validator.String{stringvalidator.OneOf(memoryOptions...)},
 			},
 			"storage": schema.StringAttribute{
-				Required: true,
+				Required:   true,
+				Validators: []validator.String{stringvalidator.OneOf(storageOptions...)},
 			},
 			"state": schema.StringAttribute{
 				Computed: true,
