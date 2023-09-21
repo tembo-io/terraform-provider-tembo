@@ -1,6 +1,6 @@
-resource "tembo_instance" "tf_provider_db" {
+resource "tembo_instance" "test_instance" {
   instance_name = "test-instance"
-  org_id        = "org_test"
+  org_id        = "org_test" # Replace this with your org_id
   cpu           = "1"
   stack_type    = "Standard"
   environment   = "dev"
@@ -65,5 +65,5 @@ resource "tembo_instance" "tf_provider_db" {
 }
 
 output "instance" {
-  value = tembo_instance.adarsh_db
+  value = tembo_instance.test_instance
 }
