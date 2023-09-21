@@ -3,12 +3,12 @@
 page_title: "tembo_instance Resource - terraform-provider-tembo"
 subcategory: ""
 description: |-
-  
+  Resource for creating a tembo instance.
 ---
 
 # tembo_instance (Resource)
 
-
+Resource for creating a tembo instance.
 
 
 

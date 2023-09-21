@@ -51,13 +51,14 @@ func (p *temboProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 // Schema defines the provider-level schema for configuration data.
 func (p *temboProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "Use the Tembo provider to interact with the resources supported by Tembo Cloud.",
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				MarkdownDescription: "Host",
+				MarkdownDescription: "Tembo API the provider should connect to. By default it connects to Tembo Cloud Production API.",
 				Optional:            true,
 			},
 			"access_token": schema.StringAttribute{
-				MarkdownDescription: "Access Token",
+				MarkdownDescription: "Access Token generated using steps [here](https://tembo.io/docs/tembo-cloud/api#create-a-long-lived-api-token).",
 				Optional:            true,
 				Sensitive:           true,
 			},
