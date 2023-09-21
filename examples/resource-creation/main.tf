@@ -1,15 +1,21 @@
 terraform {
   required_providers {
     tembo = {
-      source = "registry.terraform.io/tembo-io/tembo"
+      source = "tembo-io/tembo"
     }
   }
 }
 
-provider "tembo" {}
+provider "tembo" {
+  access_token = var.access_token
+}
+
+variable "access_token" {
+  type = string
+}
 
 resource "tembo_instance" "adarsh_db" {
-  instance_name = "test-tf-provider-16"
+  instance_name = "test-tf-provider-1"
   org_id        = "org_2UdhszNbCVhLAXkZm30nz8pL778"
   cpu           = "1"
   stack_type    = "Standard"

@@ -114,6 +114,7 @@ func (r *temboInstanceResource) Metadata(_ context.Context, req resource.Metadat
 // Schema defines the schema for the resource.
 func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "Resource for creating a tembo instance",
 		Attributes: map[string]schema.Attribute{
 			"instance_id": schema.StringAttribute{
 				Computed: true,
