@@ -304,18 +304,23 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 
 	// Wait until it's created.
 	for {
-		instanceState := getInstanceState(r, ctx, plan.OrgId.ValueString(), instance.GetInstanceId(), &resp.Diagnostics)
+		latestInstance, err := getInstance(r, ctx, plan.OrgId.ValueString(), instance.GetInstanceId(), &resp.Diagnostics)
 
-		if instanceState == temboclient.ERROR || instanceState == temboclient.UP {
+		if err != nil {
+			return
+		}
+
+		if latestInstance.GetState() == temboclient.ERROR ||
+			latestInstance.GetState() == temboclient.UP {
+
+			// Map response body to schema and populate Computed attribute values
+			setTemboInstanceResourceModel(&plan, &latestInstance, true, &resp.Diagnostics)
+
 			break
 		}
 
 		time.Sleep(10 * time.Second)
 	}
-
-	// Map response body to schema and populate Computed attribute values
-	instance.SetState(temboclient.UP)
-	setTemboInstanceResourceModel(&plan, instance, true, &resp.Diagnostics)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -608,6 +613,7 @@ func getErrorFromResponse(response *http.Response) string {
 func getInstanceState(r *temboInstanceResource, ctx context.Context,
 	orgId string, instanceId string, diagnostics *diag.Diagnostics) temboclient.State {
 	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
+
 	if err != nil {
 		diagnostics.AddError(
 			"Error Reading Tembo Instance State",
