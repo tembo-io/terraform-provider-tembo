@@ -1,22 +1,5 @@
-terraform {
-  required_providers {
-    tembo = {
-      source  = "tembo-io/tembo"
-      version = ">= 0.1.0"
-    }
-  }
-}
-
-provider "tembo" {
-  access_token = var.access_token
-}
-
-variable "access_token" {
-  type = string
-}
-
-resource "tembo_instance" "adarsh_db" {
-  instance_name = "test-tf-provider-1"
+resource "tembo_instance" "test_db" {
+  instance_name = "tfprovider-dem2"
   org_id        = "org_2UdhszNbCVhLAXkZm30nz8pL778"
   cpu           = "1"
   stack_type    = "Standard"
@@ -82,5 +65,5 @@ resource "tembo_instance" "adarsh_db" {
 }
 
 output "instance" {
-  value = tembo_instance.adarsh_db
+  value = tembo_instance.test_db
 }
