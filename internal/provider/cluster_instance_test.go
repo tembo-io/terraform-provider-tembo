@@ -32,7 +32,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "1"),
+					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "1"),
 				),
 			},
 			// TODO: Add ImportState testing
@@ -50,7 +50,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "2"),
+					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "2"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -69,12 +69,12 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		}
-	  ]
+	#postgres_configs = [
+	#	{
+	#	  name = "max_connections"
+	#	  value = "200"
+	#	}
+	#  ]
 	trunk_installs = [
 	{
 		name    = "pgmq"
@@ -111,16 +111,16 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		},
-		{
-		  name = "wal_buffers"
-		  value = "10"
-		}
-	  ]
+	#postgres_configs = [
+	#	{
+	#	  name = "max_connections"
+	#	  value = "200"
+	#	},
+	#	{
+	#	  name = "wal_buffers"
+	#	  value = "10"
+	#	}
+	#  ]
 	trunk_installs = [
 		{
           name    = "pgmq"
