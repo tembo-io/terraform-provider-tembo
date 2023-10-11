@@ -15,7 +15,7 @@ Resource for creating a tembo instance.
 ```terraform
 resource "tembo_instance" "test_instance" {
   instance_name = "test-instance"
-  org_id        = "org_test" # Replace this with your org_id
+  org_id        = "org_test" # Replace this with your Tembo organization id
   cpu           = "1"
   stack_type    = "Standard"
   environment   = "dev"
@@ -54,28 +54,6 @@ resource "tembo_instance" "test_instance" {
         version  = "1.0"
         enabled  = true
     }]
-    },
-    {
-      "name" : "pltclu",
-      "description" : "PL/TclU untrusted procedural language",
-      "locations" : [
-        {
-          "database" : "app",
-          "schema" : "public",
-          "version" : "1.0",
-          "enabled" : false,
-          "error" : false,
-          "error_message" : null
-        },
-        {
-          "database" : "postgres",
-          "schema" : "public",
-          "version" : "1.0",
-          "enabled" : false,
-          "error" : false,
-          "error_message" : null
-        }
-      ]
   }]
 }
 
