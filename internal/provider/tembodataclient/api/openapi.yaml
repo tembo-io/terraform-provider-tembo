@@ -1,0 +1,327 @@
+openapi: 3.0.3
+info:
+  description: "In the case of large or sensitive data, we avoid collecting it into\
+    \ Tembo Cloud. Instead, there is a Tembo Data API for each region, cloud, or private\
+    \ data plane.\n            </br>\n            </br>\n            To find the Tembo\
+    \ Cloud API, please find it [here](https://api.tembo.io/swagger-ui/).\n      \
+    \      "
+  title: Tembo Data API
+  version: v0.0.1
+servers:
+- url: /
+security:
+- jwt_token: []
+paths:
+  /api/v1/orgs/{org_id}/instances/{instance_id}/secrets:
+    get:
+      operationId: get_secret_names_v1
+      parameters:
+      - description: Tembo Cloud Organization ID
+        example: org_2T7FJA0DpaNBnELVLU1IS4XzZG0
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Tembo Cloud Instance ID
+        example: inst_1696253936968_TblNOY_6
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - name: app-role
+                possible_keys:
+                - username
+                - password
+              - name: readonly-role
+                possible_keys:
+                - username
+                - password
+              - name: superuser-role
+                possible_keys:
+                - username
+                - password
+              - name: certificate
+                possible_keys:
+                - ca.crt
+              schema:
+                items:
+                  $ref: '#/components/schemas/AvailableSecret'
+                type: array
+          description: Map of secret names and the keys this user is authorized for
+        "403":
+          description: Not authorized for query
+      tags:
+      - secrets
+  /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}:
+    get:
+      operationId: get_secret_v1
+      parameters:
+      - description: Tembo Cloud Organization ID
+        example: org_2T7FJA0DpaNBnELVLU1IS4XzZG0
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Tembo Cloud Instance ID
+        example: inst_1696253936968_TblNOY_6
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Secret name
+        example: readonly-role
+        explode: false
+        in: path
+        name: secret_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                password: sv5uli3gR3XPbjwz
+                username: postgres
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "Content of a secret. Available secrets and possible keys can\
+            \ be determined from a query to /{namespace}/secrets."
+        "403":
+          description: Not authorized for query
+      tags:
+      - secrets
+  /{namespace}/metrics/query_range:
+    get:
+      operationId: query_range
+      parameters:
+      - description: Instance namespace
+        example: org-coredb-inst-control-plane-dev
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "PromQL range query, must include a 'namespace' label matching\
+          \ the query path"
+        example: "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace=\"\
+          org-coredb-inst-control-plane-dev\"}[1h])))"
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "Range start, unix timestamp"
+        example: "1686780828"
+        explode: true
+        in: query
+        name: start
+        required: true
+        schema:
+          format: int64
+          minimum: 0.0
+          type: integer
+        style: form
+      - description: "Range end, unix timestamp. Default is now."
+        example: "1686862041"
+        explode: true
+        in: query
+        name: end
+        required: false
+        schema:
+          format: int64
+          minimum: 0.0
+          nullable: true
+          type: integer
+        style: form
+      - description: "Step size duration string, defaults to 60s"
+        example: 60s
+        explode: true
+        in: query
+        name: step
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                status: success
+                data:
+                  resultType: matrix
+                  result:
+                  - metric:
+                      __name__: up
+                      job: prometheus
+                      instance: localhost:9090
+                    values:
+                    - - 1.435781430781E9
+                      - "1"
+                    - - 1.435781445781E9
+                      - "1"
+                    - - 1.435781460781E9
+                      - "1"
+                  - metric:
+                      __name__: up
+                      job: node
+                      instance: localhost:9091
+                    values:
+                    - - 1.435781430781E9
+                      - "0"
+                    - - 1.435781445781E9
+                      - "0"
+                    - - 1.435781460781E9
+                      - "1"
+              schema: {}
+          description: "Success range query to Prometheus, please see Prometheus documentation\
+            \ for response format details. https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries"
+        "400":
+          description: Parameters are missing or incorrect
+        "403":
+          description: Not authorized for query
+        "422":
+          description: Incorrectly formatted query
+        "504":
+          description: Request timed out on metrics backend
+      tags:
+      - metrics
+  /{namespace}/secrets:
+    get:
+      deprecated: true
+      description: "Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets"
+      operationId: get_secret_names
+      parameters:
+      - description: Instance namespace
+        example: org-myco-inst-prod
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - name: app-role
+                possible_keys:
+                - username
+                - password
+              - name: readonly-role
+                possible_keys:
+                - username
+                - password
+              - name: superuser-role
+                possible_keys:
+                - username
+                - password
+              - name: certificate
+                possible_keys:
+                - ca.crt
+              schema:
+                items:
+                  $ref: '#/components/schemas/AvailableSecret'
+                type: array
+          description: Map of secret names and the keys this user is authorized for
+        "403":
+          description: Not authorized for query
+      summary: "Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets"
+      tags:
+      - secrets
+  /{namespace}/secrets/{secret_name}:
+    get:
+      deprecated: true
+      description: "Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}"
+      operationId: get_secret
+      parameters:
+      - description: Instance namespace
+        example: org-myco-inst-prod
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Secret name
+        example: readonly-role
+        explode: false
+        in: path
+        name: secret_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                password: sv5uli3gR3XPbjwz
+                username: postgres
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "Content of a secret. Available secrets and possible keys can\
+            \ be determined from a query to /{namespace}/secrets."
+        "403":
+          description: Not authorized for query
+      summary: "Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}"
+      tags:
+      - secrets
+components:
+  schemas:
+    AvailableSecret:
+      example:
+        name: name
+        possible_keys:
+        - possible_keys
+        - possible_keys
+      properties:
+        name:
+          description: The name of an available secret
+          type: string
+        possible_keys:
+          description: "For this secret, available keys"
+          items:
+            type: string
+          type: array
+      required:
+      - name
+      - possible_keys
+      type: object
+  securitySchemes:
+    jwt_token:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

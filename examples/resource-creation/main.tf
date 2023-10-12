@@ -64,6 +64,16 @@ resource "tembo_instance" "test_db" {
   }]
 }
 
+data "tembo_instance_secrets" "test" {
+  org_id      = "org_2UdhszNbCVhLAXkZm30nz8pL778"
+  instance_id = tembo_instance.test_db.instance_id
+}
+
+
 output "instance" {
   value = tembo_instance.test_db
+}
+
+output "data" {
+  value = data.tembo_instance_secrets.test
 }
