@@ -79,7 +79,7 @@ output "instance" {
 
 - `extensions` (Attributes List) Extensions to install in the instance (see [below for nested schema](#nestedatt--extensions))
 - `extra_domains_rw` (List of String) Custom domain. Read more [here](https://tembo.io/docs/tembo-cloud/custom-domains/)
-- `postgres_configs` (Attributes List) Postgres config values (see [below for nested schema](#nestedatt--postgres_configs))
+- `postgres_configs` (Attributes List) Postgres configs (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number) Instance replicas
 - `trunk_installs` (Attributes List) Trunk installs (see [below for nested schema](#nestedatt--trunk_installs))
 
@@ -94,25 +94,25 @@ output "instance" {
 
 Required:
 
-- `locations` (Attributes List) (see [below for nested schema](#nestedatt--extensions--locations))
-- `name` (String)
+- `locations` (Attributes List) Locations for extension (see [below for nested schema](#nestedatt--extensions--locations))
+- `name` (String) Extension Name
 
 Optional:
 
-- `description` (String)
+- `description` (String) Extension Description
 
 <a id="nestedatt--extensions--locations"></a>
 ### Nested Schema for `extensions.locations`
 
 Required:
 
-- `database` (String)
-- `enabled` (Boolean)
+- `database` (String) Database to install extension
+- `enabled` (Boolean) Enabled
 
 Optional:
 
-- `schema` (String)
-- `version` (String)
+- `schema` (String) The name of the schema
+- `version` (String) The version of the extension to install
 
 
 
@@ -121,11 +121,11 @@ Optional:
 
 Required:
 
-- `name` (String)
+- `name` (String) Postgres config name
 
 Optional:
 
-- `value` (String)
+- `value` (String) Postgres config value
 
 
 <a id="nestedatt--trunk_installs"></a>
@@ -133,8 +133,8 @@ Optional:
 
 Required:
 
-- `name` (String)
+- `name` (String) Trunk install name
 
 Optional:
 
-- `version` (String)
+- `version` (String) Trunk install version
