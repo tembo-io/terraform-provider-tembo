@@ -192,15 +192,17 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				ElementType:         types.StringType,
 			},
 			"postgres_configs": schema.ListNestedAttribute{
-				MarkdownDescription: "Postgres config values",
+				MarkdownDescription: "Postgres configs",
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							Required: true,
+							MarkdownDescription: "Postgres config name",
+							Required:            true,
 						},
 						"value": schema.StringAttribute{
-							Optional: true,
+							MarkdownDescription: "Postgres config value",
+							Optional:            true,
 						},
 					},
 				},
@@ -211,10 +213,12 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							Required: true,
+							MarkdownDescription: "Trunk install name",
+							Required:            true,
 						},
 						"version": schema.StringAttribute{
-							Optional: true,
+							MarkdownDescription: "Trunk install version",
+							Optional:            true,
 						},
 					},
 				},
@@ -225,26 +229,33 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							Required: true,
+							MarkdownDescription: "Extension Name",
+							Required:            true,
 						},
 						"description": schema.StringAttribute{
-							Optional: true,
+							MarkdownDescription: "Extension Description",
+							Optional:            true,
 						},
 						"locations": schema.ListNestedAttribute{
-							Required: true,
+							MarkdownDescription: "Locations for extension",
+							Required:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"database": schema.StringAttribute{
-										Required: true,
+										MarkdownDescription: "Database to install extension",
+										Required:            true,
 									},
 									"enabled": schema.BoolAttribute{
-										Required: true,
+										MarkdownDescription: "Enabled",
+										Required:            true,
 									},
 									"schema": schema.StringAttribute{
-										Optional: true,
+										MarkdownDescription: "The name of the schema",
+										Optional:            true,
 									},
 									"version": schema.StringAttribute{
-										Optional: true,
+										MarkdownDescription: "The version of the extension to install",
+										Optional:            true,
 									},
 								},
 							},
