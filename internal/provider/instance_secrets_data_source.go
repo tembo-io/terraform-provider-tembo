@@ -127,7 +127,7 @@ func (d *temboInstanceSecretsDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	// Get refreshed Instance value from API
+	// Get Secret value from API
 	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsApi.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(

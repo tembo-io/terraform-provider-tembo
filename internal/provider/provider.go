@@ -214,6 +214,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *temboProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewTemboInstanceSecretsDataSource,
+		NewTemboInstanceSecretDataSource,
 	}
 }
 
