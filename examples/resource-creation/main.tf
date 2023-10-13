@@ -69,6 +69,12 @@ data "tembo_instance_secrets" "test" {
   instance_id = tembo_instance.test_db.instance_id
 }
 
+data "tembo_instance_secret" "test_sec" {
+  org_id      = "org_2UdhszNbCVhLAXkZm30nz8pL778"
+  instance_id = tembo_instance.test_db.instance_id
+  secret_name = "readonly-role"
+}
+
 
 output "instance" {
   value = tembo_instance.test_db
@@ -76,4 +82,8 @@ output "instance" {
 
 output "data" {
   value = data.tembo_instance_secrets.test
+}
+
+output "data_secret" {
+  value = data.tembo_instance_secret.test_sec
 }
