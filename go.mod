@@ -3,6 +3,7 @@ module github.com/tembo-io/terraform-provider-tembo
 go 1.19
 
 replace github.com/tembo-io/terraform-provider-tembo/temboclient => ./internal/provider/temboclient
+replace github.com/tembo-io/terraform-provider-tembo/tembodataclient => ./internal/provider/tembodataclient
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
@@ -11,6 +12,7 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.18.0
 	github.com/hashicorp/terraform-plugin-testing v1.5.1
 	github.com/tembo-io/terraform-provider-tembo/temboclient v1.0.0
+	github.com/tembo-io/terraform-provider-tembo/tembodataclient v1.0.0
 )
 
 require (

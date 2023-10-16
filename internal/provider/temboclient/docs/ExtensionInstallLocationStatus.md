@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Database** | **string** |  | 
+**Database** | Pointer to **string** |  | [optional] 
 **Enabled** | Pointer to **NullableBool** |  | [optional] 
 **Error** | Pointer to **NullableBool** |  | [optional] 
 **ErrorMessage** | Pointer to **NullableString** |  | [optional] 
@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 
 ### NewExtensionInstallLocationStatus
 
-`func NewExtensionInstallLocationStatus(database string, ) *ExtensionInstallLocationStatus`
+`func NewExtensionInstallLocationStatus() *ExtensionInstallLocationStatus`
 
 NewExtensionInstallLocationStatus instantiates a new ExtensionInstallLocationStatus object
 This constructor will assign default values to properties that have it defined,
@@ -49,6 +49,11 @@ and a boolean to check if the value has been set.
 
 SetDatabase sets Database field to given value.
 
+### HasDatabase
+
+`func (o *ExtensionInstallLocationStatus) HasDatabase() bool`
+
+HasDatabase returns a boolean if a field has been set.
 
 ### GetEnabled
 

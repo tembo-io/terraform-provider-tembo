@@ -91,7 +91,7 @@ import (
 )
 
 func main() {
-    type_ := openapiclient.EntityType("Standard") // EntityType | the type of entity
+    type_ := openapiclient.StackType("Standard") // StackType | the type of entity
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -111,7 +111,7 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**type_** | [**EntityType**](.md) | the type of entity | 
+**type_** | [**StackType**](.md) | the type of entity | 
 
 ### Other Parameters
 

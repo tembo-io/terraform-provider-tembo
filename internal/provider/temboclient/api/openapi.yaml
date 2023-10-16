@@ -1,8 +1,11 @@
 openapi: 3.0.3
 info:
-  description: Platform API for Tembo Cloud
+  description: "Platform API for Tembo Cloud\n            </br>\n            </br>\n\
+    \            To find a Tembo Data API, please find it here:\n            </br>\n\
+    \            </br>\n            [AWS US East 1](https://api.data-1.use1.tembo.io/swagger-ui/)\n\
+    \            "
   title: Tembo Cloud
-  version: v1.0.0-alpha
+  version: v1.0.0
 servers:
 - url: /
 security:
@@ -442,7 +445,7 @@ paths:
         name: type
         required: true
         schema:
-          $ref: '#/components/schemas/EntityType'
+          $ref: '#/components/schemas/StackType'
         style: simple
       responses:
         "200":
@@ -466,10 +469,60 @@ paths:
       - stack
 components:
   schemas:
-    CloudProvider:
-      enum:
-      - aws
-      type: string
+    AppService:
+      properties:
+        args:
+          items:
+            type: string
+          nullable: true
+          type: array
+        command:
+          items:
+            type: string
+          nullable: true
+          type: array
+        env:
+          items:
+            $ref: '#/components/schemas/EnvVar'
+          nullable: true
+          type: array
+        image:
+          type: string
+        middlewares:
+          items:
+            $ref: '#/components/schemas/Middleware'
+          nullable: true
+          type: array
+        name:
+          type: string
+        probes:
+          allOf:
+          - $ref: '#/components/schemas/Probes'
+          nullable: true
+        resources:
+          allOf:
+          - $ref: '#/components/schemas/ResourceRequirements'
+          nullable: true
+        routing:
+          items:
+            $ref: '#/components/schemas/Routing'
+          nullable: true
+          type: array
+      required:
+      - image
+      - name
+      type: object
+    AppServiceConfig:
+      properties:
+        env:
+          items:
+            $ref: '#/components/schemas/EnvVar'
+          nullable: true
+          type: array
+      type: object
+    AppServiceType:
+      oneOf:
+      - $ref: '#/components/schemas/AppServiceType_oneOf'
     ConnectionInfo:
       properties:
         host:
@@ -487,6 +540,13 @@ components:
       - port
       - user
       type: object
+    ConnectionPooler:
+      properties:
+        enabled:
+          type: boolean
+        pooler:
+          $ref: '#/components/schemas/PgBouncer'
+      type: object
     Cpu:
       enum:
       - "1"
@@ -496,48 +556,16 @@ components:
       - "16"
       - "32"
       type: string
-    CreateCluster:
-      properties:
-        cpu:
-          $ref: '#/components/schemas/Cpu'
-        entity_properties:
-          nullable: true
-        entity_type:
-          $ref: '#/components/schemas/EntityType'
-        environment:
-          $ref: '#/components/schemas/Environment'
-        extra_domains_rw:
-          items:
-            type: string
-          nullable: true
-          type: array
-        instance_name:
-          type: string
-        memory:
-          $ref: '#/components/schemas/Memory'
-        organization_id:
-          nullable: true
-          type: string
-        postgres_configs:
-          items:
-            $ref: '#/components/schemas/PgConfig'
-          nullable: true
-          type: array
-        replicas:
-          allOf:
-          - $ref: '#/components/schemas/Replicas'
-          nullable: true
-        storage:
-          $ref: '#/components/schemas/Storage'
-      required:
-      - cpu
-      - environment
-      - instance_name
-      - memory
-      - storage
-      type: object
     CreateInstance:
       example:
+        instance_name: instance_name
+        memory: null
+        app_services:
+        - null
+        - null
+        replicas: 0
+        cpu: null
+        storage: null
         environment: null
         extensions:
         - name: name
@@ -565,23 +593,31 @@ components:
         extra_domains_rw:
         - extra_domains_rw
         - extra_domains_rw
-        instance_name: instance_name
-        memory: null
         stack_type: null
         postgres_configs:
         - name: name
           value: value
         - name: name
           value: value
-        replicas: 0
         trunk_installs:
         - name: name
           version: version
         - name: name
           version: version
-        cpu: null
-        storage: null
+        ip_allow_list:
+        - ip_allow_list
+        - ip_allow_list
+        connection_pooler: ""
       properties:
+        app_services:
+          items:
+            $ref: '#/components/schemas/AppServiceType'
+          nullable: true
+          type: array
+        connection_pooler:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPooler'
+          nullable: true
         cpu:
           $ref: '#/components/schemas/Cpu'
         environment:
@@ -598,6 +634,11 @@ components:
           type: array
         instance_name:
           type: string
+        ip_allow_list:
+          items:
+            type: string
+          nullable: true
+          type: array
         memory:
           $ref: '#/components/schemas/Memory'
         postgres_configs:
@@ -609,7 +650,7 @@ components:
           format: int32
           type: integer
         stack_type:
-          $ref: '#/components/schemas/EntityType'
+          $ref: '#/components/schemas/StackType'
         storage:
           $ref: '#/components/schemas/Storage'
         trunk_installs:
@@ -625,13 +666,24 @@ components:
       - stack_type
       - storage
       type: object
-    EntityType:
+    EnvVar:
+      properties:
+        name:
+          type: string
+        value:
+          nullable: true
+          type: string
+        valueFromPlatform:
+          allOf:
+          - $ref: '#/components/schemas/EnvVarRef'
+          nullable: true
+      required:
+      - name
+      type: object
+    EnvVarRef:
       enum:
-      - Standard
-      - MessageQueue
-      - MachineLearning
-      - OLAP
-      - OLTP
+      - ReadOnlyConnection
+      - ReadWriteConnection
       type: string
     Environment:
       enum:
@@ -693,7 +745,6 @@ components:
           nullable: true
           type: string
       required:
-      - database
       - enabled
       type: object
     ExtensionInstallLocationStatus:
@@ -722,8 +773,6 @@ components:
         version:
           nullable: true
           type: string
-      required:
-      - database
       type: object
     ExtensionStatus:
       example:
@@ -756,38 +805,55 @@ components:
       - locations
       - name
       type: object
+    HeaderConfig:
+      properties:
+        config:
+          additionalProperties:
+            type: string
+          type: object
+        name:
+          type: string
+      required:
+      - config
+      - name
+      type: object
     Infrastructure:
       properties:
         cpu:
-          $ref: '#/components/schemas/Cpu'
-        instance_type:
-          $ref: '#/components/schemas/InstanceTypes'
-        memory:
-          $ref: '#/components/schemas/Memory'
-        provider:
-          $ref: '#/components/schemas/CloudProvider'
-        region:
           type: string
-        storage_class:
-          $ref: '#/components/schemas/StorageClass'
-        storage_size:
-          $ref: '#/components/schemas/Storage'
+        memory:
+          type: string
+        storage:
+          type: string
+      type: object
+    Ingress:
+      properties:
+        enabled:
+          type: boolean
+        path:
+          nullable: true
+          type: string
       required:
-      - cpu
-      - instance_type
-      - memory
-      - storage_class
-      - storage_size
+      - enabled
       type: object
     Instance:
       example:
+        first_recoverability_time: 2000-01-23T04:56:07.000+00:00
         instance_name: instance_name
         memory: null
+        app_services:
+        - null
+        - null
         replicas: 0
         cpu: null
         created_at: 2000-01-23T04:56:07.000+00:00
         organization_name: organization_name
         storage: null
+        runtime_config:
+        - name: name
+          value: value
+        - name: name
+          value: value
         environment: null
         extensions:
         - name: name
@@ -835,18 +901,37 @@ components:
         organization_id: organization_id
         trunk_installs:
         - error_message: error_message
+          installed_to_pods:
+          - installed_to_pods
+          - installed_to_pods
           name: name
           error: true
           version: version
         - error_message: error_message
+          installed_to_pods:
+          - installed_to_pods
+          - installed_to_pods
           name: name
           error: true
           version: version
+        ip_allow_list:
+        - ip_allow_list
+        - ip_allow_list
         state: null
+        connection_pooler: ""
       properties:
+        app_services:
+          items:
+            $ref: '#/components/schemas/AppServiceType'
+          nullable: true
+          type: array
         connection_info:
           allOf:
           - $ref: '#/components/schemas/ConnectionInfo'
+          nullable: true
+        connection_pooler:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPooler'
           nullable: true
         cpu:
           $ref: '#/components/schemas/Cpu'
@@ -865,10 +950,19 @@ components:
             type: string
           nullable: true
           type: array
+        first_recoverability_time:
+          format: date-time
+          nullable: true
+          type: string
         instance_id:
           type: string
         instance_name:
           type: string
+        ip_allow_list:
+          items:
+            type: string
+          nullable: true
+          type: array
         last_updated_at:
           format: date-time
           type: string
@@ -886,8 +980,13 @@ components:
         replicas:
           format: int32
           type: integer
+        runtime_config:
+          items:
+            $ref: '#/components/schemas/PgConfig'
+          nullable: true
+          type: array
         stack_type:
-          $ref: '#/components/schemas/EntityType'
+          $ref: '#/components/schemas/StackType'
         state:
           $ref: '#/components/schemas/State'
         storage:
@@ -914,10 +1013,10 @@ components:
       enum:
       - restart
       type: string
-    InstanceTypes:
-      enum:
-      - GeneralPurpose
-      type: string
+    IntOrString:
+      oneOf:
+      - $ref: '#/components/schemas/IntOrString_oneOf'
+      - $ref: '#/components/schemas/IntOrString_oneOf_1'
     Memory:
       enum:
       - 1Gi
@@ -927,6 +1026,10 @@ components:
       - 16Gi
       - 32Gi
       type: string
+    Middleware:
+      oneOf:
+      - $ref: '#/components/schemas/Middleware_oneOf'
+      - $ref: '#/components/schemas/Middleware_oneOf_1'
     PatchInstance:
       example:
         environment: ""
@@ -957,6 +1060,9 @@ components:
         - extra_domains_rw
         - extra_domains_rw
         memory: ""
+        app_services:
+        - null
+        - null
         postgres_configs:
         - name: name
           value: value
@@ -969,8 +1075,21 @@ components:
         - name: name
           version: version
         cpu: ""
+        ip_allow_list:
+        - ip_allow_list
+        - ip_allow_list
         storage: ""
+        connection_pooler: ""
       properties:
+        app_services:
+          items:
+            $ref: '#/components/schemas/AppServiceType'
+          nullable: true
+          type: array
+        connection_pooler:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPooler'
+          nullable: true
         cpu:
           allOf:
           - $ref: '#/components/schemas/Cpu'
@@ -985,6 +1104,11 @@ components:
           nullable: true
           type: array
         extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        ip_allow_list:
           items:
             type: string
           nullable: true
@@ -1012,6 +1136,20 @@ components:
           nullable: true
           type: array
       type: object
+    PgBouncer:
+      properties:
+        parameters:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+        poolMode:
+          $ref: '#/components/schemas/PoolerPgbouncerPoolMode'
+        resources:
+          allOf:
+          - $ref: '#/components/schemas/PoolerTemplateSpecContainersResources'
+          nullable: true
+      type: object
     PgConfig:
       example:
         name: name
@@ -1025,78 +1163,110 @@ components:
       - name
       - value
       type: object
-    ReadCluster:
+    PoolerPgbouncerPoolMode:
+      enum:
+      - session
+      - transaction
+      type: string
+    PoolerTemplateSpecContainersResources:
       properties:
-        connection_info:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionInfo'
-          nullable: true
-        cpu:
-          allOf:
-          - $ref: '#/components/schemas/Cpu'
-          nullable: true
-        created_at:
-          format: date-time
-          type: string
-        entity_properties:
-          nullable: true
-        entity_type:
-          $ref: '#/components/schemas/EntityType'
-        environment:
-          $ref: '#/components/schemas/Environment'
-        extensions:
+        claims:
           items:
-            $ref: '#/components/schemas/ExtensionStatus'
+            $ref: '#/components/schemas/PoolerTemplateSpecContainersResourcesClaims'
           nullable: true
           type: array
-        extra_domains_rw:
-          items:
-            type: string
+        limits:
+          additionalProperties:
+            $ref: '#/components/schemas/IntOrString'
           nullable: true
-          type: array
-        instance_id:
+          type: object
+        requests:
+          additionalProperties:
+            $ref: '#/components/schemas/IntOrString'
           nullable: true
+          type: object
+      type: object
+    PoolerTemplateSpecContainersResourcesClaims:
+      properties:
+        name:
           type: string
-        instance_name:
-          type: string
-        last_updated_at:
-          format: date-time
-          type: string
-        memory:
-          allOf:
-          - $ref: '#/components/schemas/Memory'
-          nullable: true
-        organization_id:
-          nullable: true
-          type: string
-        organization_name:
-          nullable: true
-          type: string
-        replicas:
-          allOf:
-          - $ref: '#/components/schemas/Replicas'
-          nullable: true
-        state:
-          allOf:
-          - $ref: '#/components/schemas/State'
-          nullable: true
-        storage:
-          allOf:
-          - $ref: '#/components/schemas/Storage'
-          nullable: true
-        trunk_installs:
-          items:
-            $ref: '#/components/schemas/TrunkInstallStatus'
-          nullable: true
-          type: array
       required:
-      - entity_type
-      - environment
-      - instance_name
+      - name
+      type: object
+    Probe:
+      properties:
+        initialDelaySeconds:
+          format: int32
+          minimum: 0
+          type: integer
+        path:
+          type: string
+        port:
+          type: string
+      required:
+      - initialDelaySeconds
+      - path
+      - port
+      type: object
+    Probes:
+      properties:
+        liveness:
+          $ref: '#/components/schemas/Probe'
+        readiness:
+          $ref: '#/components/schemas/Probe'
+      required:
+      - liveness
+      - readiness
       type: object
     Replicas:
       format: int32
       type: integer
+    Resource:
+      properties:
+        cpu:
+          type: string
+        memory:
+          type: string
+      required:
+      - cpu
+      - memory
+      type: object
+    ResourceRequirements:
+      properties:
+        limits:
+          allOf:
+          - $ref: '#/components/schemas/Resource'
+          nullable: true
+        requests:
+          allOf:
+          - $ref: '#/components/schemas/Resource'
+          nullable: true
+      type: object
+    Routing:
+      properties:
+        ingressPath:
+          nullable: true
+          type: string
+        middlewares:
+          items:
+            type: string
+          nullable: true
+          type: array
+        port:
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+      - port
+      type: object
+    StackType:
+      enum:
+      - Standard
+      - MessageQueue
+      - MachineLearning
+      - OLAP
+      - OLTP
+      type: string
     State:
       enum:
       - Submitted
@@ -1120,10 +1290,18 @@ components:
       - 400Gi
       - 500Gi
       type: string
-    StorageClass:
-      enum:
-      - gp3
-      type: string
+    StripPrefixConfig:
+      properties:
+        config:
+          items:
+            type: string
+          type: array
+        name:
+          type: string
+      required:
+      - config
+      - name
+      type: object
     TrunkInstall:
       example:
         name: name
@@ -1140,6 +1318,9 @@ components:
     TrunkInstallStatus:
       example:
         error_message: error_message
+        installed_to_pods:
+        - installed_to_pods
+        - installed_to_pods
         name: name
         error: true
         version: version
@@ -1149,6 +1330,11 @@ components:
         error_message:
           nullable: true
           type: string
+        installed_to_pods:
+          items:
+            type: string
+          nullable: true
+          type: array
         name:
           type: string
         version:
@@ -1157,51 +1343,6 @@ components:
       required:
       - error
       - name
-      type: object
-    UpdateCluster:
-      properties:
-        cpu:
-          allOf:
-          - $ref: '#/components/schemas/Cpu'
-          nullable: true
-        entity_properties:
-          nullable: true
-        environment:
-          allOf:
-          - $ref: '#/components/schemas/Environment'
-          nullable: true
-        extensions:
-          items:
-            $ref: '#/components/schemas/Extension'
-          nullable: true
-          type: array
-        extra_domains_rw:
-          items:
-            type: string
-          nullable: true
-          type: array
-        memory:
-          allOf:
-          - $ref: '#/components/schemas/Memory'
-          nullable: true
-        postgres_configs:
-          items:
-            $ref: '#/components/schemas/PgConfig'
-          nullable: true
-          type: array
-        replicas:
-          allOf:
-          - $ref: '#/components/schemas/Replicas'
-          nullable: true
-        storage:
-          allOf:
-          - $ref: '#/components/schemas/Storage'
-          nullable: true
-        trunk_installs:
-          items:
-            $ref: '#/components/schemas/TrunkInstall'
-          nullable: true
-          type: array
       type: object
     UpdateInstance:
       example:
@@ -1233,6 +1374,9 @@ components:
         - extra_domains_rw
         - extra_domains_rw
         memory: null
+        app_services:
+        - null
+        - null
         postgres_configs:
         - name: name
           value: value
@@ -1245,8 +1389,21 @@ components:
         - name: name
           version: version
         cpu: null
+        ip_allow_list:
+        - ip_allow_list
+        - ip_allow_list
         storage: null
+        connection_pooler: ""
       properties:
+        app_services:
+          items:
+            $ref: '#/components/schemas/AppServiceType'
+          nullable: true
+          type: array
+        connection_pooler:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPooler'
+          nullable: true
         cpu:
           $ref: '#/components/schemas/Cpu'
         environment:
@@ -1257,6 +1414,11 @@ components:
           nullable: true
           type: array
         extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        ip_allow_list:
           items:
             type: string
           nullable: true
@@ -1284,6 +1446,44 @@ components:
       - memory
       - replicas
       - storage
+      type: object
+    AppServiceType_oneOf:
+      properties:
+        restapi:
+          allOf:
+          - $ref: '#/components/schemas/AppServiceConfig'
+          nullable: true
+      required:
+      - restapi
+      type: object
+    IntOrString_oneOf:
+      properties:
+        Int:
+          format: int32
+          type: integer
+      required:
+      - Int
+      type: object
+    IntOrString_oneOf_1:
+      properties:
+        String:
+          type: string
+      required:
+      - String
+      type: object
+    Middleware_oneOf:
+      properties:
+        customRequestHeaders:
+          $ref: '#/components/schemas/HeaderConfig'
+      required:
+      - customRequestHeaders
+      type: object
+    Middleware_oneOf_1:
+      properties:
+        stripPrefix:
+          $ref: '#/components/schemas/StripPrefixConfig'
+      required:
+      - stripPrefix
       type: object
   securitySchemes:
     jwt_token:

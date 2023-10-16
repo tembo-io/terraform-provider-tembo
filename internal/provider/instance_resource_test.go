@@ -32,6 +32,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
+					resource.TestCheckResourceAttr("tembo_instance.test", "ip_allow_list.#", "1"),
 					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "1"),
 				),
 			},
@@ -50,6 +51,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
 					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
+					resource.TestCheckResourceAttr("tembo_instance.test", "ip_allow_list.#", "2"),
 					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "2"),
 				),
 			},
@@ -96,6 +98,7 @@ resource "tembo_instance" "test" {
 			enabled  = true
 		}]
 	}]
+	ip_allow_list = ["71.190.46.69"]
   }
 	`, instanceName, orgId)
 }
@@ -168,6 +171,7 @@ resource "tembo_instance" "test" {
 		}
 		]
 	}]
+	ip_allow_list = ["71.190.46.69", "71.190.46.70"]
   }
 	`, instanceName, orgId)
 }

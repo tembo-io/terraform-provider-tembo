@@ -1,12 +1,13 @@
 resource "tembo_instance" "test_db" {
   instance_name = "tfprovider-dem2"
-  org_id        = "org_2UdhszNbCVhLAXkZm30nz8pL778"
+  org_id        = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
   cpu           = "1"
   stack_type    = "Standard"
   environment   = "dev"
   memory        = "4Gi"
   storage       = "10Gi"
   replicas      = 1
+  ip_allow_list = ["71.190.46.68"]
   # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
   #postgres_configs = [
   #  {
@@ -65,12 +66,12 @@ resource "tembo_instance" "test_db" {
 }
 
 data "tembo_instance_secrets" "test" {
-  org_id      = "org_2UdhszNbCVhLAXkZm30nz8pL778"
+  org_id      = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
   instance_id = tembo_instance.test_db.instance_id
 }
 
 data "tembo_instance_secret" "test_sec" {
-  org_id      = "org_2UdhszNbCVhLAXkZm30nz8pL778"
+  org_id      = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
   instance_id = tembo_instance.test_db.instance_id
   secret_name = "readonly-role"
 }

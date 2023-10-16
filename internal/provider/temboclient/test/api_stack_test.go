@@ -38,7 +38,7 @@ func Test_temboclient_StackApiService(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
-		var type_ EntityType
+		var type_ StackType
 
 		resp, httpRes, err := apiClient.StackApi.GetEntity(context.Background(), type_).Execute()
 

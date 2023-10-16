@@ -4,10 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**AppServices** | Pointer to [**[]AppServiceType**](AppServiceType.md) |  | [optional] 
+**ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
+**IpAllowList** | Pointer to **[]string** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | **int32** |  | 
@@ -33,6 +36,76 @@ NewUpdateInstanceWithDefaults instantiates a new UpdateInstance object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
+### GetAppServices
+
+`func (o *UpdateInstance) GetAppServices() []AppServiceType`
+
+GetAppServices returns the AppServices field if non-nil, zero value otherwise.
+
+### GetAppServicesOk
+
+`func (o *UpdateInstance) GetAppServicesOk() (*[]AppServiceType, bool)`
+
+GetAppServicesOk returns a tuple with the AppServices field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAppServices
+
+`func (o *UpdateInstance) SetAppServices(v []AppServiceType)`
+
+SetAppServices sets AppServices field to given value.
+
+### HasAppServices
+
+`func (o *UpdateInstance) HasAppServices() bool`
+
+HasAppServices returns a boolean if a field has been set.
+
+### SetAppServicesNil
+
+`func (o *UpdateInstance) SetAppServicesNil(b bool)`
+
+ SetAppServicesNil sets the value for AppServices to be an explicit nil
+
+### UnsetAppServices
+`func (o *UpdateInstance) UnsetAppServices()`
+
+UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetConnectionPooler
+
+`func (o *UpdateInstance) GetConnectionPooler() ConnectionPooler`
+
+GetConnectionPooler returns the ConnectionPooler field if non-nil, zero value otherwise.
+
+### GetConnectionPoolerOk
+
+`func (o *UpdateInstance) GetConnectionPoolerOk() (*ConnectionPooler, bool)`
+
+GetConnectionPoolerOk returns a tuple with the ConnectionPooler field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionPooler
+
+`func (o *UpdateInstance) SetConnectionPooler(v ConnectionPooler)`
+
+SetConnectionPooler sets ConnectionPooler field to given value.
+
+### HasConnectionPooler
+
+`func (o *UpdateInstance) HasConnectionPooler() bool`
+
+HasConnectionPooler returns a boolean if a field has been set.
+
+### SetConnectionPoolerNil
+
+`func (o *UpdateInstance) SetConnectionPoolerNil(b bool)`
+
+ SetConnectionPoolerNil sets the value for ConnectionPooler to be an explicit nil
+
+### UnsetConnectionPooler
+`func (o *UpdateInstance) UnsetConnectionPooler()`
+
+UnsetConnectionPooler ensures that no value is present for ConnectionPooler, not even an explicit nil
 ### GetCpu
 
 `func (o *UpdateInstance) GetCpu() Cpu`
@@ -143,6 +216,41 @@ HasExtraDomainsRw returns a boolean if a field has been set.
 `func (o *UpdateInstance) UnsetExtraDomainsRw()`
 
 UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
+### GetIpAllowList
+
+`func (o *UpdateInstance) GetIpAllowList() []string`
+
+GetIpAllowList returns the IpAllowList field if non-nil, zero value otherwise.
+
+### GetIpAllowListOk
+
+`func (o *UpdateInstance) GetIpAllowListOk() (*[]string, bool)`
+
+GetIpAllowListOk returns a tuple with the IpAllowList field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpAllowList
+
+`func (o *UpdateInstance) SetIpAllowList(v []string)`
+
+SetIpAllowList sets IpAllowList field to given value.
+
+### HasIpAllowList
+
+`func (o *UpdateInstance) HasIpAllowList() bool`
+
+HasIpAllowList returns a boolean if a field has been set.
+
+### SetIpAllowListNil
+
+`func (o *UpdateInstance) SetIpAllowListNil(b bool)`
+
+ SetIpAllowListNil sets the value for IpAllowList to be an explicit nil
+
+### UnsetIpAllowList
+`func (o *UpdateInstance) UnsetIpAllowList()`
+
+UnsetIpAllowList ensures that no value is present for IpAllowList, not even an explicit nil
 ### GetMemory
 
 `func (o *UpdateInstance) GetMemory() Memory`

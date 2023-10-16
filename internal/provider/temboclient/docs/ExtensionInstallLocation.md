@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Database** | **string** |  | 
+**Database** | Pointer to **string** |  | [optional] 
 **Enabled** | **bool** |  | 
 **Schema** | Pointer to **NullableString** |  | [optional] 
 **Version** | Pointer to **NullableString** |  | [optional] 
@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 
 ### NewExtensionInstallLocation
 
-`func NewExtensionInstallLocation(database string, enabled bool, ) *ExtensionInstallLocation`
+`func NewExtensionInstallLocation(enabled bool, ) *ExtensionInstallLocation`
 
 NewExtensionInstallLocation instantiates a new ExtensionInstallLocation object
 This constructor will assign default values to properties that have it defined,
@@ -47,6 +47,11 @@ and a boolean to check if the value has been set.
 
 SetDatabase sets Database field to given value.
 
+### HasDatabase
+
+`func (o *ExtensionInstallLocation) HasDatabase() bool`
+
+HasDatabase returns a boolean if a field has been set.
 
 ### GetEnabled
 

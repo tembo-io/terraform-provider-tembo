@@ -55,6 +55,7 @@ type temboInstanceResourceModel struct {
 	PostgresConfigs []PostGresConfig `tfsdk:"postgres_configs"`
 	TrunkInstalls   []TrunkInstall   `tfsdk:"trunk_installs"`
 	Extensions      []Extension      `tfsdk:"extensions"`
+	IpAllowList     []types.String   `tfsdk:"ip_allow_list"`
 }
 
 type PostGresConfig struct {
@@ -263,6 +264,11 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 					},
 				},
 			},
+			"ip_allow_list": schema.ListAttribute{
+				MarkdownDescription: "Allowed IP list",
+				Optional:            true,
+				ElementType:         types.StringType,
+			},
 		},
 	}
 }
@@ -283,20 +289,22 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		temboclient.Environment(plan.Environment.ValueString()),
 		plan.InstanceName.ValueString(),
 		temboclient.Memory(plan.Memory.ValueString()),
-		temboclient.EntityType(plan.StackType.ValueString()),
+		temboclient.StackType(plan.StackType.ValueString()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
 	if !plan.Replicas.IsNull() {
 		createInstance.SetReplicas(int32(plan.Replicas.ValueInt64()))
 	}
 
-	createInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
+	createInstance.SetExtraDomainsRw(getStringArray(plan.ExtraDomainsRw))
 
 	createInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 
 	createInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 
 	createInstance.SetExtensions(getTemboExtensions(plan.Extensions))
+
+	createInstance.SetIpAllowList(getStringArray(plan.IpAllowList))
 
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -391,10 +399,11 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 		int32(plan.Replicas.ValueInt64()),
 		temboclient.Storage(plan.Storage.ValueString()))
 
-	updateInstance.SetExtraDomainsRw(getExtraDomainRW(plan.ExtraDomainsRw))
+	updateInstance.SetExtraDomainsRw(getStringArray(plan.ExtraDomainsRw))
 	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
 	updateInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 	updateInstance.SetExtensions(getTemboExtensions(plan.Extensions))
+	updateInstance.SetIpAllowList(getStringArray(plan.IpAllowList))
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -533,16 +542,24 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		}
 	}
 
+	if len(instance.IpAllowList) > 0 {
+		var localIpAllowList []basetypes.StringValue
+		for _, domain := range instance.IpAllowList {
+			localIpAllowList = append(localIpAllowList, types.StringValue(domain))
+		}
+		instanceResourceModel.IpAllowList = localIpAllowList
+	}
+
 }
 
-func getExtraDomainRW(extraDomainRWs []basetypes.StringValue) []string {
-	var localExtraDomainRW []string
-	if len(extraDomainRWs) > 0 {
-		for _, extraDomainRW := range extraDomainRWs {
-			localExtraDomainRW = append(localExtraDomainRW, extraDomainRW.ValueString())
+func getStringArray(inputArray []basetypes.StringValue) []string {
+	var localStringArray []string
+	if len(inputArray) > 0 {
+		for _, input := range inputArray {
+			localStringArray = append(localStringArray, input.ValueString())
 		}
 	}
-	return localExtraDomainRW
+	return localStringArray
 }
 
 func getPgConfig(postgresConfigs []PostGresConfig) []temboclient.PgConfig {
@@ -600,7 +617,7 @@ func getTemboExtension(extension Extension) temboclient.Extension {
 
 	for i := 0; i <= len(extension.Locations)-1; i += 1 {
 		eil := temboclient.ExtensionInstallLocation{
-			Database: extension.Locations[i].Database.ValueString(),
+			Database: extension.Locations[i].Database.ValueStringPointer(),
 			Enabled:  extension.Locations[i].Enabled.ValueBool(),
 		}
 
