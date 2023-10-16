@@ -4,15 +4,18 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**AppServices** | Pointer to [**[]AppServiceType**](AppServiceType.md) |  | [optional] 
+**ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **InstanceName** | **string** |  | 
+**IpAllowList** | Pointer to **[]string** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | Pointer to **int32** |  | [optional] 
-**StackType** | [**EntityType**](EntityType.md) |  | 
+**StackType** | [**StackType**](StackType.md) |  | 
 **Storage** | [**Storage**](Storage.md) |  | 
 **TrunkInstalls** | Pointer to [**[]TrunkInstall**](TrunkInstall.md) |  | [optional] 
 
@@ -20,7 +23,7 @@ Name | Type | Description | Notes
 
 ### NewCreateInstance
 
-`func NewCreateInstance(cpu Cpu, environment Environment, instanceName string, memory Memory, stackType EntityType, storage Storage, ) *CreateInstance`
+`func NewCreateInstance(cpu Cpu, environment Environment, instanceName string, memory Memory, stackType StackType, storage Storage, ) *CreateInstance`
 
 NewCreateInstance instantiates a new CreateInstance object
 This constructor will assign default values to properties that have it defined,
@@ -35,6 +38,76 @@ NewCreateInstanceWithDefaults instantiates a new CreateInstance object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
+### GetAppServices
+
+`func (o *CreateInstance) GetAppServices() []AppServiceType`
+
+GetAppServices returns the AppServices field if non-nil, zero value otherwise.
+
+### GetAppServicesOk
+
+`func (o *CreateInstance) GetAppServicesOk() (*[]AppServiceType, bool)`
+
+GetAppServicesOk returns a tuple with the AppServices field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAppServices
+
+`func (o *CreateInstance) SetAppServices(v []AppServiceType)`
+
+SetAppServices sets AppServices field to given value.
+
+### HasAppServices
+
+`func (o *CreateInstance) HasAppServices() bool`
+
+HasAppServices returns a boolean if a field has been set.
+
+### SetAppServicesNil
+
+`func (o *CreateInstance) SetAppServicesNil(b bool)`
+
+ SetAppServicesNil sets the value for AppServices to be an explicit nil
+
+### UnsetAppServices
+`func (o *CreateInstance) UnsetAppServices()`
+
+UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetConnectionPooler
+
+`func (o *CreateInstance) GetConnectionPooler() ConnectionPooler`
+
+GetConnectionPooler returns the ConnectionPooler field if non-nil, zero value otherwise.
+
+### GetConnectionPoolerOk
+
+`func (o *CreateInstance) GetConnectionPoolerOk() (*ConnectionPooler, bool)`
+
+GetConnectionPoolerOk returns a tuple with the ConnectionPooler field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionPooler
+
+`func (o *CreateInstance) SetConnectionPooler(v ConnectionPooler)`
+
+SetConnectionPooler sets ConnectionPooler field to given value.
+
+### HasConnectionPooler
+
+`func (o *CreateInstance) HasConnectionPooler() bool`
+
+HasConnectionPooler returns a boolean if a field has been set.
+
+### SetConnectionPoolerNil
+
+`func (o *CreateInstance) SetConnectionPoolerNil(b bool)`
+
+ SetConnectionPoolerNil sets the value for ConnectionPooler to be an explicit nil
+
+### UnsetConnectionPooler
+`func (o *CreateInstance) UnsetConnectionPooler()`
+
+UnsetConnectionPooler ensures that no value is present for ConnectionPooler, not even an explicit nil
 ### GetCpu
 
 `func (o *CreateInstance) GetCpu() Cpu`
@@ -165,6 +238,41 @@ and a boolean to check if the value has been set.
 SetInstanceName sets InstanceName field to given value.
 
 
+### GetIpAllowList
+
+`func (o *CreateInstance) GetIpAllowList() []string`
+
+GetIpAllowList returns the IpAllowList field if non-nil, zero value otherwise.
+
+### GetIpAllowListOk
+
+`func (o *CreateInstance) GetIpAllowListOk() (*[]string, bool)`
+
+GetIpAllowListOk returns a tuple with the IpAllowList field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpAllowList
+
+`func (o *CreateInstance) SetIpAllowList(v []string)`
+
+SetIpAllowList sets IpAllowList field to given value.
+
+### HasIpAllowList
+
+`func (o *CreateInstance) HasIpAllowList() bool`
+
+HasIpAllowList returns a boolean if a field has been set.
+
+### SetIpAllowListNil
+
+`func (o *CreateInstance) SetIpAllowListNil(b bool)`
+
+ SetIpAllowListNil sets the value for IpAllowList to be an explicit nil
+
+### UnsetIpAllowList
+`func (o *CreateInstance) UnsetIpAllowList()`
+
+UnsetIpAllowList ensures that no value is present for IpAllowList, not even an explicit nil
 ### GetMemory
 
 `func (o *CreateInstance) GetMemory() Memory`
@@ -247,20 +355,20 @@ HasReplicas returns a boolean if a field has been set.
 
 ### GetStackType
 
-`func (o *CreateInstance) GetStackType() EntityType`
+`func (o *CreateInstance) GetStackType() StackType`
 
 GetStackType returns the StackType field if non-nil, zero value otherwise.
 
 ### GetStackTypeOk
 
-`func (o *CreateInstance) GetStackTypeOk() (*EntityType, bool)`
+`func (o *CreateInstance) GetStackTypeOk() (*StackType, bool)`
 
 GetStackTypeOk returns a tuple with the StackType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStackType
 
-`func (o *CreateInstance) SetStackType(v EntityType)`
+`func (o *CreateInstance) SetStackType(v StackType)`
 
 SetStackType sets StackType field to given value.
 

@@ -79,6 +79,7 @@ output "instance" {
 
 - `extensions` (Attributes List) Extensions to install in the instance (see [below for nested schema](#nestedatt--extensions))
 - `extra_domains_rw` (List of String) Custom domain. Read more [here](https://tembo.io/docs/tembo-cloud/custom-domains/)
+- `ip_allow_list` (List of String) Allowed IP list
 - `postgres_configs` (Attributes List) Postgres configs (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number) Instance replicas
 - `trunk_installs` (Attributes List) Trunk installs (see [below for nested schema](#nestedatt--trunk_installs))

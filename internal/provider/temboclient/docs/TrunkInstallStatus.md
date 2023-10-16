@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Error** | **bool** |  | 
 **ErrorMessage** | Pointer to **NullableString** |  | [optional] 
+**InstalledToPods** | Pointer to **[]string** |  | [optional] 
 **Name** | **string** |  | 
 **Version** | Pointer to **NullableString** |  | [optional] 
 
@@ -83,6 +84,41 @@ HasErrorMessage returns a boolean if a field has been set.
 `func (o *TrunkInstallStatus) UnsetErrorMessage()`
 
 UnsetErrorMessage ensures that no value is present for ErrorMessage, not even an explicit nil
+### GetInstalledToPods
+
+`func (o *TrunkInstallStatus) GetInstalledToPods() []string`
+
+GetInstalledToPods returns the InstalledToPods field if non-nil, zero value otherwise.
+
+### GetInstalledToPodsOk
+
+`func (o *TrunkInstallStatus) GetInstalledToPodsOk() (*[]string, bool)`
+
+GetInstalledToPodsOk returns a tuple with the InstalledToPods field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInstalledToPods
+
+`func (o *TrunkInstallStatus) SetInstalledToPods(v []string)`
+
+SetInstalledToPods sets InstalledToPods field to given value.
+
+### HasInstalledToPods
+
+`func (o *TrunkInstallStatus) HasInstalledToPods() bool`
+
+HasInstalledToPods returns a boolean if a field has been set.
+
+### SetInstalledToPodsNil
+
+`func (o *TrunkInstallStatus) SetInstalledToPodsNil(b bool)`
+
+ SetInstalledToPodsNil sets the value for InstalledToPods to be an explicit nil
+
+### UnsetInstalledToPods
+`func (o *TrunkInstallStatus) UnsetInstalledToPods()`
+
+UnsetInstalledToPods ensures that no value is present for InstalledToPods, not even an explicit nil
 ### GetName
 
 `func (o *TrunkInstallStatus) GetName() string`

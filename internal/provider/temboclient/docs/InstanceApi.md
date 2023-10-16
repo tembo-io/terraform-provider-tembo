@@ -37,7 +37,7 @@ import (
 
 func main() {
     orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("1"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.EntityType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
+    createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("1"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.StackType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)

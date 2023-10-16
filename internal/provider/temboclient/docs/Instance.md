@@ -4,21 +4,26 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**AppServices** | Pointer to [**[]AppServiceType**](AppServiceType.md) |  | [optional] 
 **ConnectionInfo** | Pointer to [**NullableConnectionInfo**](ConnectionInfo.md) |  | [optional] 
+**ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
 **CreatedAt** | Pointer to **time.Time** |  | [optional] 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Extensions** | Pointer to [**[]ExtensionStatus**](ExtensionStatus.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
+**FirstRecoverabilityTime** | Pointer to **NullableTime** |  | [optional] 
 **InstanceId** | **string** |  | 
 **InstanceName** | **string** |  | 
+**IpAllowList** | Pointer to **[]string** |  | [optional] 
 **LastUpdatedAt** | Pointer to **time.Time** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
 **OrganizationId** | **string** |  | 
 **OrganizationName** | **string** |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | **int32** |  | 
-**StackType** | [**EntityType**](EntityType.md) |  | 
+**RuntimeConfig** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
+**StackType** | [**StackType**](StackType.md) |  | 
 **State** | [**State**](State.md) |  | 
 **Storage** | [**Storage**](Storage.md) |  | 
 **TrunkInstalls** | Pointer to [**[]TrunkInstallStatus**](TrunkInstallStatus.md) |  | [optional] 
@@ -27,7 +32,7 @@ Name | Type | Description | Notes
 
 ### NewInstance
 
-`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, replicas int32, stackType EntityType, state State, storage Storage, ) *Instance`
+`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
 
 NewInstance instantiates a new Instance object
 This constructor will assign default values to properties that have it defined,
@@ -42,6 +47,41 @@ NewInstanceWithDefaults instantiates a new Instance object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
+### GetAppServices
+
+`func (o *Instance) GetAppServices() []AppServiceType`
+
+GetAppServices returns the AppServices field if non-nil, zero value otherwise.
+
+### GetAppServicesOk
+
+`func (o *Instance) GetAppServicesOk() (*[]AppServiceType, bool)`
+
+GetAppServicesOk returns a tuple with the AppServices field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAppServices
+
+`func (o *Instance) SetAppServices(v []AppServiceType)`
+
+SetAppServices sets AppServices field to given value.
+
+### HasAppServices
+
+`func (o *Instance) HasAppServices() bool`
+
+HasAppServices returns a boolean if a field has been set.
+
+### SetAppServicesNil
+
+`func (o *Instance) SetAppServicesNil(b bool)`
+
+ SetAppServicesNil sets the value for AppServices to be an explicit nil
+
+### UnsetAppServices
+`func (o *Instance) UnsetAppServices()`
+
+UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
 ### GetConnectionInfo
 
 `func (o *Instance) GetConnectionInfo() ConnectionInfo`
@@ -77,6 +117,41 @@ HasConnectionInfo returns a boolean if a field has been set.
 `func (o *Instance) UnsetConnectionInfo()`
 
 UnsetConnectionInfo ensures that no value is present for ConnectionInfo, not even an explicit nil
+### GetConnectionPooler
+
+`func (o *Instance) GetConnectionPooler() ConnectionPooler`
+
+GetConnectionPooler returns the ConnectionPooler field if non-nil, zero value otherwise.
+
+### GetConnectionPoolerOk
+
+`func (o *Instance) GetConnectionPoolerOk() (*ConnectionPooler, bool)`
+
+GetConnectionPoolerOk returns a tuple with the ConnectionPooler field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionPooler
+
+`func (o *Instance) SetConnectionPooler(v ConnectionPooler)`
+
+SetConnectionPooler sets ConnectionPooler field to given value.
+
+### HasConnectionPooler
+
+`func (o *Instance) HasConnectionPooler() bool`
+
+HasConnectionPooler returns a boolean if a field has been set.
+
+### SetConnectionPoolerNil
+
+`func (o *Instance) SetConnectionPoolerNil(b bool)`
+
+ SetConnectionPoolerNil sets the value for ConnectionPooler to be an explicit nil
+
+### UnsetConnectionPooler
+`func (o *Instance) UnsetConnectionPooler()`
+
+UnsetConnectionPooler ensures that no value is present for ConnectionPooler, not even an explicit nil
 ### GetCpu
 
 `func (o *Instance) GetCpu() Cpu`
@@ -212,6 +287,41 @@ HasExtraDomainsRw returns a boolean if a field has been set.
 `func (o *Instance) UnsetExtraDomainsRw()`
 
 UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
+### GetFirstRecoverabilityTime
+
+`func (o *Instance) GetFirstRecoverabilityTime() time.Time`
+
+GetFirstRecoverabilityTime returns the FirstRecoverabilityTime field if non-nil, zero value otherwise.
+
+### GetFirstRecoverabilityTimeOk
+
+`func (o *Instance) GetFirstRecoverabilityTimeOk() (*time.Time, bool)`
+
+GetFirstRecoverabilityTimeOk returns a tuple with the FirstRecoverabilityTime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFirstRecoverabilityTime
+
+`func (o *Instance) SetFirstRecoverabilityTime(v time.Time)`
+
+SetFirstRecoverabilityTime sets FirstRecoverabilityTime field to given value.
+
+### HasFirstRecoverabilityTime
+
+`func (o *Instance) HasFirstRecoverabilityTime() bool`
+
+HasFirstRecoverabilityTime returns a boolean if a field has been set.
+
+### SetFirstRecoverabilityTimeNil
+
+`func (o *Instance) SetFirstRecoverabilityTimeNil(b bool)`
+
+ SetFirstRecoverabilityTimeNil sets the value for FirstRecoverabilityTime to be an explicit nil
+
+### UnsetFirstRecoverabilityTime
+`func (o *Instance) UnsetFirstRecoverabilityTime()`
+
+UnsetFirstRecoverabilityTime ensures that no value is present for FirstRecoverabilityTime, not even an explicit nil
 ### GetInstanceId
 
 `func (o *Instance) GetInstanceId() string`
@@ -252,6 +362,41 @@ and a boolean to check if the value has been set.
 SetInstanceName sets InstanceName field to given value.
 
 
+### GetIpAllowList
+
+`func (o *Instance) GetIpAllowList() []string`
+
+GetIpAllowList returns the IpAllowList field if non-nil, zero value otherwise.
+
+### GetIpAllowListOk
+
+`func (o *Instance) GetIpAllowListOk() (*[]string, bool)`
+
+GetIpAllowListOk returns a tuple with the IpAllowList field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpAllowList
+
+`func (o *Instance) SetIpAllowList(v []string)`
+
+SetIpAllowList sets IpAllowList field to given value.
+
+### HasIpAllowList
+
+`func (o *Instance) HasIpAllowList() bool`
+
+HasIpAllowList returns a boolean if a field has been set.
+
+### SetIpAllowListNil
+
+`func (o *Instance) SetIpAllowListNil(b bool)`
+
+ SetIpAllowListNil sets the value for IpAllowList to be an explicit nil
+
+### UnsetIpAllowList
+`func (o *Instance) UnsetIpAllowList()`
+
+UnsetIpAllowList ensures that no value is present for IpAllowList, not even an explicit nil
 ### GetLastUpdatedAt
 
 `func (o *Instance) GetLastUpdatedAt() time.Time`
@@ -392,22 +537,57 @@ and a boolean to check if the value has been set.
 SetReplicas sets Replicas field to given value.
 
 
+### GetRuntimeConfig
+
+`func (o *Instance) GetRuntimeConfig() []PgConfig`
+
+GetRuntimeConfig returns the RuntimeConfig field if non-nil, zero value otherwise.
+
+### GetRuntimeConfigOk
+
+`func (o *Instance) GetRuntimeConfigOk() (*[]PgConfig, bool)`
+
+GetRuntimeConfigOk returns a tuple with the RuntimeConfig field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRuntimeConfig
+
+`func (o *Instance) SetRuntimeConfig(v []PgConfig)`
+
+SetRuntimeConfig sets RuntimeConfig field to given value.
+
+### HasRuntimeConfig
+
+`func (o *Instance) HasRuntimeConfig() bool`
+
+HasRuntimeConfig returns a boolean if a field has been set.
+
+### SetRuntimeConfigNil
+
+`func (o *Instance) SetRuntimeConfigNil(b bool)`
+
+ SetRuntimeConfigNil sets the value for RuntimeConfig to be an explicit nil
+
+### UnsetRuntimeConfig
+`func (o *Instance) UnsetRuntimeConfig()`
+
+UnsetRuntimeConfig ensures that no value is present for RuntimeConfig, not even an explicit nil
 ### GetStackType
 
-`func (o *Instance) GetStackType() EntityType`
+`func (o *Instance) GetStackType() StackType`
 
 GetStackType returns the StackType field if non-nil, zero value otherwise.
 
 ### GetStackTypeOk
 
-`func (o *Instance) GetStackTypeOk() (*EntityType, bool)`
+`func (o *Instance) GetStackTypeOk() (*StackType, bool)`
 
 GetStackTypeOk returns a tuple with the StackType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStackType
 
-`func (o *Instance) SetStackType(v EntityType)`
+`func (o *Instance) SetStackType(v StackType)`
 
 SetStackType sets StackType field to given value.
 

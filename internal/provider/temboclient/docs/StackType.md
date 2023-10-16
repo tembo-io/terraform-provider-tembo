@@ -1,4 +1,4 @@
-# EntityType
+# StackType
 
 ## Enum
 
