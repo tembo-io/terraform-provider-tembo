@@ -71,12 +71,12 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
-	#postgres_configs = [
-	#	{
-	#	  name = "max_connections"
-	#	  value = "200"
-	#	}
-	#  ]
+	postgres_configs = [
+		{
+		  name = "max_connections"
+		  value = "200"
+		}
+	  ]
 	trunk_installs = [
 	{
 		name    = "pgmq"
@@ -114,16 +114,16 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"
-	#postgres_configs = [
-	#	{
-	#	  name = "max_connections"
-	#	  value = "200"
-	#	},
-	#	{
-	#	  name = "wal_buffers"
-	#	  value = "10"
-	#	}
-	#  ]
+	postgres_configs = [
+		{
+		  name = "max_connections"
+		  value = "200"
+		},
+		{
+		  name = "wal_buffers"
+		  value = "16MB"
+		}
+	  ]
 	trunk_installs = [
 		{
           name    = "pgmq"
