@@ -1,5 +1,5 @@
 resource "tembo_instance" "test_db" {
-  instance_name = "tfprovider-dem2"
+  instance_name = "tfprovider-de2345"
   org_id        = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
   cpu           = "1"
   stack_type    = "Standard"
@@ -7,18 +7,18 @@ resource "tembo_instance" "test_db" {
   memory        = "4Gi"
   storage       = "10Gi"
   replicas      = 1
-  ip_allow_list = ["71.190.46.68"]
+  #ip_allow_list = ["71.190.46.69"]
   # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
-  #postgres_configs = [
-  #  {
-  #    name  = "max_connections"
-  #    value = "200"
-  #  },
-  #  {
-  #    name  = "wal_buffers"
-  #    value = "10"
-  #  }
-  #]
+  postgres_configs = [
+    {
+      name  = "max_connections"
+      value = "200"
+    },
+    {
+      name  = "wal_buffers"
+      value = "16MB"
+    }
+  ]
   trunk_installs = [
     {
       name    = "pgmq"
