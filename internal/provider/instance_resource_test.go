@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -8,12 +9,14 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestTemboInstanceResource(t *testing.T) {
 
 	instanceName := generateInstanceName()
 	orgId := os.Getenv("ORG_ID")
+	resourceName := "tembo_instance.test"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -22,37 +25,45 @@ func TestTemboInstanceResource(t *testing.T) {
 			{
 				Config: testProviderConfig() + testInstanceResourceCreateConfig(instanceName, orgId),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("tembo_instance.test", "instance_name", instanceName),
-					resource.TestCheckResourceAttr("tembo_instance.test", "org_id", orgId),
-					resource.TestCheckResourceAttr("tembo_instance.test", "cpu", "1"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "stack_type", "Standard"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "replicas", "1"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "environment", "dev"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "memory", "4Gi"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
-					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
-					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "ip_allow_list.#", "1"),
-					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "instance_name", instanceName),
+					resource.TestCheckResourceAttr(resourceName, "org_id", orgId),
+					resource.TestCheckResourceAttr(resourceName, "cpu", "1"),
+					resource.TestCheckResourceAttr(resourceName, "stack_type", "Standard"),
+					resource.TestCheckResourceAttr(resourceName, "replicas", "1"),
+					resource.TestCheckResourceAttr(resourceName, "environment", "dev"),
+					resource.TestCheckResourceAttr(resourceName, "memory", "4Gi"),
+					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
+					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
+					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
+					resource.TestCheckResourceAttr(resourceName, "ip_allow_list.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
 				),
 			},
-			// TODO: Add ImportState testing
+			// ImportState testing
+			{
+				ResourceName:                         resourceName,
+				ImportState:                          true,
+				ImportStateVerify:                    true,
+				ImportStateVerifyIdentifierAttribute: "instance_id",
+				ImportStateIdFunc:                    testTemboInstanceClientImportStateIDFunc(resourceName),
+				ImportStateVerifyIgnore:              []string{"last_updated", "trunk_installs", "extensions"},
+			},
 			// Update and Read testing
 			{
 				Config: testProviderConfig() + testInstanceResourceUpdateConfig(instanceName, orgId),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("tembo_instance.test", "instance_name", instanceName),
-					resource.TestCheckResourceAttr("tembo_instance.test", "org_id", orgId),
-					resource.TestCheckResourceAttr("tembo_instance.test", "cpu", "2"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "stack_type", "Standard"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "replicas", "2"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "environment", "dev"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "memory", "8Gi"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "storage", "10Gi"),
-					resource.TestCheckResourceAttrSet("tembo_instance.test", "instance_id"),
-					resource.TestCheckResourceAttrSet("tembo_instance.test", "last_updated"),
-					resource.TestCheckResourceAttr("tembo_instance.test", "ip_allow_list.#", "2"),
-					//resource.TestCheckResourceAttr("tembo_instance.test", "postgres_configs.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "instance_name", instanceName),
+					resource.TestCheckResourceAttr(resourceName, "org_id", orgId),
+					resource.TestCheckResourceAttr(resourceName, "cpu", "2"),
+					resource.TestCheckResourceAttr(resourceName, "stack_type", "Standard"),
+					resource.TestCheckResourceAttr(resourceName, "replicas", "2"),
+					resource.TestCheckResourceAttr(resourceName, "environment", "dev"),
+					resource.TestCheckResourceAttr(resourceName, "memory", "8Gi"),
+					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
+					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
+					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
+					resource.TestCheckResourceAttr(resourceName, "ip_allow_list.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "2"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -184,4 +195,22 @@ func generateInstanceName() string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return fmt.Sprintf("tf-test-%v", string(b))
+}
+
+func testTemboInstanceClientImportStateIDFunc(resourceName string) resource.ImportStateIdFunc {
+	return func(s *terraform.State) (string, error) {
+		rs, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("Not found: %s", resourceName)
+		}
+
+		if rs.Primary.ID == "" {
+			return "", errors.New("No Tembo Instance ID set")
+		}
+
+		orgId := rs.Primary.Attributes["org_id"]
+		instanceId := rs.Primary.Attributes["instance_id"]
+
+		return fmt.Sprintf("%s/%s", orgId, instanceId), nil
+	}
 }
