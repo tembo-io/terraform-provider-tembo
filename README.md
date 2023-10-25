@@ -113,6 +113,14 @@ output "data_secret" {
 }
 ```
 
+## Managing `trunk_installs` & `extensions`
+
+Provider currently only checks whether there is an error or not with `trunk_installs` & `extensions` when creating or updating `tembo_instance`. If there is no error then it assumes the terraform apply is successful. It doesn’t compare the desired and actual state for them since some extensions get installed as part of the stack or base image.
+
+Also, when importing `tembo_instance` it doesn’t import `trunk_installs` and `extensions` because of the same reason. After you import you can run terraform apply and it updates the state appropriately. It tries re-installing extensions but control plane ignores the request.
+
+If in future there was a way to identify why extensions were installed (base image , stack , trunk_installs or extensions) then the provider can be updated to compare desired and actual state
+
 ## Developing the Provider
 
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
