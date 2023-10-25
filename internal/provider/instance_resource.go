@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
@@ -22,8 +24,9 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource              = &temboInstanceResource{}
-	_ resource.ResourceWithConfigure = &temboInstanceResource{}
+	_ resource.Resource                = &temboInstanceResource{}
+	_ resource.ResourceWithConfigure   = &temboInstanceResource{}
+	_ resource.ResourceWithImportState = &temboInstanceResource{}
 )
 
 var (
@@ -481,6 +484,18 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func (r *temboInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	parts := strings.Split(req.ID, "/")
+	if len(parts) != 2 {
+		resp.Diagnostics.AddError("Resource Import Invalid ID", fmt.Sprintf("wrong format of import ID (%s), use: 'org_id/instance_id'", req.ID))
+		return
+	}
+	orgId := parts[0]
+	instanceId := parts[1]
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("org_id"), orgId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("instance_id"), instanceId)...)
 }
 
 func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,

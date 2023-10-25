@@ -13,14 +13,104 @@ The Terraform provider for [Tembo](https://tembo.io/)
 terraform {
   required_providers {
     tembo = {
-      source = "registry.terraform.io/tembo-io/tembo"
+      source  = "tembo-io/tembo"
+      version = ">= 0.1.0"
     }
   }
 }
 
-provider "tembo" {}
+provider "tembo" {
+}
 
-data "tembo_example" "example" {}
+resource "tembo_instance" "test_db" {
+  instance_name = "tfprovider-de2345"
+  org_id        = "org_test" # Replace this with your Tembo organization id
+  cpu           = "1"
+  stack_type    = "Standard"
+  environment   = "dev"
+  memory        = "4Gi"
+  storage       = "10Gi"
+  replicas      = 1
+  # ip_allow_list = ["71.190.46.69"]
+  # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
+  postgres_configs = [
+    {
+      name  = "max_connections"
+      value = "200"
+    },
+    {
+      name  = "wal_buffers"
+      value = "16MB"
+    }
+  ]
+  trunk_installs = [
+    {
+      name    = "pgmq"
+      version = "0.24.0"
+    }
+  ]
+  extensions = [{
+    name        = "plperl"
+    description = "PL/Perl procedural language"
+    locations = [{
+      database = "app"
+      schema   = "public"
+      version  = "1.0"
+      enabled  = false
+      },
+      {
+        database = "postgres"
+        schema   = "public"
+        version  = "1.0"
+        enabled  = true
+    }]
+    },
+    {
+      "name" : "pltclu",
+      "description" : "PL/TclU untrusted procedural language",
+      "locations" : [
+        {
+          "database" : "app",
+          "schema" : "public",
+          "version" : "1.0",
+          "enabled" : false,
+          "error" : false,
+          "error_message" : null
+        },
+        {
+          "database" : "postgres",
+          "schema" : "public",
+          "version" : "1.0",
+          "enabled" : false,
+          "error" : false,
+          "error_message" : null
+        }
+      ]
+  }]
+}
+
+data "tembo_instance_secrets" "test" {
+  org_id      = "org_test" # Replace this with your Tembo organization id
+  instance_id = tembo_instance.test_db.instance_id
+}
+
+data "tembo_instance_secret" "test_sec" {
+  org_id      = "org_test" # Replace this with your Tembo organization id
+  instance_id = tembo_instance.test_db.instance_id
+  secret_name = "readonly-role"
+}
+
+output "instance" {
+  value = tembo_instance.test_db
+}
+
+output "data" {
+  value = data.tembo_instance_secrets.test
+}
+
+output "data_secret" {
+  value = data.tembo_instance_secret.test_sec
+}
 ```
 
 ## Developing the Provider
@@ -45,12 +135,24 @@ make testacc
 
 Install OpenAPI Generator if not already by following steps [here](https://openapi-generator.tech/docs/installation)
 
+### Control plane API client
+
 Go to `internal/provider/temboclient` directory in your terminal.
 
-Run following command to re-generate the go client code for the API. You might want to delete the contents of the directory first.
+Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
 
 ```bash
 openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient
+```
+
+### Data plane API client
+
+Go to `internal/provider/tembodataclient` directory in your terminal.
+
+Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
+
+```bash
+openapi-generator generate -i https://api.data-1.use1.tembo.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=tembodataclient
 ```
 
 ## Releasing the Provider to Terraform Registry
