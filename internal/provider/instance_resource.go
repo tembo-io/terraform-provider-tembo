@@ -144,9 +144,6 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 			"instance_name": schema.StringAttribute{
 				MarkdownDescription: "Unique name of the instance",
 				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtMost(20),
-				},
 			},
 			"org_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the organization in which the instance will be created",
