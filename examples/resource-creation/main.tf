@@ -67,16 +67,10 @@ resource "tembo_instance" "test_db" {
     enabled = true,
     pooler = {
       pool_mode = "transaction",
-      parameters = [
-        {
-          name  = "max_client_conn"
-          value = "50"
-        },
-        {
-          name  = "default_pool_size"
-          value = "5000"
-        }
-      ]
+      parameters = {
+        max_client_conn   = "20"
+        default_pool_size = "100"
+      }
     }
   }
 }
