@@ -1,5 +1,5 @@
 resource "tembo_instance" "test_db" {
-  instance_name = "tfprovider-de2345"
+  instance_name = "tfprovider-4"
   org_id        = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
   cpu           = "1"
   stack_type    = "Standard"
@@ -63,6 +63,16 @@ resource "tembo_instance" "test_db" {
         }
       ]
   }]
+  connection_pooler = {
+    enabled = true,
+    pooler = {
+      pool_mode = "transaction",
+      parameters = {
+        max_client_conn   = "20"
+        default_pool_size = "100"
+      }
+    }
+  }
 }
 
 data "tembo_instance_secrets" "test" {

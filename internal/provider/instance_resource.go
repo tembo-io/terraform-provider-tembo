@@ -43,25 +43,35 @@ const (
 
 // temboInstanceResourceModel maps the resource schema data.
 type temboInstanceResourceModel struct {
-	InstanceID      types.String     `tfsdk:"instance_id"`
-	InstanceName    types.String     `tfsdk:"instance_name"`
-	OrgId           types.String     `tfsdk:"org_id"`
-	CPU             types.String     `tfsdk:"cpu"`
-	StackType       types.String     `tfsdk:"stack_type"`
-	Environment     types.String     `tfsdk:"environment"`
-	Replicas        types.Int64      `tfsdk:"replicas"`
-	Memory          types.String     `tfsdk:"memory"`
-	Storage         types.String     `tfsdk:"storage"`
-	LastUpdated     types.String     `tfsdk:"last_updated"`
-	State           types.String     `tfsdk:"state"`
-	ExtraDomainsRw  []types.String   `tfsdk:"extra_domains_rw"`
-	PostgresConfigs []PostGresConfig `tfsdk:"postgres_configs"`
-	TrunkInstalls   []TrunkInstall   `tfsdk:"trunk_installs"`
-	Extensions      []Extension      `tfsdk:"extensions"`
-	IpAllowList     []types.String   `tfsdk:"ip_allow_list"`
+	InstanceID       types.String      `tfsdk:"instance_id"`
+	InstanceName     types.String      `tfsdk:"instance_name"`
+	OrgId            types.String      `tfsdk:"org_id"`
+	CPU              types.String      `tfsdk:"cpu"`
+	StackType        types.String      `tfsdk:"stack_type"`
+	Environment      types.String      `tfsdk:"environment"`
+	Replicas         types.Int64       `tfsdk:"replicas"`
+	Memory           types.String      `tfsdk:"memory"`
+	Storage          types.String      `tfsdk:"storage"`
+	LastUpdated      types.String      `tfsdk:"last_updated"`
+	State            types.String      `tfsdk:"state"`
+	ExtraDomainsRw   []types.String    `tfsdk:"extra_domains_rw"`
+	PostgresConfigs  []KeyValue        `tfsdk:"postgres_configs"`
+	TrunkInstalls    []TrunkInstall    `tfsdk:"trunk_installs"`
+	Extensions       []Extension       `tfsdk:"extensions"`
+	IpAllowList      []types.String    `tfsdk:"ip_allow_list"`
+	ConnectionPooler *ConnectionPooler `tfsdk:"connection_pooler"`
 }
 
-type PostGresConfig struct {
+type ConnectionPooler struct {
+	Enabled types.Bool `tfsdk:"enabled"`
+	Pooler  PgBouncer  `tfsdk:"pooler"`
+}
+type PgBouncer struct {
+	Parameters map[string]string `tfsdk:"parameters"`
+	PoolMode   types.String      `tfsdk:"pool_mode"`
+}
+
+type KeyValue struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
@@ -269,6 +279,27 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				Optional:            true,
 				ElementType:         types.StringType,
 			},
+			"connection_pooler": schema.SingleNestedAttribute{
+				Attributes: map[string]schema.Attribute{
+					"enabled": schema.BoolAttribute{
+						Required: true,
+					},
+					"pooler": schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"pool_mode": schema.StringAttribute{
+								Required: true,
+							},
+							"parameters": schema.MapAttribute{
+								MarkdownDescription: "Parameters",
+								Required:            true,
+								ElementType:         types.StringType,
+							},
+						},
+					},
+				},
+				Optional: true,
+			},
 		},
 	}
 }
@@ -305,6 +336,10 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 	createInstance.SetExtensions(getTemboExtensions(plan.Extensions))
 
 	createInstance.SetIpAllowList(getStringArray(plan.IpAllowList))
+
+	if plan.ConnectionPooler != nil {
+		createInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
+	}
 
 	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -404,6 +439,10 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	updateInstance.SetTrunkInstalls(getTemboTrunkInstalls(plan.TrunkInstalls))
 	updateInstance.SetExtensions(getTemboExtensions(plan.Extensions))
 	updateInstance.SetIpAllowList(getStringArray(plan.IpAllowList))
+
+	if plan.ConnectionPooler != nil {
+		updateInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
+	}
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -521,9 +560,9 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 	}
 
 	if len(instance.PostgresConfigs) > 0 {
-		var localPGConfigs []PostGresConfig
+		var localPGConfigs []KeyValue
 		for _, pgConfig := range instance.PostgresConfigs {
-			localPGConfigs = append(localPGConfigs, PostGresConfig{Name: types.StringValue(pgConfig.Name), Value: types.StringValue(pgConfig.Value)})
+			localPGConfigs = append(localPGConfigs, KeyValue{Name: types.StringValue(pgConfig.Name), Value: types.StringValue(pgConfig.Value)})
 		}
 		instanceResourceModel.PostgresConfigs = localPGConfigs
 	}
@@ -562,6 +601,14 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.IpAllowList = localIpAllowList
 	}
 
+	if instance.ConnectionPooler.Get() != nil {
+		var localConnectionPooler ConnectionPooler
+		cp := instance.ConnectionPooler.Get()
+		localConnectionPooler.Enabled = types.BoolValue(*cp.Enabled)
+		localConnectionPooler.Pooler.PoolMode = types.StringValue(string(*cp.Pooler.PoolMode.Ptr()))
+		localConnectionPooler.Pooler.Parameters = cp.Pooler.Parameters
+		instanceResourceModel.ConnectionPooler = &localConnectionPooler
+	}
 }
 
 func getStringArray(inputArray []basetypes.StringValue) []string {
@@ -574,7 +621,7 @@ func getStringArray(inputArray []basetypes.StringValue) []string {
 	return localStringArray
 }
 
-func getPgConfig(postgresConfigs []PostGresConfig) []temboclient.PgConfig {
+func getPgConfig(postgresConfigs []KeyValue) []temboclient.PgConfig {
 	var localPGConfigs []temboclient.PgConfig
 	if len(postgresConfigs) > 0 {
 		for _, pgConfig := range postgresConfigs {
@@ -601,6 +648,19 @@ func getTemboTrunkInstall(trunkInstall TrunkInstall) temboclient.TrunkInstall {
 	localTrunkInstall.SetVersion(trunkInstall.Version.ValueString())
 
 	return localTrunkInstall
+}
+
+func getConnectionPooler(connectionPooler *ConnectionPooler) *temboclient.ConnectionPooler {
+	localConnectionPooler := temboclient.ConnectionPooler{
+		Enabled: connectionPooler.Enabled.ValueBoolPointer(),
+	}
+
+	localConnectionPooler.Pooler = &temboclient.PgBouncer{
+		Parameters: connectionPooler.Pooler.Parameters,
+		PoolMode:   (*temboclient.PoolerPgbouncerPoolMode)(connectionPooler.Pooler.PoolMode.ValueStringPointer()),
+	}
+
+	return &localConnectionPooler
 }
 
 func getTemboExtensions(extensions []Extension) []temboclient.Extension {

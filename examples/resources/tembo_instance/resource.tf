@@ -41,6 +41,16 @@ resource "tembo_instance" "test_instance" {
         enabled  = true
     }]
   }]
+  connection_pooler = {
+    enabled = true,
+    pooler = {
+      pool_mode = "transaction",
+      parameters = {
+        max_client_conn   = "20"
+        default_pool_size = "100"
+      }
+    }
+  }
 }
 
 output "instance" {
