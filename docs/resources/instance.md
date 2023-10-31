@@ -108,17 +108,8 @@ Optional:
 
 Required:
 
-- `parameters` (Attributes List) Parameters (see [below for nested schema](#nestedatt--connection_pooler--pooler--parameters))
+- `parameters` (Map of String) Parameters
 - `pool_mode` (String)
-
-<a id="nestedatt--connection_pooler--pooler--parameters"></a>
-### Nested Schema for `connection_pooler.pooler.parameters`
-
-Required:
-
-- `name` (String) Parameter name
-- `value` (String) Parameter value
-
 
 
 
