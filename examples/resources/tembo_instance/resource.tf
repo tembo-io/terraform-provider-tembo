@@ -51,7 +51,6 @@ resource "tembo_instance" "test_instance" {
       }
     }
   }
-
 }
 
 output "instance" {
