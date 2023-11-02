@@ -14,33 +14,33 @@ import (
 	"encoding/json"
 )
 
-// checks if the AppServiceConfig type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &AppServiceConfig{}
+// checks if the AppConfig type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AppConfig{}
 
-// AppServiceConfig struct for AppServiceConfig
-type AppServiceConfig struct {
+// AppConfig struct for AppConfig
+type AppConfig struct {
 	Env []EnvVar `json:"env,omitempty"`
 }
 
-// NewAppServiceConfig instantiates a new AppServiceConfig object
+// NewAppConfig instantiates a new AppConfig object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppServiceConfig() *AppServiceConfig {
-	this := AppServiceConfig{}
+func NewAppConfig() *AppConfig {
+	this := AppConfig{}
 	return &this
 }
 
-// NewAppServiceConfigWithDefaults instantiates a new AppServiceConfig object
+// NewAppConfigWithDefaults instantiates a new AppConfig object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewAppServiceConfigWithDefaults() *AppServiceConfig {
-	this := AppServiceConfig{}
+func NewAppConfigWithDefaults() *AppConfig {
+	this := AppConfig{}
 	return &this
 }
 
 // GetEnv returns the Env field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AppServiceConfig) GetEnv() []EnvVar {
+func (o *AppConfig) GetEnv() []EnvVar {
 	if o == nil {
 		var ret []EnvVar
 		return ret
@@ -51,7 +51,7 @@ func (o *AppServiceConfig) GetEnv() []EnvVar {
 // GetEnvOk returns a tuple with the Env field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AppServiceConfig) GetEnvOk() ([]EnvVar, bool) {
+func (o *AppConfig) GetEnvOk() ([]EnvVar, bool) {
 	if o == nil || IsNil(o.Env) {
 		return nil, false
 	}
@@ -59,7 +59,7 @@ func (o *AppServiceConfig) GetEnvOk() ([]EnvVar, bool) {
 }
 
 // HasEnv returns a boolean if a field has been set.
-func (o *AppServiceConfig) HasEnv() bool {
+func (o *AppConfig) HasEnv() bool {
 	if o != nil && IsNil(o.Env) {
 		return true
 	}
@@ -68,11 +68,11 @@ func (o *AppServiceConfig) HasEnv() bool {
 }
 
 // SetEnv gets a reference to the given []EnvVar and assigns it to the Env field.
-func (o *AppServiceConfig) SetEnv(v []EnvVar) {
+func (o *AppConfig) SetEnv(v []EnvVar) {
 	o.Env = v
 }
 
-func (o AppServiceConfig) MarshalJSON() ([]byte, error) {
+func (o AppConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -80,7 +80,7 @@ func (o AppServiceConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o AppServiceConfig) ToMap() (map[string]interface{}, error) {
+func (o AppConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Env != nil {
 		toSerialize["env"] = o.Env
@@ -88,38 +88,38 @@ func (o AppServiceConfig) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableAppServiceConfig struct {
-	value *AppServiceConfig
+type NullableAppConfig struct {
+	value *AppConfig
 	isSet bool
 }
 
-func (v NullableAppServiceConfig) Get() *AppServiceConfig {
+func (v NullableAppConfig) Get() *AppConfig {
 	return v.value
 }
 
-func (v *NullableAppServiceConfig) Set(val *AppServiceConfig) {
+func (v *NullableAppConfig) Set(val *AppConfig) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableAppServiceConfig) IsSet() bool {
+func (v NullableAppConfig) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableAppServiceConfig) Unset() {
+func (v *NullableAppConfig) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableAppServiceConfig(val *AppServiceConfig) *NullableAppServiceConfig {
-	return &NullableAppServiceConfig{value: val, isSet: true}
+func NewNullableAppConfig(val *AppConfig) *NullableAppConfig {
+	return &NullableAppConfig{value: val, isSet: true}
 }
 
-func (v NullableAppServiceConfig) MarshalJSON() ([]byte, error) {
+func (v NullableAppConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableAppServiceConfig) UnmarshalJSON(src []byte) error {
+func (v *NullableAppConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

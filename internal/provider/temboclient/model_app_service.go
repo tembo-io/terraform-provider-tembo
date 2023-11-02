@@ -26,7 +26,7 @@ type AppService struct {
 	Middlewares []Middleware `json:"middlewares,omitempty"`
 	Name string `json:"name"`
 	Probes NullableProbes `json:"probes,omitempty"`
-	Resources NullableResourceRequirements `json:"resources,omitempty"`
+	Resources *ResourceRequirements `json:"resources,omitempty"`
 	Routing []Routing `json:"routing,omitempty"`
 }
 
@@ -271,46 +271,36 @@ func (o *AppService) UnsetProbes() {
 	o.Probes.Unset()
 }
 
-// GetResources returns the Resources field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetResources returns the Resources field value if set, zero value otherwise.
 func (o *AppService) GetResources() ResourceRequirements {
-	if o == nil || IsNil(o.Resources.Get()) {
+	if o == nil || IsNil(o.Resources) {
 		var ret ResourceRequirements
 		return ret
 	}
-	return *o.Resources.Get()
+	return *o.Resources
 }
 
 // GetResourcesOk returns a tuple with the Resources field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AppService) GetResourcesOk() (*ResourceRequirements, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Resources) {
 		return nil, false
 	}
-	return o.Resources.Get(), o.Resources.IsSet()
+	return o.Resources, true
 }
 
 // HasResources returns a boolean if a field has been set.
 func (o *AppService) HasResources() bool {
-	if o != nil && o.Resources.IsSet() {
+	if o != nil && !IsNil(o.Resources) {
 		return true
 	}
 
 	return false
 }
 
-// SetResources gets a reference to the given NullableResourceRequirements and assigns it to the Resources field.
+// SetResources gets a reference to the given ResourceRequirements and assigns it to the Resources field.
 func (o *AppService) SetResources(v ResourceRequirements) {
-	o.Resources.Set(&v)
-}
-// SetResourcesNil sets the value for Resources to be an explicit nil
-func (o *AppService) SetResourcesNil() {
-	o.Resources.Set(nil)
-}
-
-// UnsetResources ensures that no value is present for Resources, not even an explicit nil
-func (o *AppService) UnsetResources() {
-	o.Resources.Unset()
+	o.Resources = &v
 }
 
 // GetRouting returns the Routing field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -373,8 +363,8 @@ func (o AppService) ToMap() (map[string]interface{}, error) {
 	if o.Probes.IsSet() {
 		toSerialize["probes"] = o.Probes.Get()
 	}
-	if o.Resources.IsSet() {
-		toSerialize["resources"] = o.Resources.Get()
+	if !IsNil(o.Resources) {
+		toSerialize["resources"] = o.Resources
 	}
 	if o.Routing != nil {
 		toSerialize["routing"] = o.Routing

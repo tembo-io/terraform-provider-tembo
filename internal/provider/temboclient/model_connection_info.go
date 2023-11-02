@@ -21,6 +21,7 @@ var _ MappedNullable = &ConnectionInfo{}
 type ConnectionInfo struct {
 	Host string `json:"host"`
 	Password string `json:"password"`
+	PoolerHost NullableString `json:"pooler_host,omitempty"`
 	Port int32 `json:"port"`
 	User string `json:"user"`
 }
@@ -94,6 +95,48 @@ func (o *ConnectionInfo) SetPassword(v string) {
 	o.Password = v
 }
 
+// GetPoolerHost returns the PoolerHost field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ConnectionInfo) GetPoolerHost() string {
+	if o == nil || IsNil(o.PoolerHost.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PoolerHost.Get()
+}
+
+// GetPoolerHostOk returns a tuple with the PoolerHost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ConnectionInfo) GetPoolerHostOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PoolerHost.Get(), o.PoolerHost.IsSet()
+}
+
+// HasPoolerHost returns a boolean if a field has been set.
+func (o *ConnectionInfo) HasPoolerHost() bool {
+	if o != nil && o.PoolerHost.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPoolerHost gets a reference to the given NullableString and assigns it to the PoolerHost field.
+func (o *ConnectionInfo) SetPoolerHost(v string) {
+	o.PoolerHost.Set(&v)
+}
+// SetPoolerHostNil sets the value for PoolerHost to be an explicit nil
+func (o *ConnectionInfo) SetPoolerHostNil() {
+	o.PoolerHost.Set(nil)
+}
+
+// UnsetPoolerHost ensures that no value is present for PoolerHost, not even an explicit nil
+func (o *ConnectionInfo) UnsetPoolerHost() {
+	o.PoolerHost.Unset()
+}
+
 // GetPort returns the Port field value
 func (o *ConnectionInfo) GetPort() int32 {
 	if o == nil {
@@ -154,6 +197,9 @@ func (o ConnectionInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["host"] = o.Host
 	toSerialize["password"] = o.Password
+	if o.PoolerHost.IsSet() {
+		toSerialize["pooler_host"] = o.PoolerHost.Get()
+	}
 	toSerialize["port"] = o.Port
 	toSerialize["user"] = o.User
 	return toSerialize, nil

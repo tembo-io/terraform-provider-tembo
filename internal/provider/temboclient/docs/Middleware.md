@@ -6,12 +6,13 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **CustomRequestHeaders** | [**HeaderConfig**](HeaderConfig.md) |  | 
 **StripPrefix** | [**StripPrefixConfig**](StripPrefixConfig.md) |  | 
+**ReplacePathRegex** | [**ReplacePathRegexConfig**](ReplacePathRegexConfig.md) |  | 
 
 ## Methods
 
 ### NewMiddleware
 
-`func NewMiddleware(customRequestHeaders HeaderConfig, stripPrefix StripPrefixConfig, ) *Middleware`
+`func NewMiddleware(customRequestHeaders HeaderConfig, stripPrefix StripPrefixConfig, replacePathRegex ReplacePathRegexConfig, ) *Middleware`
 
 NewMiddleware instantiates a new Middleware object
 This constructor will assign default values to properties that have it defined,
@@ -64,6 +65,26 @@ and a boolean to check if the value has been set.
 `func (o *Middleware) SetStripPrefix(v StripPrefixConfig)`
 
 SetStripPrefix sets StripPrefix field to given value.
+
+
+### GetReplacePathRegex
+
+`func (o *Middleware) GetReplacePathRegex() ReplacePathRegexConfig`
+
+GetReplacePathRegex returns the ReplacePathRegex field if non-nil, zero value otherwise.
+
+### GetReplacePathRegexOk
+
+`func (o *Middleware) GetReplacePathRegexOk() (*ReplacePathRegexConfig, bool)`
+
+GetReplacePathRegexOk returns a tuple with the ReplacePathRegex field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReplacePathRegex
+
+`func (o *Middleware) SetReplacePathRegex(v ReplacePathRegexConfig)`
+
+SetReplacePathRegex sets ReplacePathRegex field to given value.
 
 
 

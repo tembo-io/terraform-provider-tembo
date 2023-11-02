@@ -73,6 +73,10 @@ resource "tembo_instance" "test_db" {
       }
     }
   }
+  restore = {
+    instance_id          = "inst_1698890147972_14d2MG_3"
+    recovery_target_time = "2023-11-01T02:15:30.802Z"
+  }
 }
 
 data "tembo_instance_secrets" "test" {

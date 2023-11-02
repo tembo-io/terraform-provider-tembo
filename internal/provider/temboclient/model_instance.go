@@ -20,7 +20,7 @@ var _ MappedNullable = &Instance{}
 
 // Instance struct for Instance
 type Instance struct {
-	AppServices []AppServiceType `json:"app_services,omitempty"`
+	AppServices []AppType `json:"app_services,omitempty"`
 	ConnectionInfo NullableConnectionInfo `json:"connection_info,omitempty"`
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu Cpu `json:"cpu"`
@@ -74,9 +74,9 @@ func NewInstanceWithDefaults() *Instance {
 }
 
 // GetAppServices returns the AppServices field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Instance) GetAppServices() []AppServiceType {
+func (o *Instance) GetAppServices() []AppType {
 	if o == nil {
-		var ret []AppServiceType
+		var ret []AppType
 		return ret
 	}
 	return o.AppServices
@@ -85,7 +85,7 @@ func (o *Instance) GetAppServices() []AppServiceType {
 // GetAppServicesOk returns a tuple with the AppServices field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Instance) GetAppServicesOk() ([]AppServiceType, bool) {
+func (o *Instance) GetAppServicesOk() ([]AppType, bool) {
 	if o == nil || IsNil(o.AppServices) {
 		return nil, false
 	}
@@ -101,8 +101,8 @@ func (o *Instance) HasAppServices() bool {
 	return false
 }
 
-// SetAppServices gets a reference to the given []AppServiceType and assigns it to the AppServices field.
-func (o *Instance) SetAppServices(v []AppServiceType) {
+// SetAppServices gets a reference to the given []AppType and assigns it to the AppServices field.
+func (o *Instance) SetAppServices(v []AppType) {
 	o.AppServices = v
 }
 
