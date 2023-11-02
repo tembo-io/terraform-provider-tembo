@@ -1,6 +1,6 @@
 resource "tembo_instance" "test_db" {
-  instance_name = "tfprovider-4"
-  org_id        = "org_2UJ2WPYFsE42Cos6mlmIuwIIJ4V"
+  instance_name = "tfprovider-3"
+  org_id        = "org_2UU5ianptzyX8sx6eZhBwd5vKPj"
   cpu           = "1"
   stack_type    = "Standard"
   environment   = "dev"
@@ -74,8 +74,8 @@ resource "tembo_instance" "test_db" {
     }
   }
   restore = {
-    instance_id          = "inst_1698890147972_14d2MG_3"
-    recovery_target_time = "2023-11-01T02:15:30.802Z"
+    instance_id          = "inst_1698949176280_PEyIpo_7"
+    //recovery_target_time = "2023-11-02T17:20:30.802Z"
   }
 }
 

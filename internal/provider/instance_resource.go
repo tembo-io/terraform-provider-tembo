@@ -337,9 +337,9 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 	isRestoreMode := (plan.Restore != nil)
 
 	if isRestoreMode {
-		ctx, instanceId, hasError = restoreInstance(plan, ctx, r, resp, instanceId)
+		ctx, instanceId, hasError = restoreInstance(plan, ctx, r, resp)
 	} else {
-		ctx, instanceId, hasError = createInstance(plan, ctx, r, resp, instanceId)
+		ctx, instanceId, hasError = createInstance(plan, ctx, r, resp)
 	}
 
 	if hasError {
@@ -374,7 +374,9 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 	}
 }
 
-func createInstance(plan temboInstanceResourceModel, ctx context.Context, r *temboInstanceResource, resp *resource.CreateResponse, instanceId string) (context.Context, string, bool) {
+func createInstance(plan temboInstanceResourceModel,
+	ctx context.Context, r *temboInstanceResource,
+	resp *resource.CreateResponse) (context.Context, string, bool) {
 	createInstance := *temboclient.NewCreateInstance(
 		temboclient.Cpu(plan.CPU.ValueString()),
 		temboclient.Environment(plan.Environment.ValueString()),
@@ -415,13 +417,12 @@ func createInstance(plan temboInstanceResourceModel, ctx context.Context, r *tem
 		return nil, "", true
 	}
 
-	instanceId = instance.GetInstanceId()
-	return ctx, instanceId, false
+	return ctx, instance.GetInstanceId(), false
 }
 
 func restoreInstance(plan temboInstanceResourceModel,
 	ctx context.Context, r *temboInstanceResource,
-	resp *resource.CreateResponse, instanceId string) (context.Context, string, bool) {
+	resp *resource.CreateResponse) (context.Context, string, bool) {
 	restoreInstance := *temboclient.NewRestoreInstance(
 		plan.InstanceName.ValueString(),
 		*temboclient.NewRestore(plan.Restore.InstanceId.ValueString()),
