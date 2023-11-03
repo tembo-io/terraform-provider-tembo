@@ -60,6 +60,12 @@ type temboInstanceResourceModel struct {
 	Extensions       []Extension       `tfsdk:"extensions"`
 	IpAllowList      []types.String    `tfsdk:"ip_allow_list"`
 	ConnectionPooler *ConnectionPooler `tfsdk:"connection_pooler"`
+	Restore          *Restore          `tfsdk:"restore"`
+}
+
+type Restore struct {
+	InstanceId         types.String `tfsdk:"instance_id"`
+	RecoveryTargetTime types.String `tfsdk:"recovery_target_time"`
 }
 
 type ConnectionPooler struct {
@@ -300,6 +306,17 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				},
 				Optional: true,
 			},
+			"restore": schema.SingleNestedAttribute{
+				Attributes: map[string]schema.Attribute{
+					"instance_id": schema.StringAttribute{
+						Required: true,
+					},
+					"recovery_target_time": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+				Optional: true,
+			},
 		},
 	}
 }
@@ -314,7 +331,52 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	// Call API to Create Tembo Instance
+	var instanceId string
+	var hasError bool
+
+	isRestoreMode := (plan.Restore != nil)
+
+	if isRestoreMode {
+		ctx, instanceId, hasError = restoreInstance(plan, ctx, r, resp)
+	} else {
+		ctx, instanceId, hasError = createInstance(plan, ctx, r, resp)
+	}
+
+	if hasError {
+		return
+	}
+
+	// Wait until it's created.
+	for {
+		latestInstance, err := getInstance(r, ctx, plan.OrgId.ValueString(), instanceId, &resp.Diagnostics)
+
+		if err != nil {
+			return
+		}
+
+		if latestInstance.GetState() == temboclient.ERROR ||
+			latestInstance.GetState() == temboclient.UP {
+
+			// Map response body to schema and populate Computed attribute values
+			setTemboInstanceResourceModel(&plan, &latestInstance, true, isRestoreMode, &resp.Diagnostics)
+
+			break
+		}
+
+		time.Sleep(10 * time.Second)
+	}
+
+	// Set state to fully populated data
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+}
+
+func createInstance(plan temboInstanceResourceModel,
+	ctx context.Context, r *temboInstanceResource,
+	resp *resource.CreateResponse) (context.Context, string, bool) {
 	createInstance := *temboclient.NewCreateInstance(
 		temboclient.Cpu(plan.CPU.ValueString()),
 		temboclient.Environment(plan.Environment.ValueString()),
@@ -341,7 +403,6 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 		createInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
 	}
 
-	// TODO: Figure out a better way to set this so it doesn't have to be be called in each method.
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	instanceRequest := r.temboInstanceConfig.client.InstanceApi.CreateInstance(ctx,
@@ -353,35 +414,45 @@ func (r *temboInstanceResource) Create(ctx context.Context, req resource.CreateR
 			"Error creating Tembo Instance:",
 			"Could not create Tembo Instance, unexpected error: "+getErrorFromResponse(response),
 		)
-		return
+		return nil, "", true
 	}
 
-	// Wait until it's created.
-	for {
-		latestInstance, err := getInstance(r, ctx, plan.OrgId.ValueString(), instance.GetInstanceId(), &resp.Diagnostics)
+	return ctx, instance.GetInstanceId(), false
+}
 
-		if err != nil {
-			return
-		}
+func restoreInstance(plan temboInstanceResourceModel,
+	ctx context.Context, r *temboInstanceResource,
+	resp *resource.CreateResponse) (context.Context, string, bool) {
+	restoreInstance := *temboclient.NewRestoreInstance(
+		plan.InstanceName.ValueString(),
+		*temboclient.NewRestore(plan.Restore.InstanceId.ValueString()),
+	)
 
-		if latestInstance.GetState() == temboclient.ERROR ||
-			latestInstance.GetState() == temboclient.UP {
+	restoreInstance.SetCpu(temboclient.Cpu(plan.CPU.ValueString()))
+	restoreInstance.SetEnvironment(temboclient.Environment(plan.Environment.ValueString()))
+	restoreInstance.SetMemory(temboclient.Memory(plan.Memory.ValueString()))
+	restoreInstance.SetStorage(temboclient.Storage(plan.Storage.ValueString()))
 
-			// Map response body to schema and populate Computed attribute values
-			setTemboInstanceResourceModel(&plan, &latestInstance, true, &resp.Diagnostics)
+	restoreInstance.SetExtraDomainsRw(getStringArray(plan.ExtraDomainsRw))
 
-			break
-		}
+	/*if plan.ConnectionPooler != nil {
+		restoreInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
+	}*/
 
-		time.Sleep(10 * time.Second)
+	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
+
+	instanceRequest := r.temboInstanceConfig.client.InstanceApi.RestoreInstance(ctx,
+		plan.OrgId.ValueString())
+
+	instance, response, err := instanceRequest.RestoreInstance(restoreInstance).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error restoring Tembo Instance:",
+			"Could not restore Tembo Instance, unexpected error: "+getErrorFromResponse(response),
+		)
+		return nil, "", true
 	}
-
-	// Set state to fully populated data
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
+	return ctx, instance.GetInstanceId(), false
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -406,7 +477,7 @@ func (r *temboInstanceResource) Read(ctx context.Context, req resource.ReadReque
 	}
 
 	// Overwrite items with refreshed state
-	setTemboInstanceResourceModel(state, instance, false, &resp.Diagnostics)
+	setTemboInstanceResourceModel(state, instance, false, false, &resp.Diagnostics)
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
@@ -474,7 +545,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 			updateInstance.GetReplicas() == instance.GetReplicas() &&
 			instance.GetState() == temboclient.UP {
 			// Update resource state with updated items and timestamp
-			setTemboInstanceResourceModel(&plan, &instance, true, &resp.Diagnostics)
+			setTemboInstanceResourceModel(&plan, &instance, true, false, &resp.Diagnostics)
 			break
 		}
 		time.Sleep(10 * time.Second)
@@ -535,7 +606,7 @@ func (r *temboInstanceResource) ImportState(ctx context.Context, req resource.Im
 }
 
 func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceModel,
-	instance *temboclient.Instance, isUpdateMode bool, diagnostics *diag.Diagnostics) {
+	instance *temboclient.Instance, isUpdateMode bool, isRestoreMode bool, diagnostics *diag.Diagnostics) {
 	if isUpdateMode {
 		instanceResourceModel.LastUpdated = types.StringValue(time.Now().Format(time.RFC850))
 	}
@@ -544,12 +615,10 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 	instanceResourceModel.InstanceName = types.StringValue(instance.InstanceName)
 	instanceResourceModel.OrgId = types.StringValue(instance.GetOrganizationId())
 	instanceResourceModel.CPU = types.StringValue(string(instance.GetCpu()))
-	instanceResourceModel.StackType = types.StringValue(string(instance.StackType))
 	instanceResourceModel.Environment = types.StringValue(string(instance.GetEnvironment()))
 	instanceResourceModel.Memory = types.StringValue(string(instance.GetMemory()))
 	instanceResourceModel.Storage = types.StringValue(string(instance.GetStorage()))
 	instanceResourceModel.State = types.StringValue(string(instance.GetState()))
-	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
 
 	if len(instance.ExtraDomainsRw) > 0 {
 		var localExtraDomainsRw []basetypes.StringValue
@@ -558,6 +627,23 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		}
 		instanceResourceModel.ExtraDomainsRw = localExtraDomainsRw
 	}
+
+	// Restore Mode only sets above fields so skipping the other fields.
+	if isRestoreMode {
+		return
+	}
+
+	if instance.ConnectionPooler.Get() != nil {
+		var localConnectionPooler ConnectionPooler
+		cp := instance.ConnectionPooler.Get()
+		localConnectionPooler.Enabled = types.BoolValue(*cp.Enabled)
+		localConnectionPooler.Pooler.PoolMode = types.StringValue(string(*cp.Pooler.PoolMode.Ptr()))
+		localConnectionPooler.Pooler.Parameters = cp.Pooler.Parameters
+		instanceResourceModel.ConnectionPooler = &localConnectionPooler
+	}
+
+	instanceResourceModel.StackType = types.StringValue(string(instance.StackType))
+	instanceResourceModel.Replicas = types.Int64Value(int64(instance.GetReplicas()))
 
 	if len(instance.PostgresConfigs) > 0 {
 		var localPGConfigs []KeyValue
@@ -599,15 +685,6 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 			localIpAllowList = append(localIpAllowList, types.StringValue(domain))
 		}
 		instanceResourceModel.IpAllowList = localIpAllowList
-	}
-
-	if instance.ConnectionPooler.Get() != nil {
-		var localConnectionPooler ConnectionPooler
-		cp := instance.ConnectionPooler.Get()
-		localConnectionPooler.Enabled = types.BoolValue(*cp.Enabled)
-		localConnectionPooler.Pooler.PoolMode = types.StringValue(string(*cp.Pooler.PoolMode.Ptr()))
-		localConnectionPooler.Pooler.Parameters = cp.Pooler.Parameters
-		instanceResourceModel.ConnectionPooler = &localConnectionPooler
 	}
 }
 

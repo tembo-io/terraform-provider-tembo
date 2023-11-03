@@ -92,16 +92,19 @@ Class | Method | HTTP request | Description
 *InstanceApi* | [**InstanceEvent**](docs/InstanceApi.md#instanceevent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
 *InstanceApi* | [**PatchInstance**](docs/InstanceApi.md#patchinstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
 *InstanceApi* | [**PutInstance**](docs/InstanceApi.md#putinstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
+*InstanceApi* | [**RestoreInstance**](docs/InstanceApi.md#restoreinstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
 *StackApi* | [**GetAllEntities**](docs/StackApi.md#getallentities) | **Get** /api/v1/stacks | Attributes for all stacks
 *StackApi* | [**GetEntity**](docs/StackApi.md#getentity) | **Get** /api/v1/stacks/{type} | Get the attributes of a single stack
 
 
 ## Documentation For Models
 
+ - [AppConfig](docs/AppConfig.md)
  - [AppService](docs/AppService.md)
- - [AppServiceConfig](docs/AppServiceConfig.md)
- - [AppServiceType](docs/AppServiceType.md)
- - [AppServiceTypeOneOf](docs/AppServiceTypeOneOf.md)
+ - [AppType](docs/AppType.md)
+ - [AppTypeOneOf](docs/AppTypeOneOf.md)
+ - [AppTypeOneOf1](docs/AppTypeOneOf1.md)
+ - [AppTypeOneOf2](docs/AppTypeOneOf2.md)
  - [ConnectionInfo](docs/ConnectionInfo.md)
  - [ConnectionPooler](docs/ConnectionPooler.md)
  - [Cpu](docs/Cpu.md)
@@ -126,6 +129,7 @@ Class | Method | HTTP request | Description
  - [Middleware](docs/Middleware.md)
  - [MiddlewareOneOf](docs/MiddlewareOneOf.md)
  - [MiddlewareOneOf1](docs/MiddlewareOneOf1.md)
+ - [MiddlewareOneOf2](docs/MiddlewareOneOf2.md)
  - [PatchInstance](docs/PatchInstance.md)
  - [PgBouncer](docs/PgBouncer.md)
  - [PgConfig](docs/PgConfig.md)
@@ -134,8 +138,12 @@ Class | Method | HTTP request | Description
  - [PoolerTemplateSpecContainersResourcesClaims](docs/PoolerTemplateSpecContainersResourcesClaims.md)
  - [Probe](docs/Probe.md)
  - [Probes](docs/Probes.md)
+ - [ReplacePathRegexConfig](docs/ReplacePathRegexConfig.md)
+ - [ReplacePathRegexConfigType](docs/ReplacePathRegexConfigType.md)
  - [Resource](docs/Resource.md)
  - [ResourceRequirements](docs/ResourceRequirements.md)
+ - [Restore](docs/Restore.md)
+ - [RestoreInstance](docs/RestoreInstance.md)
  - [Routing](docs/Routing.md)
  - [StackType](docs/StackType.md)
  - [State](docs/State.md)

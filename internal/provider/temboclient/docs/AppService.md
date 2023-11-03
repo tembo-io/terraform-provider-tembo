@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **Middlewares** | Pointer to [**[]Middleware**](Middleware.md) |  | [optional] 
 **Name** | **string** |  | 
 **Probes** | Pointer to [**NullableProbes**](Probes.md) |  | [optional] 
-**Resources** | Pointer to [**NullableResourceRequirements**](ResourceRequirements.md) |  | [optional] 
+**Resources** | Pointer to [**ResourceRequirements**](ResourceRequirements.md) |  | [optional] 
 **Routing** | Pointer to [**[]Routing**](Routing.md) |  | [optional] 
 
 ## Methods
@@ -273,16 +273,6 @@ SetResources sets Resources field to given value.
 
 HasResources returns a boolean if a field has been set.
 
-### SetResourcesNil
-
-`func (o *AppService) SetResourcesNil(b bool)`
-
- SetResourcesNil sets the value for Resources to be an explicit nil
-
-### UnsetResources
-`func (o *AppService) UnsetResources()`
-
-UnsetResources ensures that no value is present for Resources, not even an explicit nil
 ### GetRouting
 
 `func (o *AppService) GetRouting() []Routing`

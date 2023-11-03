@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AppServices** | Pointer to [**[]AppServiceType**](AppServiceType.md) |  | [optional] 
+**AppServices** | Pointer to [**[]AppType**](AppType.md) |  | [optional] 
 **ConnectionInfo** | Pointer to [**NullableConnectionInfo**](ConnectionInfo.md) |  | [optional] 
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
@@ -49,20 +49,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetAppServices
 
-`func (o *Instance) GetAppServices() []AppServiceType`
+`func (o *Instance) GetAppServices() []AppType`
 
 GetAppServices returns the AppServices field if non-nil, zero value otherwise.
 
 ### GetAppServicesOk
 
-`func (o *Instance) GetAppServicesOk() (*[]AppServiceType, bool)`
+`func (o *Instance) GetAppServicesOk() (*[]AppType, bool)`
 
 GetAppServicesOk returns a tuple with the AppServices field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAppServices
 
-`func (o *Instance) SetAppServices(v []AppServiceType)`
+`func (o *Instance) SetAppServices(v []AppType)`
 
 SetAppServices sets AppServices field to given value.
 

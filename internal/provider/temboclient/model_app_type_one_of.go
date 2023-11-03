@@ -14,37 +14,37 @@ import (
 	"encoding/json"
 )
 
-// checks if the AppServiceTypeOneOf type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &AppServiceTypeOneOf{}
+// checks if the AppTypeOneOf type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AppTypeOneOf{}
 
-// AppServiceTypeOneOf struct for AppServiceTypeOneOf
-type AppServiceTypeOneOf struct {
-	Restapi NullableAppServiceConfig `json:"restapi"`
+// AppTypeOneOf struct for AppTypeOneOf
+type AppTypeOneOf struct {
+	Restapi NullableAppConfig `json:"restapi"`
 }
 
-// NewAppServiceTypeOneOf instantiates a new AppServiceTypeOneOf object
+// NewAppTypeOneOf instantiates a new AppTypeOneOf object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppServiceTypeOneOf(restapi NullableAppServiceConfig) *AppServiceTypeOneOf {
-	this := AppServiceTypeOneOf{}
+func NewAppTypeOneOf(restapi NullableAppConfig) *AppTypeOneOf {
+	this := AppTypeOneOf{}
 	this.Restapi = restapi
 	return &this
 }
 
-// NewAppServiceTypeOneOfWithDefaults instantiates a new AppServiceTypeOneOf object
+// NewAppTypeOneOfWithDefaults instantiates a new AppTypeOneOf object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewAppServiceTypeOneOfWithDefaults() *AppServiceTypeOneOf {
-	this := AppServiceTypeOneOf{}
+func NewAppTypeOneOfWithDefaults() *AppTypeOneOf {
+	this := AppTypeOneOf{}
 	return &this
 }
 
 // GetRestapi returns the Restapi field value
-// If the value is explicit nil, the zero value for AppServiceConfig will be returned
-func (o *AppServiceTypeOneOf) GetRestapi() AppServiceConfig {
+// If the value is explicit nil, the zero value for AppConfig will be returned
+func (o *AppTypeOneOf) GetRestapi() AppConfig {
 	if o == nil || o.Restapi.Get() == nil {
-		var ret AppServiceConfig
+		var ret AppConfig
 		return ret
 	}
 
@@ -54,7 +54,7 @@ func (o *AppServiceTypeOneOf) GetRestapi() AppServiceConfig {
 // GetRestapiOk returns a tuple with the Restapi field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AppServiceTypeOneOf) GetRestapiOk() (*AppServiceConfig, bool) {
+func (o *AppTypeOneOf) GetRestapiOk() (*AppConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -62,11 +62,11 @@ func (o *AppServiceTypeOneOf) GetRestapiOk() (*AppServiceConfig, bool) {
 }
 
 // SetRestapi sets field value
-func (o *AppServiceTypeOneOf) SetRestapi(v AppServiceConfig) {
+func (o *AppTypeOneOf) SetRestapi(v AppConfig) {
 	o.Restapi.Set(&v)
 }
 
-func (o AppServiceTypeOneOf) MarshalJSON() ([]byte, error) {
+func (o AppTypeOneOf) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -74,44 +74,44 @@ func (o AppServiceTypeOneOf) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o AppServiceTypeOneOf) ToMap() (map[string]interface{}, error) {
+func (o AppTypeOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["restapi"] = o.Restapi.Get()
 	return toSerialize, nil
 }
 
-type NullableAppServiceTypeOneOf struct {
-	value *AppServiceTypeOneOf
+type NullableAppTypeOneOf struct {
+	value *AppTypeOneOf
 	isSet bool
 }
 
-func (v NullableAppServiceTypeOneOf) Get() *AppServiceTypeOneOf {
+func (v NullableAppTypeOneOf) Get() *AppTypeOneOf {
 	return v.value
 }
 
-func (v *NullableAppServiceTypeOneOf) Set(val *AppServiceTypeOneOf) {
+func (v *NullableAppTypeOneOf) Set(val *AppTypeOneOf) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableAppServiceTypeOneOf) IsSet() bool {
+func (v NullableAppTypeOneOf) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableAppServiceTypeOneOf) Unset() {
+func (v *NullableAppTypeOneOf) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableAppServiceTypeOneOf(val *AppServiceTypeOneOf) *NullableAppServiceTypeOneOf {
-	return &NullableAppServiceTypeOneOf{value: val, isSet: true}
+func NewNullableAppTypeOneOf(val *AppTypeOneOf) *NullableAppTypeOneOf {
+	return &NullableAppTypeOneOf{value: val, isSet: true}
 }
 
-func (v NullableAppServiceTypeOneOf) MarshalJSON() ([]byte, error) {
+func (v NullableAppTypeOneOf) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableAppServiceTypeOneOf) UnmarshalJSON(src []byte) error {
+func (v *NullableAppTypeOneOf) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

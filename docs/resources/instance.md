@@ -94,6 +94,7 @@ output "instance" {
 - `ip_allow_list` (List of String) Allowed IP list
 - `postgres_configs` (Attributes List) Postgres configs (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number) Instance replicas
+- `restore` (Attributes) (see [below for nested schema](#nestedatt--restore))
 - `trunk_installs` (Attributes List) Trunk installs (see [below for nested schema](#nestedatt--trunk_installs))
 
 ### Read-Only
@@ -160,6 +161,18 @@ Required:
 Optional:
 
 - `value` (String) Postgres config value
+
+
+<a id="nestedatt--restore"></a>
+### Nested Schema for `restore`
+
+Required:
+
+- `instance_id` (String)
+
+Optional:
+
+- `recovery_target_time` (String)
 
 
 <a id="nestedatt--trunk_installs"></a>

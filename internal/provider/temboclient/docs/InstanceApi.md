@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**InstanceEvent**](InstanceApi.md#InstanceEvent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
 [**PatchInstance**](InstanceApi.md#PatchInstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
 [**PutInstance**](InstanceApi.md#PutInstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
+[**RestoreInstance**](InstanceApi.md#RestoreInstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
 
 
 
@@ -583,6 +584,78 @@ Name | Type | Description  | Notes
 
 - **Content-Type**: application/json
 - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## RestoreInstance
+
+> Instance RestoreInstance(ctx, orgId).RestoreInstance(restoreInstance).Execute()
+
+Restore a Tembo instance
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+)
+
+func main() {
+    orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
+    restoreInstance := *openapiclient.NewRestoreInstance("InstanceName_example", *openapiclient.NewRestore("InstanceId_example")) // RestoreInstance | 
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.InstanceApi.RestoreInstance(context.Background(), orgId).RestoreInstance(restoreInstance).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.RestoreInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `RestoreInstance`: Instance
+    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.RestoreInstance`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**orgId** | **string** | Organization ID that owns the Tembo instance | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiRestoreInstanceRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **restoreInstance** | [**RestoreInstance**](RestoreInstance.md) |  | 
+
+### Return type
+
+[**Instance**](Instance.md)
+
+### Authorization
+
+[jwt_token](../README.md#jwt_token)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, text/plain
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)

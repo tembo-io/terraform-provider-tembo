@@ -19,6 +19,7 @@ import (
 type Middleware struct {
 	MiddlewareOneOf *MiddlewareOneOf
 	MiddlewareOneOf1 *MiddlewareOneOf1
+	MiddlewareOneOf2 *MiddlewareOneOf2
 }
 
 // MiddlewareOneOfAsMiddleware is a convenience function that returns MiddlewareOneOf wrapped in Middleware
@@ -32,6 +33,13 @@ func MiddlewareOneOfAsMiddleware(v *MiddlewareOneOf) Middleware {
 func MiddlewareOneOf1AsMiddleware(v *MiddlewareOneOf1) Middleware {
 	return Middleware{
 		MiddlewareOneOf1: v,
+	}
+}
+
+// MiddlewareOneOf2AsMiddleware is a convenience function that returns MiddlewareOneOf2 wrapped in Middleware
+func MiddlewareOneOf2AsMiddleware(v *MiddlewareOneOf2) Middleware {
+	return Middleware{
+		MiddlewareOneOf2: v,
 	}
 }
 
@@ -66,10 +74,24 @@ func (dst *Middleware) UnmarshalJSON(data []byte) error {
 		dst.MiddlewareOneOf1 = nil
 	}
 
+	// try to unmarshal data into MiddlewareOneOf2
+	err = newStrictDecoder(data).Decode(&dst.MiddlewareOneOf2)
+	if err == nil {
+		jsonMiddlewareOneOf2, _ := json.Marshal(dst.MiddlewareOneOf2)
+		if string(jsonMiddlewareOneOf2) == "{}" { // empty struct
+			dst.MiddlewareOneOf2 = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.MiddlewareOneOf2 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.MiddlewareOneOf = nil
 		dst.MiddlewareOneOf1 = nil
+		dst.MiddlewareOneOf2 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(Middleware)")
 	} else if match == 1 {
@@ -89,6 +111,10 @@ func (src Middleware) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.MiddlewareOneOf1)
 	}
 
+	if src.MiddlewareOneOf2 != nil {
+		return json.Marshal(&src.MiddlewareOneOf2)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -103,6 +129,10 @@ func (obj *Middleware) GetActualInstance() (interface{}) {
 
 	if obj.MiddlewareOneOf1 != nil {
 		return obj.MiddlewareOneOf1
+	}
+
+	if obj.MiddlewareOneOf2 != nil {
+		return obj.MiddlewareOneOf2
 	}
 
 	// all schemas are nil

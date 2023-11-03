@@ -92,6 +92,14 @@ paths:
       requestBody:
         content:
           application/json:
+            example:
+              stack_type: OLTP
+              instance_name: my-tembo-instance
+              cpu: "1"
+              memory: 2Gi
+              storage: 10Gi
+              replicas: 1
+              environment: dev
             schema:
               $ref: '#/components/schemas/CreateInstance'
         required: true
@@ -410,6 +418,60 @@ paths:
       summary: Replace all attributes of an existing Tembo instance
       tags:
       - instance
+  /api/v1/orgs/{org_id}/restore:
+    post:
+      description: |
+        Restore a Tembo instance
+      operationId: restore_instance
+      parameters:
+      - description: Organization ID that owns the Tembo instance
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreInstance'
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+          description: Restoring to a new Tembo instance
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request parameters
+        "401":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Naming conflict
+      summary: Restore a Tembo instance
+      tags:
+      - instance
   /api/v1/stacks:
     get:
       description: |
@@ -469,6 +531,14 @@ paths:
       - stack
 components:
   schemas:
+    AppConfig:
+      properties:
+        env:
+          items:
+            $ref: '#/components/schemas/EnvVar'
+          nullable: true
+          type: array
+      type: object
     AppService:
       properties:
         args:
@@ -500,9 +570,7 @@ components:
           - $ref: '#/components/schemas/Probes'
           nullable: true
         resources:
-          allOf:
-          - $ref: '#/components/schemas/ResourceRequirements'
-          nullable: true
+          $ref: '#/components/schemas/ResourceRequirements'
         routing:
           items:
             $ref: '#/components/schemas/Routing'
@@ -512,22 +580,22 @@ components:
       - image
       - name
       type: object
-    AppServiceConfig:
-      properties:
-        env:
-          items:
-            $ref: '#/components/schemas/EnvVar'
-          nullable: true
-          type: array
-      type: object
-    AppServiceType:
+    AppType:
       oneOf:
-      - $ref: '#/components/schemas/AppServiceType_oneOf'
+      - $ref: '#/components/schemas/AppType_oneOf'
+      - $ref: '#/components/schemas/AppType_oneOf_1'
+      - enum:
+        - mq-api
+        type: string
+      - $ref: '#/components/schemas/AppType_oneOf_2'
     ConnectionInfo:
       properties:
         host:
           type: string
         password:
+          type: string
+        pooler_host:
+          nullable: true
           type: string
         port:
           format: int32
@@ -611,7 +679,7 @@ components:
       properties:
         app_services:
           items:
-            $ref: '#/components/schemas/AppServiceType'
+            $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
         connection_pooler:
@@ -922,7 +990,7 @@ components:
       properties:
         app_services:
           items:
-            $ref: '#/components/schemas/AppServiceType'
+            $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
         connection_info:
@@ -1030,6 +1098,7 @@ components:
       oneOf:
       - $ref: '#/components/schemas/Middleware_oneOf'
       - $ref: '#/components/schemas/Middleware_oneOf_1'
+      - $ref: '#/components/schemas/Middleware_oneOf_2'
     PatchInstance:
       example:
         environment: ""
@@ -1083,7 +1152,7 @@ components:
       properties:
         app_services:
           items:
-            $ref: '#/components/schemas/AppServiceType'
+            $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
         connection_pooler:
@@ -1218,6 +1287,26 @@ components:
       - liveness
       - readiness
       type: object
+    ReplacePathRegexConfig:
+      properties:
+        config:
+          $ref: '#/components/schemas/ReplacePathRegexConfigType'
+        name:
+          type: string
+      required:
+      - config
+      - name
+      type: object
+    ReplacePathRegexConfigType:
+      properties:
+        regex:
+          type: string
+        replacement:
+          type: string
+      required:
+      - regex
+      - replacement
+      type: object
     Replicas:
       format: int32
       type: integer
@@ -1241,6 +1330,76 @@ components:
           allOf:
           - $ref: '#/components/schemas/Resource'
           nullable: true
+      type: object
+    Restore:
+      example:
+        instance_id: instance_id
+        recovery_target_time: 2000-01-23T04:56:07.000+00:00
+      properties:
+        instance_id:
+          type: string
+        recovery_target_time:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - instance_id
+      type: object
+    RestoreInstance:
+      example:
+        environment: ""
+        extra_domains_rw:
+        - extra_domains_rw
+        - extra_domains_rw
+        instance_name: instance_name
+        memory: ""
+        restore:
+          instance_id: instance_id
+          recovery_target_time: 2000-01-23T04:56:07.000+00:00
+        app_services:
+        - null
+        - null
+        cpu: ""
+        storage: ""
+        connection_pooler: ""
+      properties:
+        app_services:
+          items:
+            $ref: '#/components/schemas/AppType'
+          nullable: true
+          type: array
+        connection_pooler:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPooler'
+          nullable: true
+        cpu:
+          allOf:
+          - $ref: '#/components/schemas/Cpu'
+          nullable: true
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/Environment'
+          nullable: true
+        extra_domains_rw:
+          items:
+            type: string
+          nullable: true
+          type: array
+        instance_name:
+          type: string
+        memory:
+          allOf:
+          - $ref: '#/components/schemas/Memory'
+          nullable: true
+        restore:
+          $ref: '#/components/schemas/Restore'
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/Storage'
+          nullable: true
+      required:
+      - instance_name
+      - restore
       type: object
     Routing:
       properties:
@@ -1266,6 +1425,7 @@ components:
       - MachineLearning
       - OLAP
       - OLTP
+      - VectorDB
       type: string
     State:
       enum:
@@ -1397,7 +1557,7 @@ components:
       properties:
         app_services:
           items:
-            $ref: '#/components/schemas/AppServiceType'
+            $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
         connection_pooler:
@@ -1447,14 +1607,30 @@ components:
       - replicas
       - storage
       type: object
-    AppServiceType_oneOf:
+    AppType_oneOf:
       properties:
         restapi:
           allOf:
-          - $ref: '#/components/schemas/AppServiceConfig'
+          - $ref: '#/components/schemas/AppConfig'
           nullable: true
       required:
       - restapi
+      type: object
+    AppType_oneOf_1:
+      properties:
+        http:
+          allOf:
+          - $ref: '#/components/schemas/AppConfig'
+          nullable: true
+      required:
+      - http
+      type: object
+    AppType_oneOf_2:
+      properties:
+        custom:
+          $ref: '#/components/schemas/AppService'
+      required:
+      - custom
       type: object
     IntOrString_oneOf:
       properties:
@@ -1484,6 +1660,13 @@ components:
           $ref: '#/components/schemas/StripPrefixConfig'
       required:
       - stripPrefix
+      type: object
+    Middleware_oneOf_2:
+      properties:
+        replacePathRegex:
+          $ref: '#/components/schemas/ReplacePathRegexConfig'
+      required:
+      - replacePathRegex
       type: object
   securitySchemes:
     jwt_token:

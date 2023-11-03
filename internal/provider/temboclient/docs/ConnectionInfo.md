@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Host** | **string** |  | 
 **Password** | **string** |  | 
+**PoolerHost** | Pointer to **NullableString** |  | [optional] 
 **Port** | **int32** |  | 
 **User** | **string** |  | 
 
@@ -68,6 +69,41 @@ and a boolean to check if the value has been set.
 SetPassword sets Password field to given value.
 
 
+### GetPoolerHost
+
+`func (o *ConnectionInfo) GetPoolerHost() string`
+
+GetPoolerHost returns the PoolerHost field if non-nil, zero value otherwise.
+
+### GetPoolerHostOk
+
+`func (o *ConnectionInfo) GetPoolerHostOk() (*string, bool)`
+
+GetPoolerHostOk returns a tuple with the PoolerHost field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPoolerHost
+
+`func (o *ConnectionInfo) SetPoolerHost(v string)`
+
+SetPoolerHost sets PoolerHost field to given value.
+
+### HasPoolerHost
+
+`func (o *ConnectionInfo) HasPoolerHost() bool`
+
+HasPoolerHost returns a boolean if a field has been set.
+
+### SetPoolerHostNil
+
+`func (o *ConnectionInfo) SetPoolerHostNil(b bool)`
+
+ SetPoolerHostNil sets the value for PoolerHost to be an explicit nil
+
+### UnsetPoolerHost
+`func (o *ConnectionInfo) UnsetPoolerHost()`
+
+UnsetPoolerHost ensures that no value is present for PoolerHost, not even an explicit nil
 ### GetPort
 
 `func (o *ConnectionInfo) GetPort() int32`

@@ -1,58 +1,58 @@
-# AppServiceType
+# AppTypeOneOf
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Restapi** | [**NullableAppServiceConfig**](AppServiceConfig.md) |  | 
+**Restapi** | [**NullableAppConfig**](AppConfig.md) |  | 
 
 ## Methods
 
-### NewAppServiceType
+### NewAppTypeOneOf
 
-`func NewAppServiceType(restapi NullableAppServiceConfig, ) *AppServiceType`
+`func NewAppTypeOneOf(restapi NullableAppConfig, ) *AppTypeOneOf`
 
-NewAppServiceType instantiates a new AppServiceType object
+NewAppTypeOneOf instantiates a new AppTypeOneOf object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewAppServiceTypeWithDefaults
+### NewAppTypeOneOfWithDefaults
 
-`func NewAppServiceTypeWithDefaults() *AppServiceType`
+`func NewAppTypeOneOfWithDefaults() *AppTypeOneOf`
 
-NewAppServiceTypeWithDefaults instantiates a new AppServiceType object
+NewAppTypeOneOfWithDefaults instantiates a new AppTypeOneOf object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetRestapi
 
-`func (o *AppServiceType) GetRestapi() AppServiceConfig`
+`func (o *AppTypeOneOf) GetRestapi() AppConfig`
 
 GetRestapi returns the Restapi field if non-nil, zero value otherwise.
 
 ### GetRestapiOk
 
-`func (o *AppServiceType) GetRestapiOk() (*AppServiceConfig, bool)`
+`func (o *AppTypeOneOf) GetRestapiOk() (*AppConfig, bool)`
 
 GetRestapiOk returns a tuple with the Restapi field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRestapi
 
-`func (o *AppServiceType) SetRestapi(v AppServiceConfig)`
+`func (o *AppTypeOneOf) SetRestapi(v AppConfig)`
 
 SetRestapi sets Restapi field to given value.
 
 
 ### SetRestapiNil
 
-`func (o *AppServiceType) SetRestapiNil(b bool)`
+`func (o *AppTypeOneOf) SetRestapiNil(b bool)`
 
  SetRestapiNil sets the value for Restapi to be an explicit nil
 
 ### UnsetRestapi
-`func (o *AppServiceType) UnsetRestapi()`
+`func (o *AppTypeOneOf) UnsetRestapi()`
 
 UnsetRestapi ensures that no value is present for Restapi, not even an explicit nil
 
