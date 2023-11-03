@@ -435,9 +435,9 @@ func restoreInstance(plan temboInstanceResourceModel,
 
 	restoreInstance.SetExtraDomainsRw(getStringArray(plan.ExtraDomainsRw))
 
-	if plan.ConnectionPooler != nil {
+	/*if plan.ConnectionPooler != nil {
 		restoreInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
-	}
+	}*/
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
@@ -628,6 +628,11 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.ExtraDomainsRw = localExtraDomainsRw
 	}
 
+	// Restore Mode only sets above fields so skipping the other fields.
+	if isRestoreMode {
+		return
+	}
+
 	if instance.ConnectionPooler.Get() != nil {
 		var localConnectionPooler ConnectionPooler
 		cp := instance.ConnectionPooler.Get()
@@ -635,11 +640,6 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		localConnectionPooler.Pooler.PoolMode = types.StringValue(string(*cp.Pooler.PoolMode.Ptr()))
 		localConnectionPooler.Pooler.Parameters = cp.Pooler.Parameters
 		instanceResourceModel.ConnectionPooler = &localConnectionPooler
-	}
-
-	// Restore Mode only sets above fields so skipping the other fields.
-	if isRestoreMode {
-		return
 	}
 
 	instanceResourceModel.StackType = types.StringValue(string(instance.StackType))
