@@ -20,12 +20,12 @@ import (
 )
 
 
-// InstanceApiService InstanceApi service
-type InstanceApiService service
+// InstanceAPIService InstanceAPI service
+type InstanceAPIService service
 
 type ApiCreateInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	createInstance *CreateInstance
 }
@@ -49,7 +49,7 @@ Create a new Tembo instance
  @param orgId Organization ID that owns the Tembo instance
  @return ApiCreateInstanceRequest
 */
-func (a *InstanceApiService) CreateInstance(ctx context.Context, orgId string) ApiCreateInstanceRequest {
+func (a *InstanceAPIService) CreateInstance(ctx context.Context, orgId string) ApiCreateInstanceRequest {
 	return ApiCreateInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -59,7 +59,7 @@ func (a *InstanceApiService) CreateInstance(ctx context.Context, orgId string) A
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) CreateInstanceExecute(r ApiCreateInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) CreateInstanceExecute(r ApiCreateInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
@@ -67,7 +67,7 @@ func (a *InstanceApiService) CreateInstanceExecute(r ApiCreateInstanceRequest) (
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.CreateInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.CreateInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -183,7 +183,7 @@ func (a *InstanceApiService) CreateInstanceExecute(r ApiCreateInstanceRequest) (
 
 type ApiDeleteInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	instanceId string
 }
@@ -203,7 +203,7 @@ Delete an existing Tembo instance
  @param instanceId Delete this instance id
  @return ApiDeleteInstanceRequest
 */
-func (a *InstanceApiService) DeleteInstance(ctx context.Context, orgId string, instanceId string) ApiDeleteInstanceRequest {
+func (a *InstanceAPIService) DeleteInstance(ctx context.Context, orgId string, instanceId string) ApiDeleteInstanceRequest {
 	return ApiDeleteInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -214,7 +214,7 @@ func (a *InstanceApiService) DeleteInstance(ctx context.Context, orgId string, i
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) DeleteInstanceExecute(r ApiDeleteInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) DeleteInstanceExecute(r ApiDeleteInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
@@ -222,7 +222,7 @@ func (a *InstanceApiService) DeleteInstanceExecute(r ApiDeleteInstanceRequest) (
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.DeleteInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.DeleteInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -334,7 +334,7 @@ func (a *InstanceApiService) DeleteInstanceExecute(r ApiDeleteInstanceRequest) (
 
 type ApiGetAllRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 }
 
@@ -352,7 +352,7 @@ Get all Tembo instances in an organization
  @param orgId organization id for the request
  @return ApiGetAllRequest
 */
-func (a *InstanceApiService) GetAll(ctx context.Context, orgId string) ApiGetAllRequest {
+func (a *InstanceAPIService) GetAll(ctx context.Context, orgId string) ApiGetAllRequest {
 	return ApiGetAllRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -362,7 +362,7 @@ func (a *InstanceApiService) GetAll(ctx context.Context, orgId string) ApiGetAll
 
 // Execute executes the request
 //  @return []Instance
-func (a *InstanceApiService) GetAllExecute(r ApiGetAllRequest) ([]Instance, *http.Response, error) {
+func (a *InstanceAPIService) GetAllExecute(r ApiGetAllRequest) ([]Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -370,7 +370,7 @@ func (a *InstanceApiService) GetAllExecute(r ApiGetAllRequest) ([]Instance, *htt
 		localVarReturnValue  []Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.GetAll")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.GetAll")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -470,7 +470,7 @@ func (a *InstanceApiService) GetAllExecute(r ApiGetAllRequest) ([]Instance, *htt
 
 type ApiGetInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	instanceId string
 }
@@ -490,7 +490,7 @@ Get an existing Tembo instance
  @param instanceId
  @return ApiGetInstanceRequest
 */
-func (a *InstanceApiService) GetInstance(ctx context.Context, orgId string, instanceId string) ApiGetInstanceRequest {
+func (a *InstanceAPIService) GetInstance(ctx context.Context, orgId string, instanceId string) ApiGetInstanceRequest {
 	return ApiGetInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -501,7 +501,7 @@ func (a *InstanceApiService) GetInstance(ctx context.Context, orgId string, inst
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) GetInstanceExecute(r ApiGetInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) GetInstanceExecute(r ApiGetInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -509,7 +509,7 @@ func (a *InstanceApiService) GetInstanceExecute(r ApiGetInstanceRequest) (*Insta
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.GetInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.GetInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -610,7 +610,7 @@ func (a *InstanceApiService) GetInstanceExecute(r ApiGetInstanceRequest) (*Insta
 
 type ApiGetSchemaRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 }
 
 func (r ApiGetSchemaRequest) Execute() (*ErrorResponseSchema, *http.Response, error) {
@@ -626,7 +626,7 @@ Get the json-schema for an instance
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetSchemaRequest
 */
-func (a *InstanceApiService) GetSchema(ctx context.Context) ApiGetSchemaRequest {
+func (a *InstanceAPIService) GetSchema(ctx context.Context) ApiGetSchemaRequest {
 	return ApiGetSchemaRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -635,7 +635,7 @@ func (a *InstanceApiService) GetSchema(ctx context.Context) ApiGetSchemaRequest 
 
 // Execute executes the request
 //  @return ErrorResponseSchema
-func (a *InstanceApiService) GetSchemaExecute(r ApiGetSchemaRequest) (*ErrorResponseSchema, *http.Response, error) {
+func (a *InstanceAPIService) GetSchemaExecute(r ApiGetSchemaRequest) (*ErrorResponseSchema, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -643,7 +643,7 @@ func (a *InstanceApiService) GetSchemaExecute(r ApiGetSchemaRequest) (*ErrorResp
 		localVarReturnValue  *ErrorResponseSchema
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.GetSchema")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.GetSchema")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -720,7 +720,7 @@ func (a *InstanceApiService) GetSchemaExecute(r ApiGetSchemaRequest) (*ErrorResp
 
 type ApiInstanceEventRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	eventType *InstanceEvent
 	instanceId string
@@ -747,7 +747,7 @@ Currently only supports restart
  @param instanceId
  @return ApiInstanceEventRequest
 */
-func (a *InstanceApiService) InstanceEvent(ctx context.Context, orgId string, instanceId string) ApiInstanceEventRequest {
+func (a *InstanceAPIService) InstanceEvent(ctx context.Context, orgId string, instanceId string) ApiInstanceEventRequest {
 	return ApiInstanceEventRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -758,7 +758,7 @@ func (a *InstanceApiService) InstanceEvent(ctx context.Context, orgId string, in
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) InstanceEventExecute(r ApiInstanceEventRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) InstanceEventExecute(r ApiInstanceEventRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
@@ -766,7 +766,7 @@ func (a *InstanceApiService) InstanceEventExecute(r ApiInstanceEventRequest) (*I
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.InstanceEvent")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.InstanceEvent")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -871,7 +871,7 @@ func (a *InstanceApiService) InstanceEventExecute(r ApiInstanceEventRequest) (*I
 
 type ApiPatchInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	instanceId string
 	patchInstance *PatchInstance
@@ -897,7 +897,7 @@ Update attributes on an existing Tembo instance
  @param instanceId
  @return ApiPatchInstanceRequest
 */
-func (a *InstanceApiService) PatchInstance(ctx context.Context, orgId string, instanceId string) ApiPatchInstanceRequest {
+func (a *InstanceAPIService) PatchInstance(ctx context.Context, orgId string, instanceId string) ApiPatchInstanceRequest {
 	return ApiPatchInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -908,7 +908,7 @@ func (a *InstanceApiService) PatchInstance(ctx context.Context, orgId string, in
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) PatchInstanceExecute(r ApiPatchInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) PatchInstanceExecute(r ApiPatchInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
@@ -916,7 +916,7 @@ func (a *InstanceApiService) PatchInstanceExecute(r ApiPatchInstanceRequest) (*I
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.PatchInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.PatchInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -1033,7 +1033,7 @@ func (a *InstanceApiService) PatchInstanceExecute(r ApiPatchInstanceRequest) (*I
 
 type ApiPutInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	instanceId string
 	updateInstance *UpdateInstance
@@ -1059,7 +1059,7 @@ Replace all attributes of an existing Tembo instance
  @param instanceId
  @return ApiPutInstanceRequest
 */
-func (a *InstanceApiService) PutInstance(ctx context.Context, orgId string, instanceId string) ApiPutInstanceRequest {
+func (a *InstanceAPIService) PutInstance(ctx context.Context, orgId string, instanceId string) ApiPutInstanceRequest {
 	return ApiPutInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -1070,7 +1070,7 @@ func (a *InstanceApiService) PutInstance(ctx context.Context, orgId string, inst
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) PutInstanceExecute(r ApiPutInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) PutInstanceExecute(r ApiPutInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
@@ -1078,7 +1078,7 @@ func (a *InstanceApiService) PutInstanceExecute(r ApiPutInstanceRequest) (*Insta
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.PutInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.PutInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -1195,7 +1195,7 @@ func (a *InstanceApiService) PutInstanceExecute(r ApiPutInstanceRequest) (*Insta
 
 type ApiRestoreInstanceRequest struct {
 	ctx context.Context
-	ApiService *InstanceApiService
+	ApiService *InstanceAPIService
 	orgId string
 	restoreInstance *RestoreInstance
 }
@@ -1219,7 +1219,7 @@ Restore a Tembo instance
  @param orgId Organization ID that owns the Tembo instance
  @return ApiRestoreInstanceRequest
 */
-func (a *InstanceApiService) RestoreInstance(ctx context.Context, orgId string) ApiRestoreInstanceRequest {
+func (a *InstanceAPIService) RestoreInstance(ctx context.Context, orgId string) ApiRestoreInstanceRequest {
 	return ApiRestoreInstanceRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -1229,7 +1229,7 @@ func (a *InstanceApiService) RestoreInstance(ctx context.Context, orgId string) 
 
 // Execute executes the request
 //  @return Instance
-func (a *InstanceApiService) RestoreInstanceExecute(r ApiRestoreInstanceRequest) (*Instance, *http.Response, error) {
+func (a *InstanceAPIService) RestoreInstanceExecute(r ApiRestoreInstanceRequest) (*Instance, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
@@ -1237,7 +1237,7 @@ func (a *InstanceApiService) RestoreInstanceExecute(r ApiRestoreInstanceRequest)
 		localVarReturnValue  *Instance
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceApiService.RestoreInstance")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.RestoreInstance")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}

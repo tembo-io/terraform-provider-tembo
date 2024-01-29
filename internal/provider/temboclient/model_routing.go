@@ -12,17 +12,23 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the Routing type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &Routing{}
 
-// Routing struct for Routing
+// Routing Routing is used if there is a routing port, then a service is created using that Port when ingress_path is present, an ingress is created. Otherwise, no ingress is created
 type Routing struct {
+	EntryPoints []string `json:"entryPoints,omitempty"`
 	IngressPath NullableString `json:"ingressPath,omitempty"`
+	IngressType NullableIngressType `json:"ingressType,omitempty"`
+	// provide name of the middleware resources to apply to this route
 	Middlewares []string `json:"middlewares,omitempty"`
 	Port int32 `json:"port"`
 }
+
+type _Routing Routing
 
 // NewRouting instantiates a new Routing object
 // This constructor will assign default values to properties that have it defined,
@@ -40,6 +46,39 @@ func NewRouting(port int32) *Routing {
 func NewRoutingWithDefaults() *Routing {
 	this := Routing{}
 	return &this
+}
+
+// GetEntryPoints returns the EntryPoints field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Routing) GetEntryPoints() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.EntryPoints
+}
+
+// GetEntryPointsOk returns a tuple with the EntryPoints field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Routing) GetEntryPointsOk() ([]string, bool) {
+	if o == nil || IsNil(o.EntryPoints) {
+		return nil, false
+	}
+	return o.EntryPoints, true
+}
+
+// HasEntryPoints returns a boolean if a field has been set.
+func (o *Routing) HasEntryPoints() bool {
+	if o != nil && IsNil(o.EntryPoints) {
+		return true
+	}
+
+	return false
+}
+
+// SetEntryPoints gets a reference to the given []string and assigns it to the EntryPoints field.
+func (o *Routing) SetEntryPoints(v []string) {
+	o.EntryPoints = v
 }
 
 // GetIngressPath returns the IngressPath field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -82,6 +121,48 @@ func (o *Routing) SetIngressPathNil() {
 // UnsetIngressPath ensures that no value is present for IngressPath, not even an explicit nil
 func (o *Routing) UnsetIngressPath() {
 	o.IngressPath.Unset()
+}
+
+// GetIngressType returns the IngressType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Routing) GetIngressType() IngressType {
+	if o == nil || IsNil(o.IngressType.Get()) {
+		var ret IngressType
+		return ret
+	}
+	return *o.IngressType.Get()
+}
+
+// GetIngressTypeOk returns a tuple with the IngressType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Routing) GetIngressTypeOk() (*IngressType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IngressType.Get(), o.IngressType.IsSet()
+}
+
+// HasIngressType returns a boolean if a field has been set.
+func (o *Routing) HasIngressType() bool {
+	if o != nil && o.IngressType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIngressType gets a reference to the given NullableIngressType and assigns it to the IngressType field.
+func (o *Routing) SetIngressType(v IngressType) {
+	o.IngressType.Set(&v)
+}
+// SetIngressTypeNil sets the value for IngressType to be an explicit nil
+func (o *Routing) SetIngressTypeNil() {
+	o.IngressType.Set(nil)
+}
+
+// UnsetIngressType ensures that no value is present for IngressType, not even an explicit nil
+func (o *Routing) UnsetIngressType() {
+	o.IngressType.Unset()
 }
 
 // GetMiddlewares returns the Middlewares field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -151,14 +232,55 @@ func (o Routing) MarshalJSON() ([]byte, error) {
 
 func (o Routing) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if o.EntryPoints != nil {
+		toSerialize["entryPoints"] = o.EntryPoints
+	}
 	if o.IngressPath.IsSet() {
 		toSerialize["ingressPath"] = o.IngressPath.Get()
+	}
+	if o.IngressType.IsSet() {
+		toSerialize["ingressType"] = o.IngressType.Get()
 	}
 	if o.Middlewares != nil {
 		toSerialize["middlewares"] = o.Middlewares
 	}
 	toSerialize["port"] = o.Port
 	return toSerialize, nil
+}
+
+func (o *Routing) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"port",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varRouting := _Routing{}
+
+	err = json.Unmarshal(bytes, &varRouting)
+
+	if err != nil {
+		return err
+	}
+
+	*o = Routing(varRouting)
+
+	return err
 }
 
 type NullableRouting struct {

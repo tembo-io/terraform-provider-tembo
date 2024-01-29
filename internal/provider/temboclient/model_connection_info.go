@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the ConnectionInfo type satisfies the MappedNullable interface at compile time
@@ -25,6 +26,8 @@ type ConnectionInfo struct {
 	Port int32 `json:"port"`
 	User string `json:"user"`
 }
+
+type _ConnectionInfo ConnectionInfo
 
 // NewConnectionInfo instantiates a new ConnectionInfo object
 // This constructor will assign default values to properties that have it defined,
@@ -203,6 +206,44 @@ func (o ConnectionInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize["port"] = o.Port
 	toSerialize["user"] = o.User
 	return toSerialize, nil
+}
+
+func (o *ConnectionInfo) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"host",
+		"password",
+		"port",
+		"user",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varConnectionInfo := _ConnectionInfo{}
+
+	err = json.Unmarshal(bytes, &varConnectionInfo)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ConnectionInfo(varConnectionInfo)
+
+	return err
 }
 
 type NullableConnectionInfo struct {

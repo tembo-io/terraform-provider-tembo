@@ -29,14 +29,6 @@ var (
 	_ resource.ResourceWithImportState = &temboInstanceResource{}
 )
 
-var (
-	cpuOptions     = []string{"1", "2", "4", "8", "16", "32"}
-	envOptions     = []string{"dev", "test", "prod"}
-	memoryOptions  = []string{"1Gi", "2Gi", "4Gi", "8Gi", "16Gi", "32Gi"}
-	stackOptions   = []string{"Standard", "MessageQueue", "MachineLearning", "OLAP", "OLTP"}
-	storageOptions = []string{"10Gi", "50Gi", "100Gi", "200Gi", "300Gi", "400Gi", "500Gi"}
-)
-
 const (
 	DefaultReplicas = 1
 )
@@ -166,14 +158,14 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				Required:            true,
 			},
 			"cpu": schema.StringAttribute{
-				MarkdownDescription: "CPU. Supported values: 1, 2, 4, 8, 16, 32",
+				MarkdownDescription: "CPU",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(cpuOptions...)},
+				Validators:          []validator.String{stringvalidator.OneOf(getStringArrayForType(temboclient.AllowedCpuEnumValues)...)},
 			},
 			"stack_type": schema.StringAttribute{
-				MarkdownDescription: "Stack type for the instance. Supported values: Standard, MessageQueue, MachineLearning, OLAP, OLTP",
+				MarkdownDescription: "Stack type for the instance.",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(stackOptions...)},
+				Validators:          []validator.String{stringvalidator.OneOf(getStringArrayForType(temboclient.AllowedStackTypeEnumValues)...)},
 			},
 			"replicas": schema.Int64Attribute{
 				MarkdownDescription: "Instance replicas",
@@ -182,19 +174,19 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				Default:             int64default.StaticInt64(DefaultReplicas),
 			},
 			"environment": schema.StringAttribute{
-				MarkdownDescription: "Environment. Values supported: dev, test, prod",
+				MarkdownDescription: "Environment",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(envOptions...)},
+				Validators:          []validator.String{stringvalidator.OneOf(getStringArrayForType(temboclient.AllowedEnvironmentEnumValues)...)},
 			},
 			"memory": schema.StringAttribute{
-				MarkdownDescription: "Memory. Values supported: 1Gi, 2Gi, 4Gi, 8Gi, 16Gi, 32Gi",
+				MarkdownDescription: "Memory",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(memoryOptions...)},
+				Validators:          []validator.String{stringvalidator.OneOf(getStringArrayForType(temboclient.AllowedMemoryEnumValues)...)},
 			},
 			"storage": schema.StringAttribute{
-				MarkdownDescription: "Storage. Values supported: 10Gi, 50Gi, 100Gi, 200Gi, 300Gi, 400Gi, 500Gi",
+				MarkdownDescription: "Storage",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(storageOptions...)},
+				Validators:          []validator.String{stringvalidator.OneOf(getStringArrayForType(temboclient.AllowedStorageEnumValues)...)},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "Instance state. Values: Submitted, Up, Configuring, Error, Restarting, Starting, Stopping, Stopped, Deleting, Deleted",
@@ -405,7 +397,7 @@ func createInstance(plan temboInstanceResourceModel,
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
-	instanceRequest := r.temboInstanceConfig.client.InstanceApi.CreateInstance(ctx,
+	instanceRequest := r.temboInstanceConfig.client.InstanceAPI.CreateInstance(ctx,
 		plan.OrgId.ValueString())
 
 	instance, response, err := instanceRequest.CreateInstance(createInstance).Execute()
@@ -441,7 +433,7 @@ func restoreInstance(plan temboInstanceResourceModel,
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
-	instanceRequest := r.temboInstanceConfig.client.InstanceApi.RestoreInstance(ctx,
+	instanceRequest := r.temboInstanceConfig.client.InstanceAPI.RestoreInstance(ctx,
 		plan.OrgId.ValueString())
 
 	instance, response, err := instanceRequest.RestoreInstance(restoreInstance).Execute()
@@ -467,7 +459,7 @@ func (r *temboInstanceResource) Read(ctx context.Context, req resource.ReadReque
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 	// Get refreshed Instance value from API
-	instance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
+	instance, response, err := r.temboInstanceConfig.client.InstanceAPI.GetInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Tembo Instance",
@@ -518,7 +510,7 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	// Update existing Instance
-	_, response, err := r.temboInstanceConfig.client.InstanceApi.PutInstance(
+	_, response, err := r.temboInstanceConfig.client.InstanceAPI.PutInstance(
 		ctx,
 		plan.OrgId.ValueString(),
 		plan.InstanceID.ValueString()).UpdateInstance(updateInstance).Execute()
@@ -571,7 +563,7 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	// Delete existing Tembo Instance
-	_, response, err := (*r.temboInstanceConfig.client.InstanceApi).DeleteInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
+	_, response, err := (*r.temboInstanceConfig.client.InstanceAPI).DeleteInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
 	if err != nil {
 
 		resp.Diagnostics.AddError(
@@ -789,7 +781,7 @@ func getErrorFromResponse(response *http.Response) string {
 
 func getInstanceState(r *temboInstanceResource, ctx context.Context,
 	orgId string, instanceId string, diagnostics *diag.Diagnostics) temboclient.State {
-	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
+	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceAPI.GetInstance(ctx, orgId, instanceId).Execute()
 
 	if err != nil {
 		diagnostics.AddError(
@@ -804,7 +796,7 @@ func getInstanceState(r *temboInstanceResource, ctx context.Context,
 
 func getInstance(r *temboInstanceResource, ctx context.Context,
 	orgId string, instanceId string, diagnostics *diag.Diagnostics) (temboclient.Instance, error) {
-	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceApi.GetInstance(ctx, orgId, instanceId).Execute()
+	refreshInstance, response, err := r.temboInstanceConfig.client.InstanceAPI.GetInstance(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		diagnostics.AddError(
 			"Error Reading Tembo Instance State",
@@ -813,4 +805,14 @@ func getInstance(r *temboInstanceResource, ctx context.Context,
 	}
 
 	return *refreshInstance, err
+}
+
+func getStringArrayForType[T ~string](inputArray []T) []string {
+	var returnArray []string
+	if len(inputArray) > 0 {
+		for _, input := range inputArray {
+			returnArray = append(returnArray, string(input))
+		}
+	}
+	return returnArray
 }

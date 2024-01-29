@@ -12,18 +12,25 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the ExtensionInstallLocation type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ExtensionInstallLocation{}
 
-// ExtensionInstallLocation struct for ExtensionInstallLocation
+// ExtensionInstallLocation ExtensionInstallLocation lets you specify the database, schema, and version to enable an extension on.
 type ExtensionInstallLocation struct {
+	// The database to enable the extension on.  **Default**: \"postgres\"
 	Database *string `json:"database,omitempty"`
+	// Enable or disable the extension on this Postgres instance.
 	Enabled bool `json:"enabled"`
+	// The schema to enable the extension on. (eg: \"public\")
 	Schema NullableString `json:"schema,omitempty"`
+	// The extension version to install. If not specified, the latest version will be used.
 	Version NullableString `json:"version,omitempty"`
 }
+
+type _ExtensionInstallLocation ExtensionInstallLocation
 
 // NewExtensionInstallLocation instantiates a new ExtensionInstallLocation object
 // This constructor will assign default values to properties that have it defined,
@@ -204,6 +211,41 @@ func (o ExtensionInstallLocation) ToMap() (map[string]interface{}, error) {
 		toSerialize["version"] = o.Version.Get()
 	}
 	return toSerialize, nil
+}
+
+func (o *ExtensionInstallLocation) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"enabled",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varExtensionInstallLocation := _ExtensionInstallLocation{}
+
+	err = json.Unmarshal(bytes, &varExtensionInstallLocation)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ExtensionInstallLocation(varExtensionInstallLocation)
+
+	return err
 }
 
 type NullableExtensionInstallLocation struct {

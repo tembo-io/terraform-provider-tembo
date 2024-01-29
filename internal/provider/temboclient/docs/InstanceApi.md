@@ -1,18 +1,18 @@
-# \InstanceApi
+# \InstanceAPI
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateInstance**](InstanceApi.md#CreateInstance) | **Post** /api/v1/orgs/{org_id}/instances | Create a new Tembo instance
-[**DeleteInstance**](InstanceApi.md#DeleteInstance) | **Delete** /api/v1/orgs/{org_id}/instances/{instance_id} | Delete an existing Tembo instance
-[**GetAll**](InstanceApi.md#GetAll) | **Get** /api/v1/orgs/{org_id}/instances | Get all Tembo instances in an organization
-[**GetInstance**](InstanceApi.md#GetInstance) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id} | Get an existing Tembo instance
-[**GetSchema**](InstanceApi.md#GetSchema) | **Get** /api/v1/orgs/instances/schema | Get the json-schema for an instance
-[**InstanceEvent**](InstanceApi.md#InstanceEvent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
-[**PatchInstance**](InstanceApi.md#PatchInstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
-[**PutInstance**](InstanceApi.md#PutInstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
-[**RestoreInstance**](InstanceApi.md#RestoreInstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
+[**CreateInstance**](InstanceAPI.md#CreateInstance) | **Post** /api/v1/orgs/{org_id}/instances | Create a new Tembo instance
+[**DeleteInstance**](InstanceAPI.md#DeleteInstance) | **Delete** /api/v1/orgs/{org_id}/instances/{instance_id} | Delete an existing Tembo instance
+[**GetAll**](InstanceAPI.md#GetAll) | **Get** /api/v1/orgs/{org_id}/instances | Get all Tembo instances in an organization
+[**GetInstance**](InstanceAPI.md#GetInstance) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id} | Get an existing Tembo instance
+[**GetSchema**](InstanceAPI.md#GetSchema) | **Get** /api/v1/orgs/instances/schema | Get the json-schema for an instance
+[**InstanceEvent**](InstanceAPI.md#InstanceEvent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
+[**PatchInstance**](InstanceAPI.md#PatchInstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
+[**PutInstance**](InstanceAPI.md#PutInstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
+[**RestoreInstance**](InstanceAPI.md#RestoreInstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
 
 
 
@@ -38,17 +38,17 @@ import (
 
 func main() {
     orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("1"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.StackType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
+    createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.StackType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.CreateInstance(context.Background(), orgId).CreateInstance(createInstance).Execute()
+    resp, r, err := apiClient.InstanceAPI.CreateInstance(context.Background(), orgId).CreateInstance(createInstance).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.CreateInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.CreateInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `CreateInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.CreateInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.CreateInstance`: %v\n", resp)
 }
 ```
 
@@ -114,13 +114,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.DeleteInstance(context.Background(), orgId, instanceId).Execute()
+    resp, r, err := apiClient.InstanceAPI.DeleteInstance(context.Background(), orgId, instanceId).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.DeleteInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.DeleteInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `DeleteInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.DeleteInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.DeleteInstance`: %v\n", resp)
 }
 ```
 
@@ -186,13 +186,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.GetAll(context.Background(), orgId).Execute()
+    resp, r, err := apiClient.InstanceAPI.GetAll(context.Background(), orgId).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.GetAll``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetAll``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `GetAll`: []Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.GetAll`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetAll`: %v\n", resp)
 }
 ```
 
@@ -257,13 +257,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.GetInstance(context.Background(), orgId, instanceId).Execute()
+    resp, r, err := apiClient.InstanceAPI.GetInstance(context.Background(), orgId, instanceId).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.GetInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `GetInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.GetInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetInstance`: %v\n", resp)
 }
 ```
 
@@ -328,13 +328,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.GetSchema(context.Background()).Execute()
+    resp, r, err := apiClient.InstanceAPI.GetSchema(context.Background()).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.GetSchema``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetSchema``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `GetSchema`: ErrorResponseSchema
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.GetSchema`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetSchema`: %v\n", resp)
 }
 ```
 
@@ -392,13 +392,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.InstanceEvent(context.Background(), orgId, instanceId).EventType(eventType).Execute()
+    resp, r, err := apiClient.InstanceAPI.InstanceEvent(context.Background(), orgId, instanceId).EventType(eventType).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.InstanceEvent``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.InstanceEvent``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `InstanceEvent`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.InstanceEvent`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.InstanceEvent`: %v\n", resp)
 }
 ```
 
@@ -467,13 +467,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.PatchInstance(context.Background(), orgId, instanceId).PatchInstance(patchInstance).Execute()
+    resp, r, err := apiClient.InstanceAPI.PatchInstance(context.Background(), orgId, instanceId).PatchInstance(patchInstance).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.PatchInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PatchInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `PatchInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.PatchInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PatchInstance`: %v\n", resp)
 }
 ```
 
@@ -538,17 +538,17 @@ import (
 func main() {
     orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
     instanceId := "instanceId_example" // string | 
-    updateInstance := *openapiclient.NewUpdateInstance(openapiclient.Cpu("1"), openapiclient.Environment("dev"), openapiclient.Memory("1Gi"), int32(123), openapiclient.Storage("10Gi")) // UpdateInstance | 
+    updateInstance := *openapiclient.NewUpdateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), openapiclient.Memory("1Gi"), int32(123), openapiclient.Storage("10Gi")) // UpdateInstance | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.PutInstance(context.Background(), orgId, instanceId).UpdateInstance(updateInstance).Execute()
+    resp, r, err := apiClient.InstanceAPI.PutInstance(context.Background(), orgId, instanceId).UpdateInstance(updateInstance).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.PutInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PutInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `PutInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.PutInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PutInstance`: %v\n", resp)
 }
 ```
 
@@ -616,13 +616,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceApi.RestoreInstance(context.Background(), orgId).RestoreInstance(restoreInstance).Execute()
+    resp, r, err := apiClient.InstanceAPI.RestoreInstance(context.Background(), orgId).RestoreInstance(restoreInstance).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceApi.RestoreInstance``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.RestoreInstance``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
     // response from `RestoreInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceApi.RestoreInstance`: %v\n", resp)
+    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.RestoreInstance`: %v\n", resp)
 }
 ```
 

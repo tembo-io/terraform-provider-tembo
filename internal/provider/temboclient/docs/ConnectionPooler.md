@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Enabled** | Pointer to **bool** |  | [optional] 
+**Enabled** | Pointer to **bool** | Enable the connection pooler  **Default**: false. | [optional] 
 **Pooler** | Pointer to [**PgBouncer**](PgBouncer.md) |  | [optional] 
 
 ## Methods

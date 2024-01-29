@@ -4,15 +4,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Args** | Pointer to **[]string** |  | [optional] 
-**Command** | Pointer to **[]string** |  | [optional] 
-**Env** | Pointer to [**[]EnvVar**](EnvVar.md) |  | [optional] 
-**Image** | **string** |  | 
-**Middlewares** | Pointer to [**[]Middleware**](Middleware.md) |  | [optional] 
-**Name** | **string** |  | 
+**Args** | Pointer to **[]string** | Defines the arguments to pass into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container). | [optional] 
+**Command** | Pointer to **[]string** | Defines the command into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container). | [optional] 
+**Env** | Pointer to [**[]EnvVar**](EnvVar.md) | Defines the environment variables to pass into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container). | [optional] 
+**Image** | **string** | Defines the container image to use for the appService. | 
+**Middlewares** | Pointer to [**[]Middleware**](Middleware.md) | Defines the ingress middeware configuration for the appService. This is specifically configured for the ingress controller Traefik. | [optional] 
+**Name** | **string** | Defines the name of the appService. | 
 **Probes** | Pointer to [**NullableProbes**](Probes.md) |  | [optional] 
 **Resources** | Pointer to [**ResourceRequirements**](ResourceRequirements.md) |  | [optional] 
-**Routing** | Pointer to [**[]Routing**](Routing.md) |  | [optional] 
+**Routing** | Pointer to [**[]Routing**](Routing.md) | Defines the routing configuration for the appService. | [optional] 
+**Storage** | Pointer to [**NullableStorageConfig**](StorageConfig.md) |  | [optional] 
 
 ## Methods
 
@@ -308,6 +309,41 @@ HasRouting returns a boolean if a field has been set.
 `func (o *AppService) UnsetRouting()`
 
 UnsetRouting ensures that no value is present for Routing, not even an explicit nil
+### GetStorage
+
+`func (o *AppService) GetStorage() StorageConfig`
+
+GetStorage returns the Storage field if non-nil, zero value otherwise.
+
+### GetStorageOk
+
+`func (o *AppService) GetStorageOk() (*StorageConfig, bool)`
+
+GetStorageOk returns a tuple with the Storage field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStorage
+
+`func (o *AppService) SetStorage(v StorageConfig)`
+
+SetStorage sets Storage field to given value.
+
+### HasStorage
+
+`func (o *AppService) HasStorage() bool`
+
+HasStorage returns a boolean if a field has been set.
+
+### SetStorageNil
+
+`func (o *AppService) SetStorageNil(b bool)`
+
+ SetStorageNil sets the value for Storage to be an explicit nil
+
+### UnsetStorage
+`func (o *AppService) UnsetStorage()`
+
+UnsetStorage ensures that no value is present for Storage, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

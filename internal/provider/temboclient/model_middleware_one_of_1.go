@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the MiddlewareOneOf1 type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,8 @@ var _ MappedNullable = &MiddlewareOneOf1{}
 type MiddlewareOneOf1 struct {
 	StripPrefix StripPrefixConfig `json:"stripPrefix"`
 }
+
+type _MiddlewareOneOf1 MiddlewareOneOf1
 
 // NewMiddlewareOneOf1 instantiates a new MiddlewareOneOf1 object
 // This constructor will assign default values to properties that have it defined,
@@ -76,6 +79,41 @@ func (o MiddlewareOneOf1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["stripPrefix"] = o.StripPrefix
 	return toSerialize, nil
+}
+
+func (o *MiddlewareOneOf1) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"stripPrefix",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varMiddlewareOneOf1 := _MiddlewareOneOf1{}
+
+	err = json.Unmarshal(bytes, &varMiddlewareOneOf1)
+
+	if err != nil {
+		return err
+	}
+
+	*o = MiddlewareOneOf1(varMiddlewareOneOf1)
+
+	return err
 }
 
 type NullableMiddlewareOneOf1 struct {

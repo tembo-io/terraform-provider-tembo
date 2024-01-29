@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the CreateInstance type satisfies the MappedNullable interface at compile time
@@ -34,6 +35,8 @@ type CreateInstance struct {
 	Storage Storage `json:"storage"`
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
 }
+
+type _CreateInstance CreateInstance
 
 // NewCreateInstance instantiates a new CreateInstance object
 // This constructor will assign default values to properties that have it defined,
@@ -515,6 +518,46 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 		toSerialize["trunk_installs"] = o.TrunkInstalls
 	}
 	return toSerialize, nil
+}
+
+func (o *CreateInstance) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"cpu",
+		"environment",
+		"instance_name",
+		"memory",
+		"stack_type",
+		"storage",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varCreateInstance := _CreateInstance{}
+
+	err = json.Unmarshal(bytes, &varCreateInstance)
+
+	if err != nil {
+		return err
+	}
+
+	*o = CreateInstance(varCreateInstance)
+
+	return err
 }
 
 type NullableCreateInstance struct {

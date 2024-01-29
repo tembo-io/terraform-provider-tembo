@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Env** | Pointer to [**[]EnvVar**](EnvVar.md) |  | [optional] 
+**Resources** | Pointer to [**NullableResourceRequirements**](ResourceRequirements.md) |  | [optional] 
 
 ## Methods
 
@@ -60,6 +61,41 @@ HasEnv returns a boolean if a field has been set.
 `func (o *AppConfig) UnsetEnv()`
 
 UnsetEnv ensures that no value is present for Env, not even an explicit nil
+### GetResources
+
+`func (o *AppConfig) GetResources() ResourceRequirements`
+
+GetResources returns the Resources field if non-nil, zero value otherwise.
+
+### GetResourcesOk
+
+`func (o *AppConfig) GetResourcesOk() (*ResourceRequirements, bool)`
+
+GetResourcesOk returns a tuple with the Resources field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetResources
+
+`func (o *AppConfig) SetResources(v ResourceRequirements)`
+
+SetResources sets Resources field to given value.
+
+### HasResources
+
+`func (o *AppConfig) HasResources() bool`
+
+HasResources returns a boolean if a field has been set.
+
+### SetResourcesNil
+
+`func (o *AppConfig) SetResourcesNil(b bool)`
+
+ SetResourcesNil sets the value for Resources to be an explicit nil
+
+### UnsetResources
+`func (o *AppConfig) UnsetResources()`
+
+UnsetResources ensures that no value is present for Resources, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

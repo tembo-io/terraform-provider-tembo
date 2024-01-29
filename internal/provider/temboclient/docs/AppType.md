@@ -6,13 +6,15 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Restapi** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Http** | [**NullableAppConfig**](AppConfig.md) |  | 
+**MqApi** | [**NullableAppConfig**](AppConfig.md) |  | 
+**Embeddings** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Custom** | [**AppService**](AppService.md) |  | 
 
 ## Methods
 
 ### NewAppType
 
-`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, custom AppService, ) *AppType`
+`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, mqApi NullableAppConfig, embeddings NullableAppConfig, custom AppService, ) *AppType`
 
 NewAppType instantiates a new AppType object
 This constructor will assign default values to properties that have it defined,
@@ -87,6 +89,66 @@ SetHttp sets Http field to given value.
 `func (o *AppType) UnsetHttp()`
 
 UnsetHttp ensures that no value is present for Http, not even an explicit nil
+### GetMqApi
+
+`func (o *AppType) GetMqApi() AppConfig`
+
+GetMqApi returns the MqApi field if non-nil, zero value otherwise.
+
+### GetMqApiOk
+
+`func (o *AppType) GetMqApiOk() (*AppConfig, bool)`
+
+GetMqApiOk returns a tuple with the MqApi field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMqApi
+
+`func (o *AppType) SetMqApi(v AppConfig)`
+
+SetMqApi sets MqApi field to given value.
+
+
+### SetMqApiNil
+
+`func (o *AppType) SetMqApiNil(b bool)`
+
+ SetMqApiNil sets the value for MqApi to be an explicit nil
+
+### UnsetMqApi
+`func (o *AppType) UnsetMqApi()`
+
+UnsetMqApi ensures that no value is present for MqApi, not even an explicit nil
+### GetEmbeddings
+
+`func (o *AppType) GetEmbeddings() AppConfig`
+
+GetEmbeddings returns the Embeddings field if non-nil, zero value otherwise.
+
+### GetEmbeddingsOk
+
+`func (o *AppType) GetEmbeddingsOk() (*AppConfig, bool)`
+
+GetEmbeddingsOk returns a tuple with the Embeddings field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEmbeddings
+
+`func (o *AppType) SetEmbeddings(v AppConfig)`
+
+SetEmbeddings sets Embeddings field to given value.
+
+
+### SetEmbeddingsNil
+
+`func (o *AppType) SetEmbeddingsNil(b bool)`
+
+ SetEmbeddingsNil sets the value for Embeddings to be an explicit nil
+
+### UnsetEmbeddings
+`func (o *AppType) UnsetEmbeddings()`
+
+UnsetEmbeddings ensures that no value is present for Embeddings, not even an explicit nil
 ### GetCustom
 
 `func (o *AppType) GetCustom() AppService`

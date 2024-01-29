@@ -11,6 +11,62 @@ servers:
 security:
 - jwt_token: []
 paths:
+  /api/v1/apps:
+    get:
+      description: |
+        Attributes for all apps
+      operationId: get_all_apps
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items: {}
+                type: array
+          description: App specification represented as JSON
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Attributes for all apps
+      tags:
+      - app
+  /api/v1/apps/{type}:
+    get:
+      description: |
+        Get the attributes of a single App
+      operationId: get_app
+      parameters:
+      - example: http
+        explode: false
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: Specification of the app
+        "400":
+          content:
+            application/json:
+              schema: {}
+          description: Invalid App
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Get the attributes of a single App
+      tags:
+      - app
   /api/v1/orgs/instances/schema:
     get:
       description: |
@@ -538,32 +594,118 @@ components:
             $ref: '#/components/schemas/EnvVar'
           nullable: true
           type: array
+        resources:
+          allOf:
+          - $ref: '#/components/schemas/ResourceRequirements'
+          nullable: true
       type: object
     AppService:
+      description: |-
+        AppService significantly extends the functionality of your Tembo Postgres
+        instance by running tools and software built by the Postgres open source community.
+
+        **Example**: This will configure and install a Postgrest container along side
+        the Postgres instance, install pg_graphql extension, and configure the
+        ingress routing to expose the Postgrest service.
+
+        ```yaml
+        apiVersion: coredb.io/v1alpha1
+        kind: CoreDB
+        metadata:
+        name: test-db
+        spec:
+        trunk_installs:
+        - name: pg_graphql
+        version: 1.2.0
+        extensions:
+        - name: pg_graphql
+        locations:
+        - database: postgres
+        enabled: true
+
+        appServices:
+        - name: postgrest
+        image: postgrest/postgrest:v10.0.0
+        routing:
+        # only expose /rest/v1 and /graphql/v1
+        - port: 3000
+        ingressPath: /rest/v1
+        middlewares:
+        - my-headers
+        - port: 3000
+        ingressPath: /graphql/v1
+        middlewares:
+        - map-gql
+        - my-headers
+        middlewares:
+        - customRequestHeaders:
+        name: my-headers
+        config:
+        # removes auth header from request
+        Authorization: ""
+        Content-Profile: graphql
+        Accept-Profile: graphql
+        - stripPrefix:
+        name: my-strip-prefix
+        config:
+        - /rest/v1
+        # reroute gql and rest requests
+        - replacePathRegex:
+        name: map-gql
+        config:
+        regex: \/graphql\/v1\/?
+        replacement: /rpc/resolve
+        env:
+        - name: PGRST_DB_URI
+        valueFromPlatform: ReadWriteConnection
+        - name: PGRST_DB_SCHEMA
+        value: "public, graphql"
+        - name: PGRST_DB_ANON_ROLE
+        value: postgres
+        - name: PGRST_LOG_LEVEL
+        value: info
+        ```
       properties:
         args:
+          description: |-
+            Defines the arguments to pass into the container if needed.
+            You define this in the same manner as you would for all Kubernetes containers.
+            See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container).
           items:
             type: string
           nullable: true
           type: array
         command:
+          description: |-
+            Defines the command into the container if needed.
+            You define this in the same manner as you would for all Kubernetes containers.
+            See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container).
           items:
             type: string
           nullable: true
           type: array
         env:
+          description: |-
+            Defines the environment variables to pass into the container if needed.
+            You define this in the same manner as you would for all Kubernetes containers.
+            See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container).
           items:
             $ref: '#/components/schemas/EnvVar'
           nullable: true
           type: array
         image:
+          description: Defines the container image to use for the appService.
           type: string
         middlewares:
+          description: |-
+            Defines the ingress middeware configuration for the appService.
+            This is specifically configured for the ingress controller Traefik.
           items:
             $ref: '#/components/schemas/Middleware'
           nullable: true
           type: array
         name:
+          description: Defines the name of the appService.
           type: string
         probes:
           allOf:
@@ -572,10 +714,15 @@ components:
         resources:
           $ref: '#/components/schemas/ResourceRequirements'
         routing:
+          description: Defines the routing configuration for the appService.
           items:
             $ref: '#/components/schemas/Routing'
           nullable: true
           type: array
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/StorageConfig'
+          nullable: true
       required:
       - image
       - name
@@ -584,10 +731,9 @@ components:
       oneOf:
       - $ref: '#/components/schemas/AppType_oneOf'
       - $ref: '#/components/schemas/AppType_oneOf_1'
-      - enum:
-        - mq-api
-        type: string
       - $ref: '#/components/schemas/AppType_oneOf_2'
+      - $ref: '#/components/schemas/AppType_oneOf_3'
+      - $ref: '#/components/schemas/AppType_oneOf_4'
     ConnectionInfo:
       properties:
         host:
@@ -609,18 +755,57 @@ components:
       - user
       type: object
     ConnectionPooler:
+      description: |-
+        A connection pooler is a tool used to manage database connections, sitting
+        between your application and Postgres instance. Because of the way Postgres
+        handles connections, the server may encounter resource constraint issues
+        when managing a few thousand connections. Using a pooler can alleviate these
+        issues by using actual Postgres connections only when necessary
+
+        **Example**: A typical connection pooler configuration
+
+        ```yaml
+        apiVersion: coredb.io/v1alpha1
+        kind: CoreDB
+        metadata:
+        name: test-db
+        spec:
+        connectionPooler:
+        enabled: true
+        pooler:
+        poolMode: transaction
+        # Valid parameter values can be found at https://www.pgbouncer.org/config.html
+        parameters:
+        default_pool_size: "50"
+        max_client_conn: "5000"
+        resources:
+        limits:
+        cpu: 200m
+        memory: 256Mi
+        requests:
+        cpu: 100m
+        memory: 128Mi
+        ```
       properties:
         enabled:
+          description: |-
+            Enable the connection pooler
+
+            **Default**: false.
           type: boolean
         pooler:
           $ref: '#/components/schemas/PgBouncer'
       type: object
     Cpu:
       enum:
+      - "0.25"
+      - "0.5"
       - "1"
       - "2"
       - "4"
+      - "6"
       - "8"
+      - "12"
       - "16"
       - "32"
       type: string
@@ -769,6 +954,30 @@ components:
       - error
       type: object
     Extension:
+      description: |-
+        Extension lets you define a list of extensions to enable on the instance. To enable
+        extensions, you must specify the name of the extension and the database, schema, and
+        version to enable it on. If the version is not specified, the latest version will be
+        used.  The extension must also be installed on the instance.  To install
+        extensions, please refer to the `TrunkInstall` resource.
+
+        This example will enable the pg_stat_statements extension on the Postgres database
+        in the public schema.
+
+        ```yaml
+        apiVersion: coredb.io/v1alpha1
+        kind: CoreDB
+        metadata:
+        name: test-db
+        spec:
+        extensions:
+        - name: pg_stat_statements
+        locations:
+        - database: postgres
+        enabled: true
+        schema: public
+        version: 1.10.0
+        ````
       example:
         name: name
         description: description
@@ -783,19 +992,28 @@ components:
           enabled: true
       properties:
         description:
+          description: |-
+            A description of the extension. (Optional)
+
+            **Default**: "No description provided"
           nullable: true
           type: string
         locations:
+          description: A list of locations (databases) to enabled the extension on.
           items:
             $ref: '#/components/schemas/ExtensionInstallLocation'
           type: array
         name:
+          description: The name of the extension to enable.
           type: string
       required:
       - locations
       - name
       type: object
     ExtensionInstallLocation:
+      description: |-
+        ExtensionInstallLocation lets you specify the database, schema, and version to enable
+        an extension on.
       example:
         schema: schema
         database: database
@@ -803,13 +1021,21 @@ components:
         enabled: true
       properties:
         database:
+          description: |-
+            The database to enable the extension on.
+
+            **Default**: "postgres"
           type: string
         enabled:
+          description: Enable or disable the extension on this Postgres instance.
           type: boolean
         schema:
+          description: "The schema to enable the extension on. (eg: \"public\")"
           nullable: true
           type: string
         version:
+          description: "The extension version to install. If not specified, the latest\
+            \ version will be used."
           nullable: true
           type: string
       required:
@@ -904,6 +1130,11 @@ components:
       required:
       - enabled
       type: object
+    IngressType:
+      enum:
+      - http
+      - tcp
+      type: string
     Instance:
       example:
         first_recoverability_time: 2000-01-23T04:56:07.000+00:00
@@ -974,6 +1205,7 @@ components:
           - installed_to_pods
           name: name
           error: true
+          loading: true
           version: version
         - error_message: error_message
           installed_to_pods:
@@ -981,6 +1213,7 @@ components:
           - installed_to_pods
           name: name
           error: true
+          loading: true
           version: version
         ip_allow_list:
         - ip_allow_list
@@ -1095,6 +1328,11 @@ components:
       - 32Gi
       type: string
     Middleware:
+      description: |-
+        Midddleware is used to configure the middleware for the appService.
+        This is specifically configured for the ingress controller Traefik.
+
+        Please refer to the example in the `AppService` documentation.
       oneOf:
       - $ref: '#/components/schemas/Middleware_oneOf'
       - $ref: '#/components/schemas/Middleware_oneOf_1'
@@ -1206,10 +1444,12 @@ components:
           type: array
       type: object
     PgBouncer:
+      description: PgBouncer is the type for the PGBouncer configuration
       properties:
         parameters:
           additionalProperties:
             type: string
+          description: "Valid pgbouncer parameter values can be found at [https://www.pgbouncer.org/config.html](https://www.pgbouncer.org/config.html)"
           nullable: true
           type: object
         poolMode:
@@ -1278,6 +1518,10 @@ components:
       - port
       type: object
     Probes:
+      description: |-
+        Probes are used to determine the health of a container.
+        You define this in the same manner as you would for all Kubernetes containers.
+        See the [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
       properties:
         liveness:
           $ref: '#/components/schemas/Probe'
@@ -1402,11 +1646,25 @@ components:
       - restore
       type: object
     Routing:
+      description: |-
+        Routing is used if there is a routing port, then a service is created using
+        that Port when ingress_path is present, an ingress is created. Otherwise, no
+        ingress is created
       properties:
+        entryPoints:
+          items:
+            type: string
+          nullable: true
+          type: array
         ingressPath:
           nullable: true
           type: string
+        ingressType:
+          allOf:
+          - $ref: '#/components/schemas/IngressType'
+          nullable: true
         middlewares:
+          description: provide name of the middleware resources to apply to this route
           items:
             type: string
           nullable: true
@@ -1426,6 +1684,9 @@ components:
       - OLAP
       - OLTP
       - VectorDB
+      - DataWarehouse
+      - Geospatial
+      - MongoAlternative
       type: string
     State:
       enum:
@@ -1450,6 +1711,14 @@ components:
       - 400Gi
       - 500Gi
       type: string
+    StorageConfig:
+      properties:
+        volumeMounts:
+          items:
+            $ref: '#/components/schemas/VolumeMount'
+          nullable: true
+          type: array
+      type: object
     StripPrefixConfig:
       properties:
         config:
@@ -1463,13 +1732,36 @@ components:
       - name
       type: object
     TrunkInstall:
+      description: |-
+        TrunkInstall allows installation of extensions from the [pgtrunk](https://pgt.dev)
+        registry.  This list should be a list of extension names and versions that you wish to
+        install at runtime using the pgtrunk API.
+
+        This example will install the pg_stat_statements extension at version 1.10.0.
+
+        ```yaml
+        apiVersion: coredb.io/v1alpha1
+        kind: CoreDB
+        metadata:
+        name: test-db
+        spec:
+        trunk_installs:
+        - name: pg_stat_statements
+        version: 1.10.0
+        ```
       example:
         name: name
         version: version
       properties:
         name:
+          description: |-
+            The name of the extension to install. This must be the name of the extension as it
+            appears in the [pgtrunk](https://pgt.dev) registry.
           type: string
         version:
+          description: |-
+            The version of the extension to install. If not specified, the latest version will
+            be used. (Optional)
           nullable: true
           type: string
       required:
@@ -1483,6 +1775,7 @@ components:
         - installed_to_pods
         name: name
         error: true
+        loading: true
         version: version
       properties:
         error:
@@ -1495,6 +1788,8 @@ components:
             type: string
           nullable: true
           type: array
+        loading:
+          type: boolean
         name:
           type: string
         version:
@@ -1607,6 +1902,28 @@ components:
       - replicas
       - storage
       type: object
+    VolumeMount:
+      properties:
+        mount_path:
+          type: string
+        mount_propagation:
+          nullable: true
+          type: string
+        name:
+          type: string
+        read_only:
+          nullable: true
+          type: boolean
+        sub_path:
+          nullable: true
+          type: string
+        sub_path_expr:
+          nullable: true
+          type: string
+      required:
+      - mount_path
+      - name
+      type: object
     AppType_oneOf:
       properties:
         restapi:
@@ -1626,6 +1943,24 @@ components:
       - http
       type: object
     AppType_oneOf_2:
+      properties:
+        mq-api:
+          allOf:
+          - $ref: '#/components/schemas/AppConfig'
+          nullable: true
+      required:
+      - mq-api
+      type: object
+    AppType_oneOf_3:
+      properties:
+        embeddings:
+          allOf:
+          - $ref: '#/components/schemas/AppConfig'
+          nullable: true
+      required:
+      - embeddings
+      type: object
+    AppType_oneOf_4:
       properties:
         custom:
           $ref: '#/components/schemas/AppService'

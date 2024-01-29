@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | **string** |  | 
-**Version** | Pointer to **NullableString** |  | [optional] 
+**Name** | **string** | The name of the extension to install. This must be the name of the extension as it appears in the [pgtrunk](https://pgt.dev) registry. | 
+**Version** | Pointer to **NullableString** | The version of the extension to install. If not specified, the latest version will be used. (Optional) | [optional] 
 
 ## Methods
 

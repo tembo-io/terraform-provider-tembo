@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the MiddlewareOneOf2 type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,8 @@ var _ MappedNullable = &MiddlewareOneOf2{}
 type MiddlewareOneOf2 struct {
 	ReplacePathRegex ReplacePathRegexConfig `json:"replacePathRegex"`
 }
+
+type _MiddlewareOneOf2 MiddlewareOneOf2
 
 // NewMiddlewareOneOf2 instantiates a new MiddlewareOneOf2 object
 // This constructor will assign default values to properties that have it defined,
@@ -76,6 +79,41 @@ func (o MiddlewareOneOf2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["replacePathRegex"] = o.ReplacePathRegex
 	return toSerialize, nil
+}
+
+func (o *MiddlewareOneOf2) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"replacePathRegex",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varMiddlewareOneOf2 := _MiddlewareOneOf2{}
+
+	err = json.Unmarshal(bytes, &varMiddlewareOneOf2)
+
+	if err != nil {
+		return err
+	}
+
+	*o = MiddlewareOneOf2(varMiddlewareOneOf2)
+
+	return err
 }
 
 type NullableMiddlewareOneOf2 struct {

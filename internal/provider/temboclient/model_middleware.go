@@ -15,7 +15,7 @@ import (
 	"fmt"
 )
 
-// Middleware - struct for Middleware
+// Middleware - Midddleware is used to configure the middleware for the appService. This is specifically configured for the ingress controller Traefik.  Please refer to the example in the `AppService` documentation.
 type Middleware struct {
 	MiddlewareOneOf *MiddlewareOneOf
 	MiddlewareOneOf1 *MiddlewareOneOf1

@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the TrunkInstallStatus type satisfies the MappedNullable interface at compile time
@@ -22,9 +23,12 @@ type TrunkInstallStatus struct {
 	Error bool `json:"error"`
 	ErrorMessage NullableString `json:"error_message,omitempty"`
 	InstalledToPods []string `json:"installed_to_pods,omitempty"`
+	Loading *bool `json:"loading,omitempty"`
 	Name string `json:"name"`
 	Version NullableString `json:"version,omitempty"`
 }
+
+type _TrunkInstallStatus TrunkInstallStatus
 
 // NewTrunkInstallStatus instantiates a new TrunkInstallStatus object
 // This constructor will assign default values to properties that have it defined,
@@ -144,6 +148,38 @@ func (o *TrunkInstallStatus) SetInstalledToPods(v []string) {
 	o.InstalledToPods = v
 }
 
+// GetLoading returns the Loading field value if set, zero value otherwise.
+func (o *TrunkInstallStatus) GetLoading() bool {
+	if o == nil || IsNil(o.Loading) {
+		var ret bool
+		return ret
+	}
+	return *o.Loading
+}
+
+// GetLoadingOk returns a tuple with the Loading field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrunkInstallStatus) GetLoadingOk() (*bool, bool) {
+	if o == nil || IsNil(o.Loading) {
+		return nil, false
+	}
+	return o.Loading, true
+}
+
+// HasLoading returns a boolean if a field has been set.
+func (o *TrunkInstallStatus) HasLoading() bool {
+	if o != nil && !IsNil(o.Loading) {
+		return true
+	}
+
+	return false
+}
+
+// SetLoading gets a reference to the given bool and assigns it to the Loading field.
+func (o *TrunkInstallStatus) SetLoading(v bool) {
+	o.Loading = &v
+}
+
 // GetName returns the Name field value
 func (o *TrunkInstallStatus) GetName() string {
 	if o == nil {
@@ -227,11 +263,50 @@ func (o TrunkInstallStatus) ToMap() (map[string]interface{}, error) {
 	if o.InstalledToPods != nil {
 		toSerialize["installed_to_pods"] = o.InstalledToPods
 	}
+	if !IsNil(o.Loading) {
+		toSerialize["loading"] = o.Loading
+	}
 	toSerialize["name"] = o.Name
 	if o.Version.IsSet() {
 		toSerialize["version"] = o.Version.Get()
 	}
 	return toSerialize, nil
+}
+
+func (o *TrunkInstallStatus) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"error",
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varTrunkInstallStatus := _TrunkInstallStatus{}
+
+	err = json.Unmarshal(bytes, &varTrunkInstallStatus)
+
+	if err != nil {
+		return err
+	}
+
+	*o = TrunkInstallStatus(varTrunkInstallStatus)
+
+	return err
 }
 
 type NullableTrunkInstallStatus struct {

@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Parameters** | Pointer to **map[string]string** |  | [optional] 
+**Parameters** | Pointer to **map[string]string** | Valid pgbouncer parameter values can be found at [https://www.pgbouncer.org/config.html](https://www.pgbouncer.org/config.html) | [optional] 
 **PoolMode** | Pointer to [**PoolerPgbouncerPoolMode**](PoolerPgbouncerPoolMode.md) |  | [optional] 
 **Resources** | Pointer to [**NullablePoolerTemplateSpecContainersResources**](PoolerTemplateSpecContainersResources.md) |  | [optional] 
 

@@ -20,7 +20,8 @@ type AppType struct {
 	AppTypeOneOf *AppTypeOneOf
 	AppTypeOneOf1 *AppTypeOneOf1
 	AppTypeOneOf2 *AppTypeOneOf2
-	String *string
+	AppTypeOneOf3 *AppTypeOneOf3
+	AppTypeOneOf4 *AppTypeOneOf4
 }
 
 // AppTypeOneOfAsAppType is a convenience function that returns AppTypeOneOf wrapped in AppType
@@ -44,10 +45,17 @@ func AppTypeOneOf2AsAppType(v *AppTypeOneOf2) AppType {
 	}
 }
 
-// stringAsAppType is a convenience function that returns string wrapped in AppType
-func StringAsAppType(v *string) AppType {
+// AppTypeOneOf3AsAppType is a convenience function that returns AppTypeOneOf3 wrapped in AppType
+func AppTypeOneOf3AsAppType(v *AppTypeOneOf3) AppType {
 	return AppType{
-		String: v,
+		AppTypeOneOf3: v,
+	}
+}
+
+// AppTypeOneOf4AsAppType is a convenience function that returns AppTypeOneOf4 wrapped in AppType
+func AppTypeOneOf4AsAppType(v *AppTypeOneOf4) AppType {
+	return AppType{
+		AppTypeOneOf4: v,
 	}
 }
 
@@ -95,17 +103,30 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		dst.AppTypeOneOf2 = nil
 	}
 
-	// try to unmarshal data into String
-	err = newStrictDecoder(data).Decode(&dst.String)
+	// try to unmarshal data into AppTypeOneOf3
+	err = newStrictDecoder(data).Decode(&dst.AppTypeOneOf3)
 	if err == nil {
-		jsonString, _ := json.Marshal(dst.String)
-		if string(jsonString) == "{}" { // empty struct
-			dst.String = nil
+		jsonAppTypeOneOf3, _ := json.Marshal(dst.AppTypeOneOf3)
+		if string(jsonAppTypeOneOf3) == "{}" { // empty struct
+			dst.AppTypeOneOf3 = nil
 		} else {
 			match++
 		}
 	} else {
-		dst.String = nil
+		dst.AppTypeOneOf3 = nil
+	}
+
+	// try to unmarshal data into AppTypeOneOf4
+	err = newStrictDecoder(data).Decode(&dst.AppTypeOneOf4)
+	if err == nil {
+		jsonAppTypeOneOf4, _ := json.Marshal(dst.AppTypeOneOf4)
+		if string(jsonAppTypeOneOf4) == "{}" { // empty struct
+			dst.AppTypeOneOf4 = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.AppTypeOneOf4 = nil
 	}
 
 	if match > 1 { // more than 1 match
@@ -113,7 +134,8 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		dst.AppTypeOneOf = nil
 		dst.AppTypeOneOf1 = nil
 		dst.AppTypeOneOf2 = nil
-		dst.String = nil
+		dst.AppTypeOneOf3 = nil
+		dst.AppTypeOneOf4 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AppType)")
 	} else if match == 1 {
@@ -137,8 +159,12 @@ func (src AppType) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AppTypeOneOf2)
 	}
 
-	if src.String != nil {
-		return json.Marshal(&src.String)
+	if src.AppTypeOneOf3 != nil {
+		return json.Marshal(&src.AppTypeOneOf3)
+	}
+
+	if src.AppTypeOneOf4 != nil {
+		return json.Marshal(&src.AppTypeOneOf4)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -161,8 +187,12 @@ func (obj *AppType) GetActualInstance() (interface{}) {
 		return obj.AppTypeOneOf2
 	}
 
-	if obj.String != nil {
-		return obj.String
+	if obj.AppTypeOneOf3 != nil {
+		return obj.AppTypeOneOf3
+	}
+
+	if obj.AppTypeOneOf4 != nil {
+		return obj.AppTypeOneOf4
 	}
 
 	// all schemas are nil

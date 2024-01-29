@@ -15,61 +15,61 @@ import (
 	"fmt"
 )
 
-// checks if the AppTypeOneOf1 type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &AppTypeOneOf1{}
+// checks if the AppTypeOneOf3 type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AppTypeOneOf3{}
 
-// AppTypeOneOf1 struct for AppTypeOneOf1
-type AppTypeOneOf1 struct {
-	Http NullableAppConfig `json:"http"`
+// AppTypeOneOf3 struct for AppTypeOneOf3
+type AppTypeOneOf3 struct {
+	Embeddings NullableAppConfig `json:"embeddings"`
 }
 
-type _AppTypeOneOf1 AppTypeOneOf1
+type _AppTypeOneOf3 AppTypeOneOf3
 
-// NewAppTypeOneOf1 instantiates a new AppTypeOneOf1 object
+// NewAppTypeOneOf3 instantiates a new AppTypeOneOf3 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppTypeOneOf1(http NullableAppConfig) *AppTypeOneOf1 {
-	this := AppTypeOneOf1{}
-	this.Http = http
+func NewAppTypeOneOf3(embeddings NullableAppConfig) *AppTypeOneOf3 {
+	this := AppTypeOneOf3{}
+	this.Embeddings = embeddings
 	return &this
 }
 
-// NewAppTypeOneOf1WithDefaults instantiates a new AppTypeOneOf1 object
+// NewAppTypeOneOf3WithDefaults instantiates a new AppTypeOneOf3 object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewAppTypeOneOf1WithDefaults() *AppTypeOneOf1 {
-	this := AppTypeOneOf1{}
+func NewAppTypeOneOf3WithDefaults() *AppTypeOneOf3 {
+	this := AppTypeOneOf3{}
 	return &this
 }
 
-// GetHttp returns the Http field value
+// GetEmbeddings returns the Embeddings field value
 // If the value is explicit nil, the zero value for AppConfig will be returned
-func (o *AppTypeOneOf1) GetHttp() AppConfig {
-	if o == nil || o.Http.Get() == nil {
+func (o *AppTypeOneOf3) GetEmbeddings() AppConfig {
+	if o == nil || o.Embeddings.Get() == nil {
 		var ret AppConfig
 		return ret
 	}
 
-	return *o.Http.Get()
+	return *o.Embeddings.Get()
 }
 
-// GetHttpOk returns a tuple with the Http field value
+// GetEmbeddingsOk returns a tuple with the Embeddings field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AppTypeOneOf1) GetHttpOk() (*AppConfig, bool) {
+func (o *AppTypeOneOf3) GetEmbeddingsOk() (*AppConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.Http.Get(), o.Http.IsSet()
+	return o.Embeddings.Get(), o.Embeddings.IsSet()
 }
 
-// SetHttp sets field value
-func (o *AppTypeOneOf1) SetHttp(v AppConfig) {
-	o.Http.Set(&v)
+// SetEmbeddings sets field value
+func (o *AppTypeOneOf3) SetEmbeddings(v AppConfig) {
+	o.Embeddings.Set(&v)
 }
 
-func (o AppTypeOneOf1) MarshalJSON() ([]byte, error) {
+func (o AppTypeOneOf3) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -77,18 +77,18 @@ func (o AppTypeOneOf1) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o AppTypeOneOf1) ToMap() (map[string]interface{}, error) {
+func (o AppTypeOneOf3) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["http"] = o.Http.Get()
+	toSerialize["embeddings"] = o.Embeddings.Get()
 	return toSerialize, nil
 }
 
-func (o *AppTypeOneOf1) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AppTypeOneOf3) UnmarshalJSON(bytes []byte) (err error) {
     // This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"http",
+		"embeddings",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -105,51 +105,51 @@ func (o *AppTypeOneOf1) UnmarshalJSON(bytes []byte) (err error) {
 		}
 	}
 
-	varAppTypeOneOf1 := _AppTypeOneOf1{}
+	varAppTypeOneOf3 := _AppTypeOneOf3{}
 
-	err = json.Unmarshal(bytes, &varAppTypeOneOf1)
+	err = json.Unmarshal(bytes, &varAppTypeOneOf3)
 
 	if err != nil {
 		return err
 	}
 
-	*o = AppTypeOneOf1(varAppTypeOneOf1)
+	*o = AppTypeOneOf3(varAppTypeOneOf3)
 
 	return err
 }
 
-type NullableAppTypeOneOf1 struct {
-	value *AppTypeOneOf1
+type NullableAppTypeOneOf3 struct {
+	value *AppTypeOneOf3
 	isSet bool
 }
 
-func (v NullableAppTypeOneOf1) Get() *AppTypeOneOf1 {
+func (v NullableAppTypeOneOf3) Get() *AppTypeOneOf3 {
 	return v.value
 }
 
-func (v *NullableAppTypeOneOf1) Set(val *AppTypeOneOf1) {
+func (v *NullableAppTypeOneOf3) Set(val *AppTypeOneOf3) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableAppTypeOneOf1) IsSet() bool {
+func (v NullableAppTypeOneOf3) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableAppTypeOneOf1) Unset() {
+func (v *NullableAppTypeOneOf3) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableAppTypeOneOf1(val *AppTypeOneOf1) *NullableAppTypeOneOf1 {
-	return &NullableAppTypeOneOf1{value: val, isSet: true}
+func NewNullableAppTypeOneOf3(val *AppTypeOneOf3) *NullableAppTypeOneOf3 {
+	return &NullableAppTypeOneOf3{value: val, isSet: true}
 }
 
-func (v NullableAppTypeOneOf1) MarshalJSON() ([]byte, error) {
+func (v NullableAppTypeOneOf3) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableAppTypeOneOf1) UnmarshalJSON(src []byte) error {
+func (v *NullableAppTypeOneOf3) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

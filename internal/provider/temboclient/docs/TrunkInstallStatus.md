@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **Error** | **bool** |  | 
 **ErrorMessage** | Pointer to **NullableString** |  | [optional] 
 **InstalledToPods** | Pointer to **[]string** |  | [optional] 
+**Loading** | Pointer to **bool** |  | [optional] 
 **Name** | **string** |  | 
 **Version** | Pointer to **NullableString** |  | [optional] 
 
@@ -119,6 +120,31 @@ HasInstalledToPods returns a boolean if a field has been set.
 `func (o *TrunkInstallStatus) UnsetInstalledToPods()`
 
 UnsetInstalledToPods ensures that no value is present for InstalledToPods, not even an explicit nil
+### GetLoading
+
+`func (o *TrunkInstallStatus) GetLoading() bool`
+
+GetLoading returns the Loading field if non-nil, zero value otherwise.
+
+### GetLoadingOk
+
+`func (o *TrunkInstallStatus) GetLoadingOk() (*bool, bool)`
+
+GetLoadingOk returns a tuple with the Loading field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLoading
+
+`func (o *TrunkInstallStatus) SetLoading(v bool)`
+
+SetLoading sets Loading field to given value.
+
+### HasLoading
+
+`func (o *TrunkInstallStatus) HasLoading() bool`
+
+HasLoading returns a boolean if a field has been set.
+
 ### GetName
 
 `func (o *TrunkInstallStatus) GetName() string`

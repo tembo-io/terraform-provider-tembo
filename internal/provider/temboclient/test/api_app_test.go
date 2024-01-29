@@ -1,7 +1,7 @@
 /*
 Tembo Cloud
 
-Testing StackAPIService
+Testing AppAPIService
 
 */
 
@@ -17,16 +17,16 @@ import (
 	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
 )
 
-func Test_temboclient_StackAPIService(t *testing.T) {
+func Test_temboclient_AppAPIService(t *testing.T) {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
 
-	t.Run("Test StackAPIService GetAllEntities", func(t *testing.T) {
+	t.Run("Test AppAPIService GetAllApps", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
-		resp, httpRes, err := apiClient.StackAPI.GetAllEntities(context.Background()).Execute()
+		resp, httpRes, err := apiClient.AppAPI.GetAllApps(context.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -34,13 +34,13 @@ func Test_temboclient_StackAPIService(t *testing.T) {
 
 	})
 
-	t.Run("Test StackAPIService GetEntity", func(t *testing.T) {
+	t.Run("Test AppAPIService GetApp", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
-		var type_ StackType
+		var type_ string
 
-		resp, httpRes, err := apiClient.StackAPI.GetEntity(context.Background(), type_).Execute()
+		resp, httpRes, err := apiClient.AppAPI.GetApp(context.Background(), type_).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

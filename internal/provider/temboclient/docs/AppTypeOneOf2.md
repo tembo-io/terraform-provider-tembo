@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Custom** | [**AppService**](AppService.md) |  | 
+**MqApi** | [**NullableAppConfig**](AppConfig.md) |  | 
 
 ## Methods
 
 ### NewAppTypeOneOf2
 
-`func NewAppTypeOneOf2(custom AppService, ) *AppTypeOneOf2`
+`func NewAppTypeOneOf2(mqApi NullableAppConfig, ) *AppTypeOneOf2`
 
 NewAppTypeOneOf2 instantiates a new AppTypeOneOf2 object
 This constructor will assign default values to properties that have it defined,
@@ -25,26 +25,36 @@ NewAppTypeOneOf2WithDefaults instantiates a new AppTypeOneOf2 object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetCustom
+### GetMqApi
 
-`func (o *AppTypeOneOf2) GetCustom() AppService`
+`func (o *AppTypeOneOf2) GetMqApi() AppConfig`
 
-GetCustom returns the Custom field if non-nil, zero value otherwise.
+GetMqApi returns the MqApi field if non-nil, zero value otherwise.
 
-### GetCustomOk
+### GetMqApiOk
 
-`func (o *AppTypeOneOf2) GetCustomOk() (*AppService, bool)`
+`func (o *AppTypeOneOf2) GetMqApiOk() (*AppConfig, bool)`
 
-GetCustomOk returns a tuple with the Custom field if it's non-nil, zero value otherwise
+GetMqApiOk returns a tuple with the MqApi field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetCustom
+### SetMqApi
 
-`func (o *AppTypeOneOf2) SetCustom(v AppService)`
+`func (o *AppTypeOneOf2) SetMqApi(v AppConfig)`
 
-SetCustom sets Custom field to given value.
+SetMqApi sets MqApi field to given value.
 
 
+### SetMqApiNil
+
+`func (o *AppTypeOneOf2) SetMqApiNil(b bool)`
+
+ SetMqApiNil sets the value for MqApi to be an explicit nil
+
+### UnsetMqApi
+`func (o *AppTypeOneOf2) UnsetMqApi()`
+
+UnsetMqApi ensures that no value is present for MqApi, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

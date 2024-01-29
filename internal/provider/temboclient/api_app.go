@@ -20,29 +20,29 @@ import (
 )
 
 
-// StackAPIService StackAPI service
-type StackAPIService service
+// AppAPIService AppAPI service
+type AppAPIService service
 
-type ApiGetAllEntitiesRequest struct {
+type ApiGetAllAppsRequest struct {
 	ctx context.Context
-	ApiService *StackAPIService
+	ApiService *AppAPIService
 }
 
-func (r ApiGetAllEntitiesRequest) Execute() ([]interface{}, *http.Response, error) {
-	return r.ApiService.GetAllEntitiesExecute(r)
+func (r ApiGetAllAppsRequest) Execute() ([]interface{}, *http.Response, error) {
+	return r.ApiService.GetAllAppsExecute(r)
 }
 
 /*
-GetAllEntities Attributes for all stacks
+GetAllApps Attributes for all apps
 
-Attributes for all stacks
+Attributes for all apps
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetAllEntitiesRequest
+ @return ApiGetAllAppsRequest
 */
-func (a *StackAPIService) GetAllEntities(ctx context.Context) ApiGetAllEntitiesRequest {
-	return ApiGetAllEntitiesRequest{
+func (a *AppAPIService) GetAllApps(ctx context.Context) ApiGetAllAppsRequest {
+	return ApiGetAllAppsRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
@@ -50,7 +50,7 @@ func (a *StackAPIService) GetAllEntities(ctx context.Context) ApiGetAllEntitiesR
 
 // Execute executes the request
 //  @return []interface{}
-func (a *StackAPIService) GetAllEntitiesExecute(r ApiGetAllEntitiesRequest) ([]interface{}, *http.Response, error) {
+func (a *AppAPIService) GetAllAppsExecute(r ApiGetAllAppsRequest) ([]interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -58,12 +58,12 @@ func (a *StackAPIService) GetAllEntitiesExecute(r ApiGetAllEntitiesRequest) ([]i
 		localVarReturnValue  []interface{}
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "StackAPIService.GetAllEntities")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AppAPIService.GetAllApps")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/stacks"
+	localVarPath := localBasePath + "/api/v1/apps"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -133,28 +133,28 @@ func (a *StackAPIService) GetAllEntitiesExecute(r ApiGetAllEntitiesRequest) ([]i
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetEntityRequest struct {
+type ApiGetAppRequest struct {
 	ctx context.Context
-	ApiService *StackAPIService
-	type_ StackType
+	ApiService *AppAPIService
+	type_ string
 }
 
-func (r ApiGetEntityRequest) Execute() (interface{}, *http.Response, error) {
-	return r.ApiService.GetEntityExecute(r)
+func (r ApiGetAppRequest) Execute() (interface{}, *http.Response, error) {
+	return r.ApiService.GetAppExecute(r)
 }
 
 /*
-GetEntity Get the attributes of a single stack
+GetApp Get the attributes of a single App
 
-Get the attributes of a single stack
+Get the attributes of a single App
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param type_ the type of entity
- @return ApiGetEntityRequest
+ @param type_
+ @return ApiGetAppRequest
 */
-func (a *StackAPIService) GetEntity(ctx context.Context, type_ StackType) ApiGetEntityRequest {
-	return ApiGetEntityRequest{
+func (a *AppAPIService) GetApp(ctx context.Context, type_ string) ApiGetAppRequest {
+	return ApiGetAppRequest{
 		ApiService: a,
 		ctx: ctx,
 		type_: type_,
@@ -163,7 +163,7 @@ func (a *StackAPIService) GetEntity(ctx context.Context, type_ StackType) ApiGet
 
 // Execute executes the request
 //  @return interface{}
-func (a *StackAPIService) GetEntityExecute(r ApiGetEntityRequest) (interface{}, *http.Response, error) {
+func (a *AppAPIService) GetAppExecute(r ApiGetAppRequest) (interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -171,12 +171,12 @@ func (a *StackAPIService) GetEntityExecute(r ApiGetEntityRequest) (interface{}, 
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "StackAPIService.GetEntity")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AppAPIService.GetApp")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/stacks/{type}"
+	localVarPath := localBasePath + "/api/v1/apps/{type}"
 	localVarPath = strings.Replace(localVarPath, "{"+"type"+"}", url.PathEscape(parameterValueToString(r.type_, "type_")), -1)
 
 	localVarHeaderParams := make(map[string]string)
