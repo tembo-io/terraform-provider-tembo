@@ -17,8 +17,9 @@ import (
 // checks if the PgBouncer type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &PgBouncer{}
 
-// PgBouncer struct for PgBouncer
+// PgBouncer PgBouncer is the type for the PGBouncer configuration
 type PgBouncer struct {
+	// Valid pgbouncer parameter values can be found at [https://www.pgbouncer.org/config.html](https://www.pgbouncer.org/config.html)
 	Parameters map[string]string `json:"parameters,omitempty"`
 	PoolMode *PoolerPgbouncerPoolMode `json:"poolMode,omitempty"`
 	Resources NullablePoolerTemplateSpecContainersResources `json:"resources,omitempty"`

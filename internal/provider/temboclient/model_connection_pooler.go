@@ -17,8 +17,9 @@ import (
 // checks if the ConnectionPooler type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ConnectionPooler{}
 
-// ConnectionPooler struct for ConnectionPooler
+// ConnectionPooler A connection pooler is a tool used to manage database connections, sitting between your application and Postgres instance. Because of the way Postgres handles connections, the server may encounter resource constraint issues when managing a few thousand connections. Using a pooler can alleviate these issues by using actual Postgres connections only when necessary  **Example**: A typical connection pooler configuration  ```yaml apiVersion: coredb.io/v1alpha1 kind: CoreDB metadata: name: test-db spec: connectionPooler: enabled: true pooler: poolMode: transaction # Valid parameter values can be found at https://www.pgbouncer.org/config.html parameters: default_pool_size: \"50\" max_client_conn: \"5000\" resources: limits: cpu: 200m memory: 256Mi requests: cpu: 100m memory: 128Mi ```
 type ConnectionPooler struct {
+	// Enable the connection pooler  **Default**: false.
 	Enabled *bool `json:"enabled,omitempty"`
 	Pooler *PgBouncer `json:"pooler,omitempty"`
 }

@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the MiddlewareOneOf type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,8 @@ var _ MappedNullable = &MiddlewareOneOf{}
 type MiddlewareOneOf struct {
 	CustomRequestHeaders HeaderConfig `json:"customRequestHeaders"`
 }
+
+type _MiddlewareOneOf MiddlewareOneOf
 
 // NewMiddlewareOneOf instantiates a new MiddlewareOneOf object
 // This constructor will assign default values to properties that have it defined,
@@ -76,6 +79,41 @@ func (o MiddlewareOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["customRequestHeaders"] = o.CustomRequestHeaders
 	return toSerialize, nil
+}
+
+func (o *MiddlewareOneOf) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"customRequestHeaders",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varMiddlewareOneOf := _MiddlewareOneOf{}
+
+	err = json.Unmarshal(bytes, &varMiddlewareOneOf)
+
+	if err != nil {
+		return err
+	}
+
+	*o = MiddlewareOneOf(varMiddlewareOneOf)
+
+	return err
 }
 
 type NullableMiddlewareOneOf struct {

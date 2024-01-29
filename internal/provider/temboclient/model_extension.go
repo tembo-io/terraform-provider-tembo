@@ -12,17 +12,23 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the Extension type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &Extension{}
 
-// Extension struct for Extension
+// Extension Extension lets you define a list of extensions to enable on the instance. To enable extensions, you must specify the name of the extension and the database, schema, and version to enable it on. If the version is not specified, the latest version will be used.  The extension must also be installed on the instance.  To install extensions, please refer to the `TrunkInstall` resource.  This example will enable the pg_stat_statements extension on the Postgres database in the public schema.  ```yaml apiVersion: coredb.io/v1alpha1 kind: CoreDB metadata: name: test-db spec: extensions: - name: pg_stat_statements locations: - database: postgres enabled: true schema: public version: 1.10.0 ````
 type Extension struct {
+	// A description of the extension. (Optional)  **Default**: \"No description provided\"
 	Description NullableString `json:"description,omitempty"`
+	// A list of locations (databases) to enabled the extension on.
 	Locations []ExtensionInstallLocation `json:"locations"`
+	// The name of the extension to enable.
 	Name string `json:"name"`
 }
+
+type _Extension Extension
 
 // NewExtension instantiates a new Extension object
 // This constructor will assign default values to properties that have it defined,
@@ -149,6 +155,42 @@ func (o Extension) ToMap() (map[string]interface{}, error) {
 	toSerialize["locations"] = o.Locations
 	toSerialize["name"] = o.Name
 	return toSerialize, nil
+}
+
+func (o *Extension) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"locations",
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varExtension := _Extension{}
+
+	err = json.Unmarshal(bytes, &varExtension)
+
+	if err != nil {
+		return err
+	}
+
+	*o = Extension(varExtension)
+
+	return err
 }
 
 type NullableExtension struct {

@@ -20,6 +20,7 @@ var _ MappedNullable = &AppConfig{}
 // AppConfig struct for AppConfig
 type AppConfig struct {
 	Env []EnvVar `json:"env,omitempty"`
+	Resources NullableResourceRequirements `json:"resources,omitempty"`
 }
 
 // NewAppConfig instantiates a new AppConfig object
@@ -72,6 +73,48 @@ func (o *AppConfig) SetEnv(v []EnvVar) {
 	o.Env = v
 }
 
+// GetResources returns the Resources field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AppConfig) GetResources() ResourceRequirements {
+	if o == nil || IsNil(o.Resources.Get()) {
+		var ret ResourceRequirements
+		return ret
+	}
+	return *o.Resources.Get()
+}
+
+// GetResourcesOk returns a tuple with the Resources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppConfig) GetResourcesOk() (*ResourceRequirements, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Resources.Get(), o.Resources.IsSet()
+}
+
+// HasResources returns a boolean if a field has been set.
+func (o *AppConfig) HasResources() bool {
+	if o != nil && o.Resources.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetResources gets a reference to the given NullableResourceRequirements and assigns it to the Resources field.
+func (o *AppConfig) SetResources(v ResourceRequirements) {
+	o.Resources.Set(&v)
+}
+// SetResourcesNil sets the value for Resources to be an explicit nil
+func (o *AppConfig) SetResourcesNil() {
+	o.Resources.Set(nil)
+}
+
+// UnsetResources ensures that no value is present for Resources, not even an explicit nil
+func (o *AppConfig) UnsetResources() {
+	o.Resources.Unset()
+}
+
 func (o AppConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -84,6 +127,9 @@ func (o AppConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Env != nil {
 		toSerialize["env"] = o.Env
+	}
+	if o.Resources.IsSet() {
+		toSerialize["resources"] = o.Resources.Get()
 	}
 	return toSerialize, nil
 }

@@ -20,20 +20,28 @@ type Cpu string
 
 // List of Cpu
 const (
+	_0_25 Cpu = "0.25"
+	_0_5 Cpu = "0.5"
 	_1 Cpu = "1"
 	_2 Cpu = "2"
 	_4 Cpu = "4"
+	_6 Cpu = "6"
 	_8 Cpu = "8"
+	_12 Cpu = "12"
 	_16 Cpu = "16"
 	_32 Cpu = "32"
 )
 
 // All allowed values of Cpu enum
 var AllowedCpuEnumValues = []Cpu{
+	"0.25",
+	"0.5",
 	"1",
 	"2",
 	"4",
+	"6",
 	"8",
+	"12",
 	"16",
 	"32",
 }

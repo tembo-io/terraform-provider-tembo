@@ -12,23 +12,34 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the AppService type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AppService{}
 
-// AppService struct for AppService
+// AppService AppService significantly extends the functionality of your Tembo Postgres instance by running tools and software built by the Postgres open source community.  **Example**: This will configure and install a Postgrest container along side the Postgres instance, install pg_graphql extension, and configure the ingress routing to expose the Postgrest service.  ```yaml apiVersion: coredb.io/v1alpha1 kind: CoreDB metadata: name: test-db spec: trunk_installs: - name: pg_graphql version: 1.2.0 extensions: - name: pg_graphql locations: - database: postgres enabled: true  appServices: - name: postgrest image: postgrest/postgrest:v10.0.0 routing: # only expose /rest/v1 and /graphql/v1 - port: 3000 ingressPath: /rest/v1 middlewares: - my-headers - port: 3000 ingressPath: /graphql/v1 middlewares: - map-gql - my-headers middlewares: - customRequestHeaders: name: my-headers config: # removes auth header from request Authorization: \"\" Content-Profile: graphql Accept-Profile: graphql - stripPrefix: name: my-strip-prefix config: - /rest/v1 # reroute gql and rest requests - replacePathRegex: name: map-gql config: regex: /graphql/v1/? replacement: /rpc/resolve env: - name: PGRST_DB_URI valueFromPlatform: ReadWriteConnection - name: PGRST_DB_SCHEMA value: \"public, graphql\" - name: PGRST_DB_ANON_ROLE value: postgres - name: PGRST_LOG_LEVEL value: info ```
 type AppService struct {
+	// Defines the arguments to pass into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container).
 	Args []string `json:"args,omitempty"`
+	// Defines the command into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container).
 	Command []string `json:"command,omitempty"`
+	// Defines the environment variables to pass into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container).
 	Env []EnvVar `json:"env,omitempty"`
+	// Defines the container image to use for the appService.
 	Image string `json:"image"`
+	// Defines the ingress middeware configuration for the appService. This is specifically configured for the ingress controller Traefik.
 	Middlewares []Middleware `json:"middlewares,omitempty"`
+	// Defines the name of the appService.
 	Name string `json:"name"`
 	Probes NullableProbes `json:"probes,omitempty"`
 	Resources *ResourceRequirements `json:"resources,omitempty"`
+	// Defines the routing configuration for the appService.
 	Routing []Routing `json:"routing,omitempty"`
+	Storage NullableStorageConfig `json:"storage,omitempty"`
 }
+
+type _AppService AppService
 
 // NewAppService instantiates a new AppService object
 // This constructor will assign default values to properties that have it defined,
@@ -336,6 +347,48 @@ func (o *AppService) SetRouting(v []Routing) {
 	o.Routing = v
 }
 
+// GetStorage returns the Storage field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AppService) GetStorage() StorageConfig {
+	if o == nil || IsNil(o.Storage.Get()) {
+		var ret StorageConfig
+		return ret
+	}
+	return *o.Storage.Get()
+}
+
+// GetStorageOk returns a tuple with the Storage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppService) GetStorageOk() (*StorageConfig, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Storage.Get(), o.Storage.IsSet()
+}
+
+// HasStorage returns a boolean if a field has been set.
+func (o *AppService) HasStorage() bool {
+	if o != nil && o.Storage.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStorage gets a reference to the given NullableStorageConfig and assigns it to the Storage field.
+func (o *AppService) SetStorage(v StorageConfig) {
+	o.Storage.Set(&v)
+}
+// SetStorageNil sets the value for Storage to be an explicit nil
+func (o *AppService) SetStorageNil() {
+	o.Storage.Set(nil)
+}
+
+// UnsetStorage ensures that no value is present for Storage, not even an explicit nil
+func (o *AppService) UnsetStorage() {
+	o.Storage.Unset()
+}
+
 func (o AppService) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -369,7 +422,46 @@ func (o AppService) ToMap() (map[string]interface{}, error) {
 	if o.Routing != nil {
 		toSerialize["routing"] = o.Routing
 	}
+	if o.Storage.IsSet() {
+		toSerialize["storage"] = o.Storage.Get()
+	}
 	return toSerialize, nil
+}
+
+func (o *AppService) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"image",
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varAppService := _AppService{}
+
+	err = json.Unmarshal(bytes, &varAppService)
+
+	if err != nil {
+		return err
+	}
+
+	*o = AppService(varAppService)
+
+	return err
 }
 
 type NullableAppService struct {

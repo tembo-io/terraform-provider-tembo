@@ -26,6 +26,9 @@ const (
 	OLAP StackType = "OLAP"
 	OLTP StackType = "OLTP"
 	VECTOR_DB StackType = "VectorDB"
+	DATA_WAREHOUSE StackType = "DataWarehouse"
+	GEOSPATIAL StackType = "Geospatial"
+	MONGO_ALTERNATIVE StackType = "MongoAlternative"
 )
 
 // All allowed values of StackType enum
@@ -36,6 +39,9 @@ var AllowedStackTypeEnumValues = []StackType{
 	"OLAP",
 	"OLTP",
 	"VectorDB",
+	"DataWarehouse",
+	"Geospatial",
+	"MongoAlternative",
 }
 
 func (v *StackType) UnmarshalJSON(src []byte) error {

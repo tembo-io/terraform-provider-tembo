@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Description** | Pointer to **NullableString** |  | [optional] 
-**Locations** | [**[]ExtensionInstallLocation**](ExtensionInstallLocation.md) |  | 
-**Name** | **string** |  | 
+**Description** | Pointer to **NullableString** | A description of the extension. (Optional)  **Default**: \&quot;No description provided\&quot; | [optional] 
+**Locations** | [**[]ExtensionInstallLocation**](ExtensionInstallLocation.md) | A list of locations (databases) to enabled the extension on. | 
+**Name** | **string** | The name of the extension to enable. | 
 
 ## Methods
 

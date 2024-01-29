@@ -1,19 +1,19 @@
-# \StackAPI
+# \AppAPI
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetAllEntities**](StackAPI.md#GetAllEntities) | **Get** /api/v1/stacks | Attributes for all stacks
-[**GetEntity**](StackAPI.md#GetEntity) | **Get** /api/v1/stacks/{type} | Get the attributes of a single stack
+[**GetAllApps**](AppAPI.md#GetAllApps) | **Get** /api/v1/apps | Attributes for all apps
+[**GetApp**](AppAPI.md#GetApp) | **Get** /api/v1/apps/{type} | Get the attributes of a single App
 
 
 
-## GetAllEntities
+## GetAllApps
 
-> []interface{} GetAllEntities(ctx).Execute()
+> []interface{} GetAllApps(ctx).Execute()
 
-Attributes for all stacks
+Attributes for all apps
 
 
 
@@ -33,13 +33,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.StackAPI.GetAllEntities(context.Background()).Execute()
+    resp, r, err := apiClient.AppAPI.GetAllApps(context.Background()).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetAllEntities``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetAllApps``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetAllEntities`: []interface{}
-    fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetAllEntities`: %v\n", resp)
+    // response from `GetAllApps`: []interface{}
+    fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetAllApps`: %v\n", resp)
 }
 ```
 
@@ -49,7 +49,7 @@ This endpoint does not need any parameter.
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiGetAllEntitiesRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGetAllAppsRequest struct via the builder pattern
 
 
 ### Return type
@@ -70,11 +70,11 @@ Other parameters are passed through a pointer to a apiGetAllEntitiesRequest stru
 [[Back to README]](../README.md)
 
 
-## GetEntity
+## GetApp
 
-> interface{} GetEntity(ctx, type_).Execute()
+> interface{} GetApp(ctx, type_).Execute()
 
-Get the attributes of a single stack
+Get the attributes of a single App
 
 
 
@@ -91,17 +91,17 @@ import (
 )
 
 func main() {
-    type_ := openapiclient.StackType("Standard") // StackType | the type of entity
+    type_ := "http" // string | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.StackAPI.GetEntity(context.Background(), type_).Execute()
+    resp, r, err := apiClient.AppAPI.GetApp(context.Background(), type_).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetEntity``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetApp``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetEntity`: interface{}
-    fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetEntity`: %v\n", resp)
+    // response from `GetApp`: interface{}
+    fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetApp`: %v\n", resp)
 }
 ```
 
@@ -111,11 +111,11 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**type_** | [**StackType**](.md) | the type of entity | 
+**type_** | **string** |  | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiGetEntityRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGetAppRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes

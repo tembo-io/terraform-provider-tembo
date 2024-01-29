@@ -78,13 +78,13 @@ output "instance" {
 
 ### Required
 
-- `cpu` (String) CPU. Supported values: 1, 2, 4, 8, 16, 32
-- `environment` (String) Environment. Values supported: dev, test, prod
+- `cpu` (String) CPU
+- `environment` (String) Environment
 - `instance_name` (String) Unique name of the instance
-- `memory` (String) Memory. Values supported: 1Gi, 2Gi, 4Gi, 8Gi, 16Gi, 32Gi
+- `memory` (String) Memory
 - `org_id` (String) Id of the organization in which the instance will be created
-- `stack_type` (String) Stack type for the instance. Supported values: Standard, MessageQueue, MachineLearning, OLAP, OLTP
-- `storage` (String) Storage. Values supported: 10Gi, 50Gi, 100Gi, 200Gi, 300Gi, 400Gi, 500Gi
+- `stack_type` (String) Stack type for the instance.
+- `storage` (String) Storage
 
 ### Optional
 

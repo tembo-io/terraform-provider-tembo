@@ -43,7 +43,7 @@ Default configuration comes with `Servers` field that contains server objects as
 
 ### Select Server Configuration
 
-For using other server than the one defined on index 0 set context value `sw.ContextServerIndex` of type `int`.
+For using other server than the one defined on index 0 set context value `temboclient.ContextServerIndex` of type `int`.
 
 ```golang
 ctx := context.WithValue(context.Background(), temboclient.ContextServerIndex, 1)
@@ -51,7 +51,7 @@ ctx := context.WithValue(context.Background(), temboclient.ContextServerIndex, 1
 
 ### Templated Server URL
 
-Templated server URL is formatted using default variables from configuration or from context value `sw.ContextServerVariables` of type `map[string]string`.
+Templated server URL is formatted using default variables from configuration or from context value `temboclient.ContextServerVariables` of type `map[string]string`.
 
 ```golang
 ctx := context.WithValue(context.Background(), temboclient.ContextServerVariables, map[string]string{
@@ -65,7 +65,7 @@ Note, enum values are always validated and all unused variables are silently ign
 
 Each operation can use different server URL defined using `OperationServers` map in the `Configuration`.
 An operation is uniquely identified by `"{classname}Service.{nickname}"` string.
-Similar rules for overriding default operation server index and variables applies by using `sw.ContextOperationServerIndices` and `sw.ContextOperationServerVariables` context maps.
+Similar rules for overriding default operation server index and variables applies by using `temboclient.ContextOperationServerIndices` and `temboclient.ContextOperationServerVariables` context maps.
 
 ```golang
 ctx := context.WithValue(context.Background(), temboclient.ContextOperationServerIndices, map[string]int{
@@ -84,17 +84,19 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*InstanceApi* | [**CreateInstance**](docs/InstanceApi.md#createinstance) | **Post** /api/v1/orgs/{org_id}/instances | Create a new Tembo instance
-*InstanceApi* | [**DeleteInstance**](docs/InstanceApi.md#deleteinstance) | **Delete** /api/v1/orgs/{org_id}/instances/{instance_id} | Delete an existing Tembo instance
-*InstanceApi* | [**GetAll**](docs/InstanceApi.md#getall) | **Get** /api/v1/orgs/{org_id}/instances | Get all Tembo instances in an organization
-*InstanceApi* | [**GetInstance**](docs/InstanceApi.md#getinstance) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id} | Get an existing Tembo instance
-*InstanceApi* | [**GetSchema**](docs/InstanceApi.md#getschema) | **Get** /api/v1/orgs/instances/schema | Get the json-schema for an instance
-*InstanceApi* | [**InstanceEvent**](docs/InstanceApi.md#instanceevent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
-*InstanceApi* | [**PatchInstance**](docs/InstanceApi.md#patchinstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
-*InstanceApi* | [**PutInstance**](docs/InstanceApi.md#putinstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
-*InstanceApi* | [**RestoreInstance**](docs/InstanceApi.md#restoreinstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
-*StackApi* | [**GetAllEntities**](docs/StackApi.md#getallentities) | **Get** /api/v1/stacks | Attributes for all stacks
-*StackApi* | [**GetEntity**](docs/StackApi.md#getentity) | **Get** /api/v1/stacks/{type} | Get the attributes of a single stack
+*AppAPI* | [**GetAllApps**](docs/AppAPI.md#getallapps) | **Get** /api/v1/apps | Attributes for all apps
+*AppAPI* | [**GetApp**](docs/AppAPI.md#getapp) | **Get** /api/v1/apps/{type} | Get the attributes of a single App
+*InstanceAPI* | [**CreateInstance**](docs/InstanceAPI.md#createinstance) | **Post** /api/v1/orgs/{org_id}/instances | Create a new Tembo instance
+*InstanceAPI* | [**DeleteInstance**](docs/InstanceAPI.md#deleteinstance) | **Delete** /api/v1/orgs/{org_id}/instances/{instance_id} | Delete an existing Tembo instance
+*InstanceAPI* | [**GetAll**](docs/InstanceAPI.md#getall) | **Get** /api/v1/orgs/{org_id}/instances | Get all Tembo instances in an organization
+*InstanceAPI* | [**GetInstance**](docs/InstanceAPI.md#getinstance) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id} | Get an existing Tembo instance
+*InstanceAPI* | [**GetSchema**](docs/InstanceAPI.md#getschema) | **Get** /api/v1/orgs/instances/schema | Get the json-schema for an instance
+*InstanceAPI* | [**InstanceEvent**](docs/InstanceAPI.md#instanceevent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
+*InstanceAPI* | [**PatchInstance**](docs/InstanceAPI.md#patchinstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
+*InstanceAPI* | [**PutInstance**](docs/InstanceAPI.md#putinstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
+*InstanceAPI* | [**RestoreInstance**](docs/InstanceAPI.md#restoreinstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
+*StackAPI* | [**GetAllEntities**](docs/StackAPI.md#getallentities) | **Get** /api/v1/stacks | Attributes for all stacks
+*StackAPI* | [**GetEntity**](docs/StackAPI.md#getentity) | **Get** /api/v1/stacks/{type} | Get the attributes of a single stack
 
 
 ## Documentation For Models
@@ -105,6 +107,8 @@ Class | Method | HTTP request | Description
  - [AppTypeOneOf](docs/AppTypeOneOf.md)
  - [AppTypeOneOf1](docs/AppTypeOneOf1.md)
  - [AppTypeOneOf2](docs/AppTypeOneOf2.md)
+ - [AppTypeOneOf3](docs/AppTypeOneOf3.md)
+ - [AppTypeOneOf4](docs/AppTypeOneOf4.md)
  - [ConnectionInfo](docs/ConnectionInfo.md)
  - [ConnectionPooler](docs/ConnectionPooler.md)
  - [Cpu](docs/Cpu.md)
@@ -120,6 +124,7 @@ Class | Method | HTTP request | Description
  - [HeaderConfig](docs/HeaderConfig.md)
  - [Infrastructure](docs/Infrastructure.md)
  - [Ingress](docs/Ingress.md)
+ - [IngressType](docs/IngressType.md)
  - [Instance](docs/Instance.md)
  - [InstanceEvent](docs/InstanceEvent.md)
  - [IntOrString](docs/IntOrString.md)
@@ -148,10 +153,12 @@ Class | Method | HTTP request | Description
  - [StackType](docs/StackType.md)
  - [State](docs/State.md)
  - [Storage](docs/Storage.md)
+ - [StorageConfig](docs/StorageConfig.md)
  - [StripPrefixConfig](docs/StripPrefixConfig.md)
  - [TrunkInstall](docs/TrunkInstall.md)
  - [TrunkInstallStatus](docs/TrunkInstallStatus.md)
  - [UpdateInstance](docs/UpdateInstance.md)
+ - [VolumeMount](docs/VolumeMount.md)
 
 
 ## Documentation For Authorization
@@ -165,7 +172,7 @@ Authentication schemes defined for the API:
 Example
 
 ```golang
-auth := context.WithValue(context.Background(), sw.ContextAccessToken, "BEARER_TOKEN_STRING")
+auth := context.WithValue(context.Background(), temboclient.ContextAccessToken, "BEARER_TOKEN_STRING")
 r, err := client.Service.Operation(auth, args)
 ```
 

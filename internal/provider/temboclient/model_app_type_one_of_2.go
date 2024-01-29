@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the AppTypeOneOf2 type satisfies the MappedNullable interface at compile time
@@ -19,16 +20,18 @@ var _ MappedNullable = &AppTypeOneOf2{}
 
 // AppTypeOneOf2 struct for AppTypeOneOf2
 type AppTypeOneOf2 struct {
-	Custom AppService `json:"custom"`
+	MqApi NullableAppConfig `json:"mq-api"`
 }
+
+type _AppTypeOneOf2 AppTypeOneOf2
 
 // NewAppTypeOneOf2 instantiates a new AppTypeOneOf2 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppTypeOneOf2(custom AppService) *AppTypeOneOf2 {
+func NewAppTypeOneOf2(mqApi NullableAppConfig) *AppTypeOneOf2 {
 	this := AppTypeOneOf2{}
-	this.Custom = custom
+	this.MqApi = mqApi
 	return &this
 }
 
@@ -40,28 +43,30 @@ func NewAppTypeOneOf2WithDefaults() *AppTypeOneOf2 {
 	return &this
 }
 
-// GetCustom returns the Custom field value
-func (o *AppTypeOneOf2) GetCustom() AppService {
-	if o == nil {
-		var ret AppService
+// GetMqApi returns the MqApi field value
+// If the value is explicit nil, the zero value for AppConfig will be returned
+func (o *AppTypeOneOf2) GetMqApi() AppConfig {
+	if o == nil || o.MqApi.Get() == nil {
+		var ret AppConfig
 		return ret
 	}
 
-	return o.Custom
+	return *o.MqApi.Get()
 }
 
-// GetCustomOk returns a tuple with the Custom field value
+// GetMqApiOk returns a tuple with the MqApi field value
 // and a boolean to check if the value has been set.
-func (o *AppTypeOneOf2) GetCustomOk() (*AppService, bool) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppTypeOneOf2) GetMqApiOk() (*AppConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Custom, true
+	return o.MqApi.Get(), o.MqApi.IsSet()
 }
 
-// SetCustom sets field value
-func (o *AppTypeOneOf2) SetCustom(v AppService) {
-	o.Custom = v
+// SetMqApi sets field value
+func (o *AppTypeOneOf2) SetMqApi(v AppConfig) {
+	o.MqApi.Set(&v)
 }
 
 func (o AppTypeOneOf2) MarshalJSON() ([]byte, error) {
@@ -74,8 +79,43 @@ func (o AppTypeOneOf2) MarshalJSON() ([]byte, error) {
 
 func (o AppTypeOneOf2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["custom"] = o.Custom
+	toSerialize["mq-api"] = o.MqApi.Get()
 	return toSerialize, nil
+}
+
+func (o *AppTypeOneOf2) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"mq-api",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varAppTypeOneOf2 := _AppTypeOneOf2{}
+
+	err = json.Unmarshal(bytes, &varAppTypeOneOf2)
+
+	if err != nil {
+		return err
+	}
+
+	*o = AppTypeOneOf2(varAppTypeOneOf2)
+
+	return err
 }
 
 type NullableAppTypeOneOf2 struct {

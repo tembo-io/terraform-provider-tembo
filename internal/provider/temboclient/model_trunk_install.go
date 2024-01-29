@@ -12,16 +12,21 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the TrunkInstall type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TrunkInstall{}
 
-// TrunkInstall struct for TrunkInstall
+// TrunkInstall TrunkInstall allows installation of extensions from the [pgtrunk](https://pgt.dev) registry.  This list should be a list of extension names and versions that you wish to install at runtime using the pgtrunk API.  This example will install the pg_stat_statements extension at version 1.10.0.  ```yaml apiVersion: coredb.io/v1alpha1 kind: CoreDB metadata: name: test-db spec: trunk_installs: - name: pg_stat_statements version: 1.10.0 ```
 type TrunkInstall struct {
+	// The name of the extension to install. This must be the name of the extension as it appears in the [pgtrunk](https://pgt.dev) registry.
 	Name string `json:"name"`
+	// The version of the extension to install. If not specified, the latest version will be used. (Optional)
 	Version NullableString `json:"version,omitempty"`
 }
+
+type _TrunkInstall TrunkInstall
 
 // NewTrunkInstall instantiates a new TrunkInstall object
 // This constructor will assign default values to properties that have it defined,
@@ -122,6 +127,41 @@ func (o TrunkInstall) ToMap() (map[string]interface{}, error) {
 		toSerialize["version"] = o.Version.Get()
 	}
 	return toSerialize, nil
+}
+
+func (o *TrunkInstall) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varTrunkInstall := _TrunkInstall{}
+
+	err = json.Unmarshal(bytes, &varTrunkInstall)
+
+	if err != nil {
+		return err
+	}
+
+	*o = TrunkInstall(varTrunkInstall)
+
+	return err
 }
 
 type NullableTrunkInstall struct {

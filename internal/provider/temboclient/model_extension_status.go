@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the ExtensionStatus type satisfies the MappedNullable interface at compile time
@@ -23,6 +24,8 @@ type ExtensionStatus struct {
 	Locations []ExtensionInstallLocationStatus `json:"locations"`
 	Name string `json:"name"`
 }
+
+type _ExtensionStatus ExtensionStatus
 
 // NewExtensionStatus instantiates a new ExtensionStatus object
 // This constructor will assign default values to properties that have it defined,
@@ -149,6 +152,42 @@ func (o ExtensionStatus) ToMap() (map[string]interface{}, error) {
 	toSerialize["locations"] = o.Locations
 	toSerialize["name"] = o.Name
 	return toSerialize, nil
+}
+
+func (o *ExtensionStatus) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"locations",
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varExtensionStatus := _ExtensionStatus{}
+
+	err = json.Unmarshal(bytes, &varExtensionStatus)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ExtensionStatus(varExtensionStatus)
+
+	return err
 }
 
 type NullableExtensionStatus struct {

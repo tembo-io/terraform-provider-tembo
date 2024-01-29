@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the ReplacePathRegexConfig type satisfies the MappedNullable interface at compile time
@@ -22,6 +23,8 @@ type ReplacePathRegexConfig struct {
 	Config ReplacePathRegexConfigType `json:"config"`
 	Name string `json:"name"`
 }
+
+type _ReplacePathRegexConfig ReplacePathRegexConfig
 
 // NewReplacePathRegexConfig instantiates a new ReplacePathRegexConfig object
 // This constructor will assign default values to properties that have it defined,
@@ -103,6 +106,42 @@ func (o ReplacePathRegexConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize["config"] = o.Config
 	toSerialize["name"] = o.Name
 	return toSerialize, nil
+}
+
+func (o *ReplacePathRegexConfig) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"config",
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varReplacePathRegexConfig := _ReplacePathRegexConfig{}
+
+	err = json.Unmarshal(bytes, &varReplacePathRegexConfig)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ReplacePathRegexConfig(varReplacePathRegexConfig)
+
+	return err
 }
 
 type NullableReplacePathRegexConfig struct {

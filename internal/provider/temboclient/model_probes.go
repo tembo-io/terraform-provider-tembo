@@ -12,16 +12,19 @@ package temboclient
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the Probes type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &Probes{}
 
-// Probes struct for Probes
+// Probes Probes are used to determine the health of a container. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 type Probes struct {
 	Liveness Probe `json:"liveness"`
 	Readiness Probe `json:"readiness"`
 }
+
+type _Probes Probes
 
 // NewProbes instantiates a new Probes object
 // This constructor will assign default values to properties that have it defined,
@@ -103,6 +106,42 @@ func (o Probes) ToMap() (map[string]interface{}, error) {
 	toSerialize["liveness"] = o.Liveness
 	toSerialize["readiness"] = o.Readiness
 	return toSerialize, nil
+}
+
+func (o *Probes) UnmarshalJSON(bytes []byte) (err error) {
+    // This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"liveness",
+		"readiness",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(bytes, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varProbes := _Probes{}
+
+	err = json.Unmarshal(bytes, &varProbes)
+
+	if err != nil {
+		return err
+	}
+
+	*o = Probes(varProbes)
+
+	return err
 }
 
 type NullableProbes struct {

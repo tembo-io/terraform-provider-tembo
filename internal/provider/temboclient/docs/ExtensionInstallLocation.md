@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Database** | Pointer to **string** |  | [optional] 
-**Enabled** | **bool** |  | 
-**Schema** | Pointer to **NullableString** |  | [optional] 
-**Version** | Pointer to **NullableString** |  | [optional] 
+**Database** | Pointer to **string** | The database to enable the extension on.  **Default**: \&quot;postgres\&quot; | [optional] 
+**Enabled** | **bool** | Enable or disable the extension on this Postgres instance. | 
+**Schema** | Pointer to **NullableString** | The schema to enable the extension on. (eg: \&quot;public\&quot;) | [optional] 
+**Version** | Pointer to **NullableString** | The extension version to install. If not specified, the latest version will be used. | [optional] 
 
 ## Methods
 
