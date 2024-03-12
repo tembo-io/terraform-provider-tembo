@@ -20,12 +20,124 @@ import (
 )
 
 
-// MetricsApiService MetricsApi service
-type MetricsApiService service
+// MetricsAPIService MetricsAPI service
+type MetricsAPIService service
+
+type ApiQueryRequest struct {
+	ctx context.Context
+	ApiService *MetricsAPIService
+	namespace string
+	query *string
+}
+
+// PromQL range query, must include a &#39;namespace&#39; label matching the query path
+func (r ApiQueryRequest) Query(query string) ApiQueryRequest {
+	r.query = &query
+	return r
+}
+
+func (r ApiQueryRequest) Execute() (interface{}, *http.Response, error) {
+	return r.ApiService.QueryExecute(r)
+}
+
+/*
+Query Method for Query
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param namespace Instance namespace
+ @return ApiQueryRequest
+*/
+func (a *MetricsAPIService) Query(ctx context.Context, namespace string) ApiQueryRequest {
+	return ApiQueryRequest{
+		ApiService: a,
+		ctx: ctx,
+		namespace: namespace,
+	}
+}
+
+// Execute executes the request
+//  @return interface{}
+func (a *MetricsAPIService) QueryExecute(r ApiQueryRequest) (interface{}, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  interface{}
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsAPIService.Query")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/{namespace}/metrics/query"
+	localVarPath = strings.Replace(localVarPath, "{"+"namespace"+"}", url.PathEscape(parameterValueToString(r.namespace, "namespace")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.query == nil {
+		return localVarReturnValue, nil, reportError("query is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type ApiQueryRangeRequest struct {
 	ctx context.Context
-	ApiService *MetricsApiService
+	ApiService *MetricsAPIService
 	namespace string
 	query *string
 	start *int64
@@ -68,7 +180,7 @@ QueryRange Method for QueryRange
  @param namespace Instance namespace
  @return ApiQueryRangeRequest
 */
-func (a *MetricsApiService) QueryRange(ctx context.Context, namespace string) ApiQueryRangeRequest {
+func (a *MetricsAPIService) QueryRange(ctx context.Context, namespace string) ApiQueryRangeRequest {
 	return ApiQueryRangeRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -78,7 +190,7 @@ func (a *MetricsApiService) QueryRange(ctx context.Context, namespace string) Ap
 
 // Execute executes the request
 //  @return interface{}
-func (a *MetricsApiService) QueryRangeExecute(r ApiQueryRangeRequest) (interface{}, *http.Response, error) {
+func (a *MetricsAPIService) QueryRangeExecute(r ApiQueryRangeRequest) (interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -86,7 +198,7 @@ func (a *MetricsApiService) QueryRangeExecute(r ApiQueryRangeRequest) (interface
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.QueryRange")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsAPIService.QueryRange")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}

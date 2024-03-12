@@ -128,7 +128,7 @@ func (d *temboInstanceSecretsDataSource) Read(ctx context.Context, req datasourc
 	}
 
 	// Get Secret value from API
-	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsApi.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
+	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Available Secrets",

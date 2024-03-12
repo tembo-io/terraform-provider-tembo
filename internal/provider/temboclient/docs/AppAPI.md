@@ -23,23 +23,23 @@ Attributes for all apps
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.AppAPI.GetAllApps(context.Background()).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetAllApps``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetAllApps`: []interface{}
-    fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetAllApps`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.AppAPI.GetAllApps(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetAllApps``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetAllApps`: []interface{}
+	fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetAllApps`: %v\n", resp)
 }
 ```
 
@@ -84,24 +84,24 @@ Get the attributes of a single App
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    type_ := "http" // string | 
+	type_ := "http" // string | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.AppAPI.GetApp(context.Background(), type_).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetApp``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetApp`: interface{}
-    fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetApp`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.AppAPI.GetApp(context.Background(), type_).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `AppAPI.GetApp``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetApp`: interface{}
+	fmt.Fprintf(os.Stdout, "Response from `AppAPI.GetApp`: %v\n", resp)
 }
 ```
 

@@ -16,59 +16,59 @@ import (
 	"fmt"
 )
 
-// checks if the IntOrStringOneOf1 type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &IntOrStringOneOf1{}
+// checks if the AppTypeOneOf5 type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AppTypeOneOf5{}
 
-// IntOrStringOneOf1 struct for IntOrStringOneOf1
-type IntOrStringOneOf1 struct {
-	String string `json:"String"`
+// AppTypeOneOf5 struct for AppTypeOneOf5
+type AppTypeOneOf5 struct {
+	Custom AppService `json:"custom"`
 }
 
-type _IntOrStringOneOf1 IntOrStringOneOf1
+type _AppTypeOneOf5 AppTypeOneOf5
 
-// NewIntOrStringOneOf1 instantiates a new IntOrStringOneOf1 object
+// NewAppTypeOneOf5 instantiates a new AppTypeOneOf5 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIntOrStringOneOf1(string_ string) *IntOrStringOneOf1 {
-	this := IntOrStringOneOf1{}
-	this.String = string_
+func NewAppTypeOneOf5(custom AppService) *AppTypeOneOf5 {
+	this := AppTypeOneOf5{}
+	this.Custom = custom
 	return &this
 }
 
-// NewIntOrStringOneOf1WithDefaults instantiates a new IntOrStringOneOf1 object
+// NewAppTypeOneOf5WithDefaults instantiates a new AppTypeOneOf5 object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewIntOrStringOneOf1WithDefaults() *IntOrStringOneOf1 {
-	this := IntOrStringOneOf1{}
+func NewAppTypeOneOf5WithDefaults() *AppTypeOneOf5 {
+	this := AppTypeOneOf5{}
 	return &this
 }
 
-// GetString returns the String field value
-func (o *IntOrStringOneOf1) GetString() string {
+// GetCustom returns the Custom field value
+func (o *AppTypeOneOf5) GetCustom() AppService {
 	if o == nil {
-		var ret string
+		var ret AppService
 		return ret
 	}
 
-	return o.String
+	return o.Custom
 }
 
-// GetStringOk returns a tuple with the String field value
+// GetCustomOk returns a tuple with the Custom field value
 // and a boolean to check if the value has been set.
-func (o *IntOrStringOneOf1) GetStringOk() (*string, bool) {
+func (o *AppTypeOneOf5) GetCustomOk() (*AppService, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.String, true
+	return &o.Custom, true
 }
 
-// SetString sets field value
-func (o *IntOrStringOneOf1) SetString(v string) {
-	o.String = v
+// SetCustom sets field value
+func (o *AppTypeOneOf5) SetCustom(v AppService) {
+	o.Custom = v
 }
 
-func (o IntOrStringOneOf1) MarshalJSON() ([]byte, error) {
+func (o AppTypeOneOf5) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -76,18 +76,18 @@ func (o IntOrStringOneOf1) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o IntOrStringOneOf1) ToMap() (map[string]interface{}, error) {
+func (o AppTypeOneOf5) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["String"] = o.String
+	toSerialize["custom"] = o.Custom
 	return toSerialize, nil
 }
 
-func (o *IntOrStringOneOf1) UnmarshalJSON(data []byte) (err error) {
+func (o *AppTypeOneOf5) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"String",
+		"custom",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -104,53 +104,53 @@ func (o *IntOrStringOneOf1) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varIntOrStringOneOf1 := _IntOrStringOneOf1{}
+	varAppTypeOneOf5 := _AppTypeOneOf5{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varIntOrStringOneOf1)
+	err = decoder.Decode(&varAppTypeOneOf5)
 
 	if err != nil {
 		return err
 	}
 
-	*o = IntOrStringOneOf1(varIntOrStringOneOf1)
+	*o = AppTypeOneOf5(varAppTypeOneOf5)
 
 	return err
 }
 
-type NullableIntOrStringOneOf1 struct {
-	value *IntOrStringOneOf1
+type NullableAppTypeOneOf5 struct {
+	value *AppTypeOneOf5
 	isSet bool
 }
 
-func (v NullableIntOrStringOneOf1) Get() *IntOrStringOneOf1 {
+func (v NullableAppTypeOneOf5) Get() *AppTypeOneOf5 {
 	return v.value
 }
 
-func (v *NullableIntOrStringOneOf1) Set(val *IntOrStringOneOf1) {
+func (v *NullableAppTypeOneOf5) Set(val *AppTypeOneOf5) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableIntOrStringOneOf1) IsSet() bool {
+func (v NullableAppTypeOneOf5) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableIntOrStringOneOf1) Unset() {
+func (v *NullableAppTypeOneOf5) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableIntOrStringOneOf1(val *IntOrStringOneOf1) *NullableIntOrStringOneOf1 {
-	return &NullableIntOrStringOneOf1{value: val, isSet: true}
+func NewNullableAppTypeOneOf5(val *AppTypeOneOf5) *NullableAppTypeOneOf5 {
+	return &NullableAppTypeOneOf5{value: val, isSet: true}
 }
 
-func (v NullableIntOrStringOneOf1) MarshalJSON() ([]byte, error) {
+func (v NullableAppTypeOneOf5) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableIntOrStringOneOf1) UnmarshalJSON(src []byte) error {
+func (v *NullableAppTypeOneOf5) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -11,10 +11,11 @@ package temboclient
 
 import (
 	"context"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func Test_temboclient_InstanceAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService CreateInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 
@@ -38,7 +39,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService DeleteInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var instanceId string
@@ -53,7 +54,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService GetAll", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 
@@ -67,7 +68,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService GetInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var instanceId string
@@ -82,7 +83,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService GetSchema", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.InstanceAPI.GetSchema(context.Background()).Execute()
 
@@ -94,7 +95,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService InstanceEvent", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var instanceId string
@@ -109,7 +110,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService PatchInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var instanceId string
@@ -124,7 +125,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService PutInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 		var instanceId string
@@ -139,7 +140,7 @@ func Test_temboclient_InstanceAPIService(t *testing.T) {
 
 	t.Run("Test InstanceAPIService RestoreInstance", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var orgId string
 

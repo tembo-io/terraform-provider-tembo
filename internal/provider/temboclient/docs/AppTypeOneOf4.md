@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Custom** | [**AppService**](AppService.md) |  | 
+**Pganalyze** | [**NullableAppConfig**](AppConfig.md) |  | 
 
 ## Methods
 
 ### NewAppTypeOneOf4
 
-`func NewAppTypeOneOf4(custom AppService, ) *AppTypeOneOf4`
+`func NewAppTypeOneOf4(pganalyze NullableAppConfig, ) *AppTypeOneOf4`
 
 NewAppTypeOneOf4 instantiates a new AppTypeOneOf4 object
 This constructor will assign default values to properties that have it defined,
@@ -25,26 +25,36 @@ NewAppTypeOneOf4WithDefaults instantiates a new AppTypeOneOf4 object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetCustom
+### GetPganalyze
 
-`func (o *AppTypeOneOf4) GetCustom() AppService`
+`func (o *AppTypeOneOf4) GetPganalyze() AppConfig`
 
-GetCustom returns the Custom field if non-nil, zero value otherwise.
+GetPganalyze returns the Pganalyze field if non-nil, zero value otherwise.
 
-### GetCustomOk
+### GetPganalyzeOk
 
-`func (o *AppTypeOneOf4) GetCustomOk() (*AppService, bool)`
+`func (o *AppTypeOneOf4) GetPganalyzeOk() (*AppConfig, bool)`
 
-GetCustomOk returns a tuple with the Custom field if it's non-nil, zero value otherwise
+GetPganalyzeOk returns a tuple with the Pganalyze field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetCustom
+### SetPganalyze
 
-`func (o *AppTypeOneOf4) SetCustom(v AppService)`
+`func (o *AppTypeOneOf4) SetPganalyze(v AppConfig)`
 
-SetCustom sets Custom field to given value.
+SetPganalyze sets Pganalyze field to given value.
 
 
+### SetPganalyzeNil
+
+`func (o *AppTypeOneOf4) SetPganalyzeNil(b bool)`
+
+ SetPganalyzeNil sets the value for Pganalyze to be an explicit nil
+
+### UnsetPganalyze
+`func (o *AppTypeOneOf4) UnsetPganalyze()`
+
+UnsetPganalyze ensures that no value is present for Pganalyze, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

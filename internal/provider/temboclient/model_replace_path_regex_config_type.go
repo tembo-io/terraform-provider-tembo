@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -108,8 +109,8 @@ func (o ReplacePathRegexConfigType) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *ReplacePathRegexConfigType) UnmarshalJSON(bytes []byte) (err error) {
-    // This validates that all required properties are included in the JSON object
+func (o *ReplacePathRegexConfigType) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
@@ -119,7 +120,7 @@ func (o *ReplacePathRegexConfigType) UnmarshalJSON(bytes []byte) (err error) {
 
 	allProperties := make(map[string]interface{})
 
-	err = json.Unmarshal(bytes, &allProperties)
+	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
 		return err;
@@ -133,7 +134,9 @@ func (o *ReplacePathRegexConfigType) UnmarshalJSON(bytes []byte) (err error) {
 
 	varReplacePathRegexConfigType := _ReplacePathRegexConfigType{}
 
-	err = json.Unmarshal(bytes, &varReplacePathRegexConfigType)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varReplacePathRegexConfigType)
 
 	if err != nil {
 		return err

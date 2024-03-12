@@ -30,25 +30,25 @@ Create a new Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.StackType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
+	orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
+	createInstance := *openapiclient.NewCreateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), "InstanceName_example", openapiclient.Memory("1Gi"), openapiclient.StackType("Standard"), openapiclient.Storage("10Gi")) // CreateInstance | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.CreateInstance(context.Background(), orgId).CreateInstance(createInstance).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.CreateInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `CreateInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.CreateInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.CreateInstance(context.Background(), orgId).CreateInstance(createInstance).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.CreateInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `CreateInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.CreateInstance`: %v\n", resp)
 }
 ```
 
@@ -102,25 +102,25 @@ Delete an existing Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization id of the instance to delete
-    instanceId := "instanceId_example" // string | Delete this instance id
+	orgId := "orgId_example" // string | Organization id of the instance to delete
+	instanceId := "instanceId_example" // string | Delete this instance id
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.DeleteInstance(context.Background(), orgId, instanceId).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.DeleteInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `DeleteInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.DeleteInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.DeleteInstance(context.Background(), orgId, instanceId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.DeleteInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `DeleteInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.DeleteInstance`: %v\n", resp)
 }
 ```
 
@@ -175,24 +175,24 @@ Get all Tembo instances in an organization
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | organization id for the request
+	orgId := "orgId_example" // string | organization id for the request
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.GetAll(context.Background(), orgId).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetAll``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetAll`: []Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetAll`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.GetAll(context.Background(), orgId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetAll``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetAll`: []Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetAll`: %v\n", resp)
 }
 ```
 
@@ -245,25 +245,25 @@ Get an existing Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the instance
-    instanceId := "instanceId_example" // string | 
+	orgId := "orgId_example" // string | Organization ID that owns the instance
+	instanceId := "instanceId_example" // string | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.GetInstance(context.Background(), orgId, instanceId).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.GetInstance(context.Background(), orgId, instanceId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetInstance`: %v\n", resp)
 }
 ```
 
@@ -318,23 +318,23 @@ Get the json-schema for an instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.GetSchema(context.Background()).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetSchema``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetSchema`: ErrorResponseSchema
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetSchema`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.GetSchema(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.GetSchema``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSchema`: ErrorResponseSchema
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.GetSchema`: %v\n", resp)
 }
 ```
 
@@ -379,26 +379,26 @@ Lifecycle events for a Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    eventType := openapiclient.InstanceEvent("restart") // InstanceEvent | 
-    instanceId := "instanceId_example" // string | 
+	orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
+	eventType := openapiclient.InstanceEvent("restart") // InstanceEvent | 
+	instanceId := "instanceId_example" // string | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.InstanceEvent(context.Background(), orgId, instanceId).EventType(eventType).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.InstanceEvent``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `InstanceEvent`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.InstanceEvent`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.InstanceEvent(context.Background(), orgId, instanceId).EventType(eventType).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.InstanceEvent``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `InstanceEvent`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.InstanceEvent`: %v\n", resp)
 }
 ```
 
@@ -454,26 +454,26 @@ Update attributes on an existing Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the instance
-    instanceId := "instanceId_example" // string | 
-    patchInstance := *openapiclient.NewPatchInstance() // PatchInstance | 
+	orgId := "orgId_example" // string | Organization ID that owns the instance
+	instanceId := "instanceId_example" // string | 
+	patchInstance := *openapiclient.NewPatchInstance() // PatchInstance | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.PatchInstance(context.Background(), orgId, instanceId).PatchInstance(patchInstance).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PatchInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `PatchInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PatchInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.PatchInstance(context.Background(), orgId, instanceId).PatchInstance(patchInstance).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PatchInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `PatchInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PatchInstance`: %v\n", resp)
 }
 ```
 
@@ -529,26 +529,26 @@ Replace all attributes of an existing Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    instanceId := "instanceId_example" // string | 
-    updateInstance := *openapiclient.NewUpdateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), openapiclient.Memory("1Gi"), int32(123), openapiclient.Storage("10Gi")) // UpdateInstance | 
+	orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
+	instanceId := "instanceId_example" // string | 
+	updateInstance := *openapiclient.NewUpdateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), openapiclient.Memory("1Gi"), int32(123), openapiclient.Storage("10Gi")) // UpdateInstance | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.PutInstance(context.Background(), orgId, instanceId).UpdateInstance(updateInstance).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PutInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `PutInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PutInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.PutInstance(context.Background(), orgId, instanceId).UpdateInstance(updateInstance).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PutInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `PutInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PutInstance`: %v\n", resp)
 }
 ```
 
@@ -604,25 +604,25 @@ Restore a Tembo instance
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-    restoreInstance := *openapiclient.NewRestoreInstance("InstanceName_example", *openapiclient.NewRestore("InstanceId_example")) // RestoreInstance | 
+	orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
+	restoreInstance := *openapiclient.NewRestoreInstance("InstanceName_example", *openapiclient.NewRestore("InstanceId_example")) // RestoreInstance | 
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.InstanceAPI.RestoreInstance(context.Background(), orgId).RestoreInstance(restoreInstance).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.RestoreInstance``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `RestoreInstance`: Instance
-    fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.RestoreInstance`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.InstanceAPI.RestoreInstance(context.Background(), orgId).RestoreInstance(restoreInstance).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.RestoreInstance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `RestoreInstance`: Instance
+	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.RestoreInstance`: %v\n", resp)
 }
 ```
 

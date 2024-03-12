@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **InstanceName** | **string** |  | 
 **IpAllowList** | Pointer to **[]string** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
+**PgVersion** | Pointer to **int32** |  | [optional] 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | Pointer to **int32** |  | [optional] 
 **StackType** | [**StackType**](StackType.md) |  | 
@@ -292,6 +293,31 @@ and a boolean to check if the value has been set.
 
 SetMemory sets Memory field to given value.
 
+
+### GetPgVersion
+
+`func (o *CreateInstance) GetPgVersion() int32`
+
+GetPgVersion returns the PgVersion field if non-nil, zero value otherwise.
+
+### GetPgVersionOk
+
+`func (o *CreateInstance) GetPgVersionOk() (*int32, bool)`
+
+GetPgVersionOk returns a tuple with the PgVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPgVersion
+
+`func (o *CreateInstance) SetPgVersion(v int32)`
+
+SetPgVersion sets PgVersion field to given value.
+
+### HasPgVersion
+
+`func (o *CreateInstance) HasPgVersion() bool`
+
+HasPgVersion returns a boolean if a field has been set.
 
 ### GetPostgresConfigs
 

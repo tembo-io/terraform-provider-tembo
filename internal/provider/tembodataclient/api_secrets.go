@@ -20,12 +20,12 @@ import (
 )
 
 
-// SecretsApiService SecretsApi service
-type SecretsApiService service
+// SecretsAPIService SecretsAPI service
+type SecretsAPIService service
 
 type ApiGetSecretRequest struct {
 	ctx context.Context
-	ApiService *SecretsApiService
+	ApiService *SecretsAPIService
 	namespace string
 	secretName string
 }
@@ -46,7 +46,7 @@ Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}
 
 Deprecated
 */
-func (a *SecretsApiService) GetSecret(ctx context.Context, namespace string, secretName string) ApiGetSecretRequest {
+func (a *SecretsAPIService) GetSecret(ctx context.Context, namespace string, secretName string) ApiGetSecretRequest {
 	return ApiGetSecretRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -58,7 +58,7 @@ func (a *SecretsApiService) GetSecret(ctx context.Context, namespace string, sec
 // Execute executes the request
 //  @return map[string]string
 // Deprecated
-func (a *SecretsApiService) GetSecretExecute(r ApiGetSecretRequest) (map[string]string, *http.Response, error) {
+func (a *SecretsAPIService) GetSecretExecute(r ApiGetSecretRequest) (map[string]string, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -66,7 +66,7 @@ func (a *SecretsApiService) GetSecretExecute(r ApiGetSecretRequest) (map[string]
 		localVarReturnValue  map[string]string
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsApiService.GetSecret")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsAPIService.GetSecret")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -135,7 +135,7 @@ func (a *SecretsApiService) GetSecretExecute(r ApiGetSecretRequest) (map[string]
 
 type ApiGetSecretNamesRequest struct {
 	ctx context.Context
-	ApiService *SecretsApiService
+	ApiService *SecretsAPIService
 	namespace string
 }
 
@@ -154,7 +154,7 @@ Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets
 
 Deprecated
 */
-func (a *SecretsApiService) GetSecretNames(ctx context.Context, namespace string) ApiGetSecretNamesRequest {
+func (a *SecretsAPIService) GetSecretNames(ctx context.Context, namespace string) ApiGetSecretNamesRequest {
 	return ApiGetSecretNamesRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -165,7 +165,7 @@ func (a *SecretsApiService) GetSecretNames(ctx context.Context, namespace string
 // Execute executes the request
 //  @return []AvailableSecret
 // Deprecated
-func (a *SecretsApiService) GetSecretNamesExecute(r ApiGetSecretNamesRequest) ([]AvailableSecret, *http.Response, error) {
+func (a *SecretsAPIService) GetSecretNamesExecute(r ApiGetSecretNamesRequest) ([]AvailableSecret, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -173,7 +173,7 @@ func (a *SecretsApiService) GetSecretNamesExecute(r ApiGetSecretNamesRequest) ([
 		localVarReturnValue  []AvailableSecret
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsApiService.GetSecretNames")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsAPIService.GetSecretNames")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -241,7 +241,7 @@ func (a *SecretsApiService) GetSecretNamesExecute(r ApiGetSecretNamesRequest) ([
 
 type ApiGetSecretNamesV1Request struct {
 	ctx context.Context
-	ApiService *SecretsApiService
+	ApiService *SecretsAPIService
 	orgId string
 	instanceId string
 }
@@ -258,7 +258,7 @@ GetSecretNamesV1 Method for GetSecretNamesV1
  @param instanceId Tembo Cloud Instance ID
  @return ApiGetSecretNamesV1Request
 */
-func (a *SecretsApiService) GetSecretNamesV1(ctx context.Context, orgId string, instanceId string) ApiGetSecretNamesV1Request {
+func (a *SecretsAPIService) GetSecretNamesV1(ctx context.Context, orgId string, instanceId string) ApiGetSecretNamesV1Request {
 	return ApiGetSecretNamesV1Request{
 		ApiService: a,
 		ctx: ctx,
@@ -269,7 +269,7 @@ func (a *SecretsApiService) GetSecretNamesV1(ctx context.Context, orgId string, 
 
 // Execute executes the request
 //  @return []AvailableSecret
-func (a *SecretsApiService) GetSecretNamesV1Execute(r ApiGetSecretNamesV1Request) ([]AvailableSecret, *http.Response, error) {
+func (a *SecretsAPIService) GetSecretNamesV1Execute(r ApiGetSecretNamesV1Request) ([]AvailableSecret, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -277,7 +277,7 @@ func (a *SecretsApiService) GetSecretNamesV1Execute(r ApiGetSecretNamesV1Request
 		localVarReturnValue  []AvailableSecret
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsApiService.GetSecretNamesV1")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsAPIService.GetSecretNamesV1")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -346,7 +346,7 @@ func (a *SecretsApiService) GetSecretNamesV1Execute(r ApiGetSecretNamesV1Request
 
 type ApiGetSecretV1Request struct {
 	ctx context.Context
-	ApiService *SecretsApiService
+	ApiService *SecretsAPIService
 	orgId string
 	instanceId string
 	secretName string
@@ -365,7 +365,7 @@ GetSecretV1 Method for GetSecretV1
  @param secretName Secret name
  @return ApiGetSecretV1Request
 */
-func (a *SecretsApiService) GetSecretV1(ctx context.Context, orgId string, instanceId string, secretName string) ApiGetSecretV1Request {
+func (a *SecretsAPIService) GetSecretV1(ctx context.Context, orgId string, instanceId string, secretName string) ApiGetSecretV1Request {
 	return ApiGetSecretV1Request{
 		ApiService: a,
 		ctx: ctx,
@@ -377,7 +377,7 @@ func (a *SecretsApiService) GetSecretV1(ctx context.Context, orgId string, insta
 
 // Execute executes the request
 //  @return map[string]string
-func (a *SecretsApiService) GetSecretV1Execute(r ApiGetSecretV1Request) (map[string]string, *http.Response, error) {
+func (a *SecretsAPIService) GetSecretV1Execute(r ApiGetSecretV1Request) (map[string]string, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -385,7 +385,7 @@ func (a *SecretsApiService) GetSecretV1Execute(r ApiGetSecretV1Request) (map[str
 		localVarReturnValue  map[string]string
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsApiService.GetSecretV1")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsAPIService.GetSecretV1")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}

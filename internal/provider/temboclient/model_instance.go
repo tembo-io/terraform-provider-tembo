@@ -13,6 +13,7 @@ package temboclient
 import (
 	"encoding/json"
 	"time"
+	"bytes"
 	"fmt"
 )
 
@@ -38,6 +39,8 @@ type Instance struct {
 	OrganizationId string `json:"organization_id"`
 	OrganizationName string `json:"organization_name"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
+	// Major Postgres version this instance is using. Currently: 14, 15 or 16
+	PostgresVersion int32 `json:"postgres_version"`
 	Replicas int32 `json:"replicas"`
 	RuntimeConfig []PgConfig `json:"runtime_config,omitempty"`
 	StackType StackType `json:"stack_type"`
@@ -52,7 +55,7 @@ type _Instance Instance
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, replicas int32, stackType StackType, state State, storage Storage) *Instance {
+func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage) *Instance {
 	this := Instance{}
 	this.Cpu = cpu
 	this.Environment = environment
@@ -61,6 +64,7 @@ func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceNa
 	this.Memory = memory
 	this.OrganizationId = organizationId
 	this.OrganizationName = organizationName
+	this.PostgresVersion = postgresVersion
 	this.Replicas = replicas
 	this.StackType = stackType
 	this.State = state
@@ -599,6 +603,30 @@ func (o *Instance) SetPostgresConfigs(v []PgConfig) {
 	o.PostgresConfigs = v
 }
 
+// GetPostgresVersion returns the PostgresVersion field value
+func (o *Instance) GetPostgresVersion() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.PostgresVersion
+}
+
+// GetPostgresVersionOk returns a tuple with the PostgresVersion field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetPostgresVersionOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PostgresVersion, true
+}
+
+// SetPostgresVersion sets field value
+func (o *Instance) SetPostgresVersion(v int32) {
+	o.PostgresVersion = v
+}
+
 // GetReplicas returns the Replicas field value
 func (o *Instance) GetReplicas() int32 {
 	if o == nil {
@@ -808,6 +836,7 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	if o.PostgresConfigs != nil {
 		toSerialize["postgres_configs"] = o.PostgresConfigs
 	}
+	toSerialize["postgres_version"] = o.PostgresVersion
 	toSerialize["replicas"] = o.Replicas
 	if o.RuntimeConfig != nil {
 		toSerialize["runtime_config"] = o.RuntimeConfig
@@ -821,8 +850,8 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *Instance) UnmarshalJSON(bytes []byte) (err error) {
-    // This validates that all required properties are included in the JSON object
+func (o *Instance) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
@@ -833,6 +862,7 @@ func (o *Instance) UnmarshalJSON(bytes []byte) (err error) {
 		"memory",
 		"organization_id",
 		"organization_name",
+		"postgres_version",
 		"replicas",
 		"stack_type",
 		"state",
@@ -841,7 +871,7 @@ func (o *Instance) UnmarshalJSON(bytes []byte) (err error) {
 
 	allProperties := make(map[string]interface{})
 
-	err = json.Unmarshal(bytes, &allProperties)
+	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
 		return err;
@@ -855,7 +885,9 @@ func (o *Instance) UnmarshalJSON(bytes []byte) (err error) {
 
 	varInstance := _Instance{}
 
-	err = json.Unmarshal(bytes, &varInstance)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varInstance)
 
 	if err != nil {
 		return err
