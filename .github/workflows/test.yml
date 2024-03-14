@@ -80,5 +80,6 @@ jobs:
           TEMBO_ACCESS_TOKEN: ${{ secrets.TEMBO_ACCESS_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
           TEMBO_HOST: ${{ secrets.TEMBO_HOST }}
+          TEMBO_DATA_HOST: ${{ secrets.TEMBO_DATA_HOST }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10

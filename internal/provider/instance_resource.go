@@ -490,12 +490,49 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	// Generate API request body from plan
-	updateInstance := *temboclient.NewUpdateInstance(
-		temboclient.Cpu(plan.CPU.ValueString()),
-		temboclient.Environment(plan.Environment.ValueString()),
-		temboclient.Memory((plan.Memory.ValueString())),
-		int32(plan.Replicas.ValueInt64()),
-		temboclient.Storage(plan.Storage.ValueString()))
+	updateInstance := *temboclient.NewPatchInstance()
+
+	cpu, err := temboclient.NewCpuFromValue(plan.CPU.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Tembo Instance",
+			err.Error(),
+		)
+		return
+	}
+	updateInstance.SetCpu(*cpu)
+
+	env, err := temboclient.NewEnvironmentFromValue(plan.Environment.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Tembo Instance",
+			err.Error(),
+		)
+		return
+	}
+	updateInstance.SetEnvironment(*env)
+
+	memory, err := temboclient.NewMemoryFromValue(plan.Memory.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Tembo Instance",
+			err.Error(),
+		)
+		return
+	}
+	updateInstance.SetMemory(*memory)
+
+	updateInstance.SetReplicas(int32(plan.Replicas.ValueInt64()))
+
+	storage, err := temboclient.NewStorageFromValue(plan.Storage.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Tembo Instance",
+			err.Error(),
+		)
+		return
+	}
+	updateInstance.SetStorage(*storage)
 
 	updateInstance.SetExtraDomainsRw(getStringArray(plan.ExtraDomainsRw))
 	updateInstance.SetPostgresConfigs(getPgConfig(plan.PostgresConfigs))
@@ -510,10 +547,10 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
 
 	// Update existing Instance
-	_, response, err := r.temboInstanceConfig.client.InstanceAPI.PutInstance(
+	_, response, err := r.temboInstanceConfig.client.InstanceAPI.PatchInstance(
 		ctx,
 		plan.OrgId.ValueString(),
-		plan.InstanceID.ValueString()).UpdateInstance(updateInstance).Execute()
+		plan.InstanceID.ValueString()).PatchInstance(updateInstance).Execute()
 
 	if err != nil {
 		resp.Diagnostics.AddError(
