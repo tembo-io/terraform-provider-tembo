@@ -70,8 +70,8 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "2"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "50"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "20"),
+					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "100"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -206,8 +206,8 @@ resource "tembo_instance" "test" {
 		pooler = {
 		  pool_mode = "transaction",
 		  parameters = {
-			max_client_conn   = "50"
-			default_pool_size = "5000"
+			max_client_conn   = "20"
+			default_pool_size = "100"
 		  }
 		}
 	  }
