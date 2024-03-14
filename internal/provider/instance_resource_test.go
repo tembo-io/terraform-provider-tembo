@@ -66,7 +66,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "ip_allow_list.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "ip_allow_list.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "2"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
@@ -200,7 +200,7 @@ resource "tembo_instance" "test" {
 		}
 		]
 	}]
-	ip_allow_list = ["71.190.46.69", "71.190.46.70"]
+	ip_allow_list = ["71.190.46.69"]
 	connection_pooler = {
 		enabled = true,
 		pooler = {
