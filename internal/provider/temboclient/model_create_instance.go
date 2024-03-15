@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -29,6 +30,7 @@ type CreateInstance struct {
 	InstanceName string `json:"instance_name"`
 	IpAllowList []string `json:"ip_allow_list,omitempty"`
 	Memory Memory `json:"memory"`
+	PgVersion *int32 `json:"pg_version,omitempty"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
 	Replicas *int32 `json:"replicas,omitempty"`
 	StackType StackType `json:"stack_type"`
@@ -331,6 +333,38 @@ func (o *CreateInstance) SetMemory(v Memory) {
 	o.Memory = v
 }
 
+// GetPgVersion returns the PgVersion field value if set, zero value otherwise.
+func (o *CreateInstance) GetPgVersion() int32 {
+	if o == nil || IsNil(o.PgVersion) {
+		var ret int32
+		return ret
+	}
+	return *o.PgVersion
+}
+
+// GetPgVersionOk returns a tuple with the PgVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInstance) GetPgVersionOk() (*int32, bool) {
+	if o == nil || IsNil(o.PgVersion) {
+		return nil, false
+	}
+	return o.PgVersion, true
+}
+
+// HasPgVersion returns a boolean if a field has been set.
+func (o *CreateInstance) HasPgVersion() bool {
+	if o != nil && !IsNil(o.PgVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetPgVersion gets a reference to the given int32 and assigns it to the PgVersion field.
+func (o *CreateInstance) SetPgVersion(v int32) {
+	o.PgVersion = &v
+}
+
 // GetPostgresConfigs returns the PostgresConfigs field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateInstance) GetPostgresConfigs() []PgConfig {
 	if o == nil {
@@ -506,6 +540,9 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 		toSerialize["ip_allow_list"] = o.IpAllowList
 	}
 	toSerialize["memory"] = o.Memory
+	if !IsNil(o.PgVersion) {
+		toSerialize["pg_version"] = o.PgVersion
+	}
 	if o.PostgresConfigs != nil {
 		toSerialize["postgres_configs"] = o.PostgresConfigs
 	}
@@ -520,8 +557,8 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *CreateInstance) UnmarshalJSON(bytes []byte) (err error) {
-    // This validates that all required properties are included in the JSON object
+func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
@@ -535,7 +572,7 @@ func (o *CreateInstance) UnmarshalJSON(bytes []byte) (err error) {
 
 	allProperties := make(map[string]interface{})
 
-	err = json.Unmarshal(bytes, &allProperties)
+	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
 		return err;
@@ -549,7 +586,9 @@ func (o *CreateInstance) UnmarshalJSON(bytes []byte) (err error) {
 
 	varCreateInstance := _CreateInstance{}
 
-	err = json.Unmarshal(bytes, &varCreateInstance)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varCreateInstance)
 
 	if err != nil {
 		return err

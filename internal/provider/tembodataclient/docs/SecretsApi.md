@@ -1,13 +1,13 @@
-# \SecretsApi
+# \SecretsAPI
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetSecret**](SecretsApi.md#GetSecret) | **Get** /{namespace}/secrets/{secret_name} | Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}
-[**GetSecretNames**](SecretsApi.md#GetSecretNames) | **Get** /{namespace}/secrets | Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets
-[**GetSecretNamesV1**](SecretsApi.md#GetSecretNamesV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets | 
-[**GetSecretV1**](SecretsApi.md#GetSecretV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name} | 
+[**GetSecret**](SecretsAPI.md#GetSecret) | **Get** /{namespace}/secrets/{secret_name} | Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}
+[**GetSecretNames**](SecretsAPI.md#GetSecretNames) | **Get** /{namespace}/secrets | Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets
+[**GetSecretNamesV1**](SecretsAPI.md#GetSecretNamesV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets | 
+[**GetSecretV1**](SecretsAPI.md#GetSecretV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name} | 
 
 
 
@@ -25,25 +25,25 @@ Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
 func main() {
-    namespace := "org-myco-inst-prod" // string | Instance namespace
-    secretName := "readonly-role" // string | Secret name
+	namespace := "org-myco-inst-prod" // string | Instance namespace
+	secretName := "readonly-role" // string | Secret name
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.SecretsApi.GetSecret(context.Background(), namespace, secretName).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `SecretsApi.GetSecret``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetSecret`: map[string]string
-    fmt.Fprintf(os.Stdout, "Response from `SecretsApi.GetSecret`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SecretsAPI.GetSecret(context.Background(), namespace, secretName).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SecretsAPI.GetSecret``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSecret`: map[string]string
+	fmt.Fprintf(os.Stdout, "Response from `SecretsAPI.GetSecret`: %v\n", resp)
 }
 ```
 
@@ -98,24 +98,24 @@ Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
 func main() {
-    namespace := "org-myco-inst-prod" // string | Instance namespace
+	namespace := "org-myco-inst-prod" // string | Instance namespace
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.SecretsApi.GetSecretNames(context.Background(), namespace).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `SecretsApi.GetSecretNames``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetSecretNames`: []AvailableSecret
-    fmt.Fprintf(os.Stdout, "Response from `SecretsApi.GetSecretNames`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SecretsAPI.GetSecretNames(context.Background(), namespace).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SecretsAPI.GetSecretNames``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSecretNames`: []AvailableSecret
+	fmt.Fprintf(os.Stdout, "Response from `SecretsAPI.GetSecretNames`: %v\n", resp)
 }
 ```
 
@@ -166,25 +166,25 @@ Name | Type | Description  | Notes
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
 func main() {
-    orgId := "org_2T7FJA0DpaNBnELVLU1IS4XzZG0" // string | Tembo Cloud Organization ID
-    instanceId := "inst_1696253936968_TblNOY_6" // string | Tembo Cloud Instance ID
+	orgId := "org_2T7FJA0DpaNBnELVLU1IS4XzZG0" // string | Tembo Cloud Organization ID
+	instanceId := "inst_1696253936968_TblNOY_6" // string | Tembo Cloud Instance ID
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.SecretsApi.GetSecretNamesV1(context.Background(), orgId, instanceId).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `SecretsApi.GetSecretNamesV1``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetSecretNamesV1`: []AvailableSecret
-    fmt.Fprintf(os.Stdout, "Response from `SecretsApi.GetSecretNamesV1`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SecretsAPI.GetSecretNamesV1(context.Background(), orgId, instanceId).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SecretsAPI.GetSecretNamesV1``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSecretNamesV1`: []AvailableSecret
+	fmt.Fprintf(os.Stdout, "Response from `SecretsAPI.GetSecretNamesV1`: %v\n", resp)
 }
 ```
 
@@ -237,26 +237,26 @@ Name | Type | Description  | Notes
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
 func main() {
-    orgId := "org_2T7FJA0DpaNBnELVLU1IS4XzZG0" // string | Tembo Cloud Organization ID
-    instanceId := "inst_1696253936968_TblNOY_6" // string | Tembo Cloud Instance ID
-    secretName := "readonly-role" // string | Secret name
+	orgId := "org_2T7FJA0DpaNBnELVLU1IS4XzZG0" // string | Tembo Cloud Organization ID
+	instanceId := "inst_1696253936968_TblNOY_6" // string | Tembo Cloud Instance ID
+	secretName := "readonly-role" // string | Secret name
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.SecretsApi.GetSecretV1(context.Background(), orgId, instanceId, secretName).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `SecretsApi.GetSecretV1``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetSecretV1`: map[string]string
-    fmt.Fprintf(os.Stdout, "Response from `SecretsApi.GetSecretV1`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SecretsAPI.GetSecretV1(context.Background(), orgId, instanceId, secretName).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SecretsAPI.GetSecretV1``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSecretV1`: map[string]string
+	fmt.Fprintf(os.Stdout, "Response from `SecretsAPI.GetSecretV1`: %v\n", resp)
 }
 ```
 

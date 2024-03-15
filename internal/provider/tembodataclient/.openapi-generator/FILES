@@ -8,8 +8,8 @@ api_secrets.go
 client.go
 configuration.go
 docs/AvailableSecret.md
-docs/MetricsApi.md
-docs/SecretsApi.md
+docs/MetricsAPI.md
+docs/SecretsAPI.md
 git_push.sh
 go.mod
 go.sum

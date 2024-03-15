@@ -15,7 +15,7 @@ import (
 	"fmt"
 )
 
-// PoolerPgbouncerPoolMode the model 'PoolerPgbouncerPoolMode'
+// PoolerPgbouncerPoolMode The PgBouncer configuration
 type PoolerPgbouncerPoolMode string
 
 // List of PoolerPgbouncerPoolMode

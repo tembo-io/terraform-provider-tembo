@@ -153,6 +153,8 @@ Delete the contents of the directory first and then run following command to re-
 openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient
 ```
 
+Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`
+
 ### Data plane API client
 
 Go to `internal/provider/tembodataclient` directory in your terminal.
@@ -162,6 +164,8 @@ Delete the contents of the directory first and then run following command to re-
 ```bash
 openapi-generator generate -i https://api.data-1.use1.tembo.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=tembodataclient
 ```
+
+Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`
 
 ## Releasing the Provider to Terraform Registry
 

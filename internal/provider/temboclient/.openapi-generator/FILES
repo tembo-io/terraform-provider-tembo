@@ -17,6 +17,7 @@ docs/AppTypeOneOf1.md
 docs/AppTypeOneOf2.md
 docs/AppTypeOneOf3.md
 docs/AppTypeOneOf4.md
+docs/AppTypeOneOf5.md
 docs/ConnectionInfo.md
 docs/ConnectionPooler.md
 docs/Cpu.md
@@ -80,6 +81,7 @@ model_app_type_one_of_1.go
 model_app_type_one_of_2.go
 model_app_type_one_of_3.go
 model_app_type_one_of_4.go
+model_app_type_one_of_5.go
 model_connection_info.go
 model_connection_pooler.go
 model_cpu.go

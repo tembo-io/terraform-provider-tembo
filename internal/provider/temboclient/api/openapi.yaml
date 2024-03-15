@@ -734,6 +734,7 @@ components:
       - $ref: '#/components/schemas/AppType_oneOf_2'
       - $ref: '#/components/schemas/AppType_oneOf_3'
       - $ref: '#/components/schemas/AppType_oneOf_4'
+      - $ref: '#/components/schemas/AppType_oneOf_5'
     ConnectionInfo:
       properties:
         host:
@@ -814,9 +815,9 @@ components:
         instance_name: instance_name
         memory: null
         app_services:
-        - null
-        - null
-        replicas: 0
+        - restapi: ""
+        - restapi: ""
+        replicas: 6
         cpu: null
         storage: null
         environment: null
@@ -860,6 +861,7 @@ components:
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
+        pg_version: 0
         connection_pooler: ""
       properties:
         app_services:
@@ -894,6 +896,10 @@ components:
           type: array
         memory:
           $ref: '#/components/schemas/Memory'
+        pg_version:
+          format: int32
+          minimum: 0
+          type: integer
         postgres_configs:
           items:
             $ref: '#/components/schemas/PgConfig'
@@ -1141,9 +1147,9 @@ components:
         instance_name: instance_name
         memory: null
         app_services:
-        - null
-        - null
-        replicas: 0
+        - restapi: ""
+        - restapi: ""
+        replicas: 6
         cpu: null
         created_at: 2000-01-23T04:56:07.000+00:00
         organization_name: organization_name
@@ -1153,6 +1159,7 @@ components:
           value: value
         - name: name
           value: value
+        postgres_version: 0
         environment: null
         extensions:
         - name: name
@@ -1278,6 +1285,13 @@ components:
             $ref: '#/components/schemas/PgConfig'
           nullable: true
           type: array
+        postgres_version:
+          description: |-
+            Major Postgres version this instance is using.
+            Currently: 14, 15 or 16
+          format: int32
+          minimum: 0
+          type: integer
         replicas:
           format: int32
           type: integer
@@ -1305,6 +1319,7 @@ components:
       - memory
       - organization_id
       - organization_name
+      - postgres_version
       - replicas
       - stack_type
       - state
@@ -1368,8 +1383,8 @@ components:
         - extra_domains_rw
         memory: ""
         app_services:
-        - null
-        - null
+        - restapi: ""
+        - restapi: ""
         postgres_configs:
         - name: name
           value: value
@@ -1473,13 +1488,20 @@ components:
       - value
       type: object
     PoolerPgbouncerPoolMode:
+      description: The PgBouncer configuration
       enum:
       - session
       - transaction
       type: string
     PoolerTemplateSpecContainersResources:
+      description: "Compute Resources required by this container. Cannot be updated.\
+        \ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
       properties:
         claims:
+          description: |-
+            Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
+            This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+            This field is immutable. It can only be set for containers.
           items:
             $ref: '#/components/schemas/PoolerTemplateSpecContainersResourcesClaims'
           nullable: true
@@ -1487,17 +1509,27 @@ components:
         limits:
           additionalProperties:
             $ref: '#/components/schemas/IntOrString'
+          description: "Limits describes the maximum amount of compute resources allowed.\
+            \ More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
           nullable: true
           type: object
         requests:
           additionalProperties:
             $ref: '#/components/schemas/IntOrString'
+          description: "Requests describes the minimum amount of compute resources\
+            \ required. If Requests is omitted for a container, it defaults to Limits\
+            \ if that is explicitly specified, otherwise to an implementation-defined\
+            \ value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
           nullable: true
           type: object
       type: object
     PoolerTemplateSpecContainersResourcesClaims:
+      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
       properties:
         name:
+          description: Name must match the name of one entry in pod.spec.resourceClaims
+            of the Pod where this field is used. It makes that resource available
+            inside a container.
           type: string
       required:
       - name
@@ -1511,7 +1543,8 @@ components:
         path:
           type: string
         port:
-          type: string
+          format: int32
+          type: integer
       required:
       - initialDelaySeconds
       - path
@@ -1601,8 +1634,8 @@ components:
           instance_id: instance_id
           recovery_target_time: 2000-01-23T04:56:07.000+00:00
         app_services:
-        - null
-        - null
+        - restapi: ""
+        - restapi: ""
         cpu: ""
         storage: ""
         connection_pooler: ""
@@ -1687,6 +1720,8 @@ components:
       - DataWarehouse
       - Geospatial
       - MongoAlternative
+      - RAG
+      - Timeseries
       type: string
     State:
       enum:
@@ -1830,8 +1865,8 @@ components:
         - extra_domains_rw
         memory: null
         app_services:
-        - null
-        - null
+        - restapi: ""
+        - restapi: ""
         postgres_configs:
         - name: name
           value: value
@@ -1925,6 +1960,8 @@ components:
       - name
       type: object
     AppType_oneOf:
+      example:
+        restapi: ""
       properties:
         restapi:
           allOf:
@@ -1961,6 +1998,15 @@ components:
       - embeddings
       type: object
     AppType_oneOf_4:
+      properties:
+        pganalyze:
+          allOf:
+          - $ref: '#/components/schemas/AppConfig'
+          nullable: true
+      required:
+      - pganalyze
+      type: object
+    AppType_oneOf_5:
       properties:
         custom:
           $ref: '#/components/schemas/AppService'

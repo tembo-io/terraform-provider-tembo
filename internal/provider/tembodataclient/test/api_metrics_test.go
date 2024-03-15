@@ -1,7 +1,7 @@
 /*
 Tembo Data API
 
-Testing MetricsApiService
+Testing MetricsAPIService
 
 */
 
@@ -14,21 +14,35 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
-func Test_tembodataclient_MetricsApiService(t *testing.T) {
+func Test_tembodataclient_MetricsAPIService(t *testing.T) {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
 
-	t.Run("Test MetricsApiService QueryRange", func(t *testing.T) {
+	t.Run("Test MetricsAPIService Query", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
 		var namespace string
 
-		resp, httpRes, err := apiClient.MetricsApi.QueryRange(context.Background(), namespace).Execute()
+		resp, httpRes, err := apiClient.MetricsAPI.Query(context.Background(), namespace).Execute()
+
+		require.Nil(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, 200, httpRes.StatusCode)
+
+	})
+
+	t.Run("Test MetricsAPIService QueryRange", func(t *testing.T) {
+
+		t.Skip("skip test")  // remove to run test
+
+		var namespace string
+
+		resp, httpRes, err := apiClient.MetricsAPI.QueryRange(context.Background(), namespace).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

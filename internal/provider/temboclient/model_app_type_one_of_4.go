@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -20,7 +21,7 @@ var _ MappedNullable = &AppTypeOneOf4{}
 
 // AppTypeOneOf4 struct for AppTypeOneOf4
 type AppTypeOneOf4 struct {
-	Custom AppService `json:"custom"`
+	Pganalyze NullableAppConfig `json:"pganalyze"`
 }
 
 type _AppTypeOneOf4 AppTypeOneOf4
@@ -29,9 +30,9 @@ type _AppTypeOneOf4 AppTypeOneOf4
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppTypeOneOf4(custom AppService) *AppTypeOneOf4 {
+func NewAppTypeOneOf4(pganalyze NullableAppConfig) *AppTypeOneOf4 {
 	this := AppTypeOneOf4{}
-	this.Custom = custom
+	this.Pganalyze = pganalyze
 	return &this
 }
 
@@ -43,28 +44,30 @@ func NewAppTypeOneOf4WithDefaults() *AppTypeOneOf4 {
 	return &this
 }
 
-// GetCustom returns the Custom field value
-func (o *AppTypeOneOf4) GetCustom() AppService {
-	if o == nil {
-		var ret AppService
+// GetPganalyze returns the Pganalyze field value
+// If the value is explicit nil, the zero value for AppConfig will be returned
+func (o *AppTypeOneOf4) GetPganalyze() AppConfig {
+	if o == nil || o.Pganalyze.Get() == nil {
+		var ret AppConfig
 		return ret
 	}
 
-	return o.Custom
+	return *o.Pganalyze.Get()
 }
 
-// GetCustomOk returns a tuple with the Custom field value
+// GetPganalyzeOk returns a tuple with the Pganalyze field value
 // and a boolean to check if the value has been set.
-func (o *AppTypeOneOf4) GetCustomOk() (*AppService, bool) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppTypeOneOf4) GetPganalyzeOk() (*AppConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Custom, true
+	return o.Pganalyze.Get(), o.Pganalyze.IsSet()
 }
 
-// SetCustom sets field value
-func (o *AppTypeOneOf4) SetCustom(v AppService) {
-	o.Custom = v
+// SetPganalyze sets field value
+func (o *AppTypeOneOf4) SetPganalyze(v AppConfig) {
+	o.Pganalyze.Set(&v)
 }
 
 func (o AppTypeOneOf4) MarshalJSON() ([]byte, error) {
@@ -77,21 +80,21 @@ func (o AppTypeOneOf4) MarshalJSON() ([]byte, error) {
 
 func (o AppTypeOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["custom"] = o.Custom
+	toSerialize["pganalyze"] = o.Pganalyze.Get()
 	return toSerialize, nil
 }
 
-func (o *AppTypeOneOf4) UnmarshalJSON(bytes []byte) (err error) {
-    // This validates that all required properties are included in the JSON object
+func (o *AppTypeOneOf4) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"custom",
+		"pganalyze",
 	}
 
 	allProperties := make(map[string]interface{})
 
-	err = json.Unmarshal(bytes, &allProperties)
+	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
 		return err;
@@ -105,7 +108,9 @@ func (o *AppTypeOneOf4) UnmarshalJSON(bytes []byte) (err error) {
 
 	varAppTypeOneOf4 := _AppTypeOneOf4{}
 
-	err = json.Unmarshal(bytes, &varAppTypeOneOf4)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varAppTypeOneOf4)
 
 	if err != nil {
 		return err

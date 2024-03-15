@@ -109,7 +109,7 @@ func (d *temboInstanceSecret) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsApi.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
+	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Available Secrets",
@@ -119,7 +119,7 @@ func (d *temboInstanceSecret) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Get refreshed Instance value from API
-	secret, _, err := d.temboInstanceSecretsConfig.client.SecretsApi.GetSecretV1(ctx, orgId, instanceId, secretName).Execute()
+	secret, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretV1(ctx, orgId, instanceId, secretName).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Secret",

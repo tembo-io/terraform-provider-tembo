@@ -111,6 +111,74 @@ paths:
           description: Not authorized for query
       tags:
       - secrets
+  /{namespace}/metrics/query:
+    get:
+      operationId: query
+      parameters:
+      - description: Instance namespace
+        example: org-coredb-inst-control-plane-dev
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "PromQL range query, must include a 'namespace' label matching\
+          \ the query path"
+        example: "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace=\"\
+          org-coredb-inst-control-plane-dev\"}[1h])))"
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                status: success
+                data:
+                  resultType: matrix
+                  result:
+                  - metric:
+                      __name__: up
+                      job: prometheus
+                      instance: localhost:9090
+                    values:
+                    - - 1.435781430781E9
+                      - "1"
+                    - - 1.435781445781E9
+                      - "1"
+                    - - 1.435781460781E9
+                      - "1"
+                  - metric:
+                      __name__: up
+                      job: node
+                      instance: localhost:9091
+                    values:
+                    - - 1.435781430781E9
+                      - "0"
+                    - - 1.435781445781E9
+                      - "0"
+                    - - 1.435781460781E9
+                      - "1"
+              schema: {}
+          description: "Success range query to Prometheus, please see Prometheus documentation\
+            \ for response format details. https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries"
+        "400":
+          description: Parameters are missing or incorrect
+        "403":
+          description: Not authorized for query
+        "422":
+          description: Incorrectly formatted query
+        "504":
+          description: Request timed out on metrics backend
+      tags:
+      - metrics
   /{namespace}/metrics/query_range:
     get:
       operationId: query_range

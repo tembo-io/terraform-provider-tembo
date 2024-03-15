@@ -1,7 +1,7 @@
 /*
 Tembo Data API
 
-Testing SecretsApiService
+Testing SecretsAPIService
 
 */
 
@@ -14,22 +14,22 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
 )
 
-func Test_tembodataclient_SecretsApiService(t *testing.T) {
+func Test_tembodataclient_SecretsAPIService(t *testing.T) {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
 
-	t.Run("Test SecretsApiService GetSecret", func(t *testing.T) {
+	t.Run("Test SecretsAPIService GetSecret", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
 		var namespace string
 		var secretName string
 
-		resp, httpRes, err := apiClient.SecretsApi.GetSecret(context.Background(), namespace, secretName).Execute()
+		resp, httpRes, err := apiClient.SecretsAPI.GetSecret(context.Background(), namespace, secretName).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -37,13 +37,13 @@ func Test_tembodataclient_SecretsApiService(t *testing.T) {
 
 	})
 
-	t.Run("Test SecretsApiService GetSecretNames", func(t *testing.T) {
+	t.Run("Test SecretsAPIService GetSecretNames", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
 		var namespace string
 
-		resp, httpRes, err := apiClient.SecretsApi.GetSecretNames(context.Background(), namespace).Execute()
+		resp, httpRes, err := apiClient.SecretsAPI.GetSecretNames(context.Background(), namespace).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -51,14 +51,14 @@ func Test_tembodataclient_SecretsApiService(t *testing.T) {
 
 	})
 
-	t.Run("Test SecretsApiService GetSecretNamesV1", func(t *testing.T) {
+	t.Run("Test SecretsAPIService GetSecretNamesV1", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
 		var orgId string
 		var instanceId string
 
-		resp, httpRes, err := apiClient.SecretsApi.GetSecretNamesV1(context.Background(), orgId, instanceId).Execute()
+		resp, httpRes, err := apiClient.SecretsAPI.GetSecretNamesV1(context.Background(), orgId, instanceId).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -66,7 +66,7 @@ func Test_tembodataclient_SecretsApiService(t *testing.T) {
 
 	})
 
-	t.Run("Test SecretsApiService GetSecretV1", func(t *testing.T) {
+	t.Run("Test SecretsAPIService GetSecretV1", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
@@ -74,7 +74,7 @@ func Test_tembodataclient_SecretsApiService(t *testing.T) {
 		var instanceId string
 		var secretName string
 
-		resp, httpRes, err := apiClient.SecretsApi.GetSecretV1(context.Background(), orgId, instanceId, secretName).Execute()
+		resp, httpRes, err := apiClient.SecretsAPI.GetSecretV1(context.Background(), orgId, instanceId, secretName).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

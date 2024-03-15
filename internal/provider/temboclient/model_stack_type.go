@@ -29,6 +29,8 @@ const (
 	DATA_WAREHOUSE StackType = "DataWarehouse"
 	GEOSPATIAL StackType = "Geospatial"
 	MONGO_ALTERNATIVE StackType = "MongoAlternative"
+	RAG StackType = "RAG"
+	TIMESERIES StackType = "Timeseries"
 )
 
 // All allowed values of StackType enum
@@ -42,6 +44,8 @@ var AllowedStackTypeEnumValues = []StackType{
 	"DataWarehouse",
 	"Geospatial",
 	"MongoAlternative",
+	"RAG",
+	"Timeseries",
 }
 
 func (v *StackType) UnmarshalJSON(src []byte) error {

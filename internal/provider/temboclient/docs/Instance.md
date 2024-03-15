@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **OrganizationId** | **string** |  | 
 **OrganizationName** | **string** |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
+**PostgresVersion** | **int32** | Major Postgres version this instance is using. Currently: 14, 15 or 16 | 
 **Replicas** | **int32** |  | 
 **RuntimeConfig** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **StackType** | [**StackType**](StackType.md) |  | 
@@ -32,7 +33,7 @@ Name | Type | Description | Notes
 
 ### NewInstance
 
-`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
+`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
 
 NewInstance instantiates a new Instance object
 This constructor will assign default values to properties that have it defined,
@@ -517,6 +518,26 @@ HasPostgresConfigs returns a boolean if a field has been set.
 `func (o *Instance) UnsetPostgresConfigs()`
 
 UnsetPostgresConfigs ensures that no value is present for PostgresConfigs, not even an explicit nil
+### GetPostgresVersion
+
+`func (o *Instance) GetPostgresVersion() int32`
+
+GetPostgresVersion returns the PostgresVersion field if non-nil, zero value otherwise.
+
+### GetPostgresVersionOk
+
+`func (o *Instance) GetPostgresVersionOk() (*int32, bool)`
+
+GetPostgresVersionOk returns a tuple with the PostgresVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPostgresVersion
+
+`func (o *Instance) SetPostgresVersion(v int32)`
+
+SetPostgresVersion sets PostgresVersion field to given value.
+
+
 ### GetReplicas
 
 `func (o *Instance) GetReplicas() int32`

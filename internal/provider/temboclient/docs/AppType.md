@@ -8,13 +8,14 @@ Name | Type | Description | Notes
 **Http** | [**NullableAppConfig**](AppConfig.md) |  | 
 **MqApi** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Embeddings** | [**NullableAppConfig**](AppConfig.md) |  | 
+**Pganalyze** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Custom** | [**AppService**](AppService.md) |  | 
 
 ## Methods
 
 ### NewAppType
 
-`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, mqApi NullableAppConfig, embeddings NullableAppConfig, custom AppService, ) *AppType`
+`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, mqApi NullableAppConfig, embeddings NullableAppConfig, pganalyze NullableAppConfig, custom AppService, ) *AppType`
 
 NewAppType instantiates a new AppType object
 This constructor will assign default values to properties that have it defined,
@@ -149,6 +150,36 @@ SetEmbeddings sets Embeddings field to given value.
 `func (o *AppType) UnsetEmbeddings()`
 
 UnsetEmbeddings ensures that no value is present for Embeddings, not even an explicit nil
+### GetPganalyze
+
+`func (o *AppType) GetPganalyze() AppConfig`
+
+GetPganalyze returns the Pganalyze field if non-nil, zero value otherwise.
+
+### GetPganalyzeOk
+
+`func (o *AppType) GetPganalyzeOk() (*AppConfig, bool)`
+
+GetPganalyzeOk returns a tuple with the Pganalyze field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPganalyze
+
+`func (o *AppType) SetPganalyze(v AppConfig)`
+
+SetPganalyze sets Pganalyze field to given value.
+
+
+### SetPganalyzeNil
+
+`func (o *AppType) SetPganalyzeNil(b bool)`
+
+ SetPganalyzeNil sets the value for Pganalyze to be an explicit nil
+
+### UnsetPganalyze
+`func (o *AppType) UnsetPganalyze()`
+
+UnsetPganalyze ensures that no value is present for Pganalyze, not even an explicit nil
 ### GetCustom
 
 `func (o *AppType) GetCustom() AppService`

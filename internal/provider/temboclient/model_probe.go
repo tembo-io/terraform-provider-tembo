@@ -12,6 +12,7 @@ package temboclient
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -22,7 +23,7 @@ var _ MappedNullable = &Probe{}
 type Probe struct {
 	InitialDelaySeconds int32 `json:"initialDelaySeconds"`
 	Path string `json:"path"`
-	Port string `json:"port"`
+	Port int32 `json:"port"`
 }
 
 type _Probe Probe
@@ -31,7 +32,7 @@ type _Probe Probe
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProbe(initialDelaySeconds int32, path string, port string) *Probe {
+func NewProbe(initialDelaySeconds int32, path string, port int32) *Probe {
 	this := Probe{}
 	this.InitialDelaySeconds = initialDelaySeconds
 	this.Path = path
@@ -96,9 +97,9 @@ func (o *Probe) SetPath(v string) {
 }
 
 // GetPort returns the Port field value
-func (o *Probe) GetPort() string {
+func (o *Probe) GetPort() int32 {
 	if o == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 
@@ -107,7 +108,7 @@ func (o *Probe) GetPort() string {
 
 // GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
-func (o *Probe) GetPortOk() (*string, bool) {
+func (o *Probe) GetPortOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -115,7 +116,7 @@ func (o *Probe) GetPortOk() (*string, bool) {
 }
 
 // SetPort sets field value
-func (o *Probe) SetPort(v string) {
+func (o *Probe) SetPort(v int32) {
 	o.Port = v
 }
 
@@ -135,8 +136,8 @@ func (o Probe) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *Probe) UnmarshalJSON(bytes []byte) (err error) {
-    // This validates that all required properties are included in the JSON object
+func (o *Probe) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
@@ -147,7 +148,7 @@ func (o *Probe) UnmarshalJSON(bytes []byte) (err error) {
 
 	allProperties := make(map[string]interface{})
 
-	err = json.Unmarshal(bytes, &allProperties)
+	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
 		return err;
@@ -161,7 +162,9 @@ func (o *Probe) UnmarshalJSON(bytes []byte) (err error) {
 
 	varProbe := _Probe{}
 
-	err = json.Unmarshal(bytes, &varProbe)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varProbe)
 
 	if err != nil {
 		return err

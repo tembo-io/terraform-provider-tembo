@@ -23,23 +23,23 @@ Attributes for all stacks
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.StackAPI.GetAllEntities(context.Background()).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetAllEntities``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetAllEntities`: []interface{}
-    fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetAllEntities`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.StackAPI.GetAllEntities(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetAllEntities``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetAllEntities`: []interface{}
+	fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetAllEntities`: %v\n", resp)
 }
 ```
 
@@ -84,24 +84,24 @@ Get the attributes of a single stack
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
 func main() {
-    type_ := openapiclient.StackType("Standard") // StackType | the type of entity
+	type_ := openapiclient.StackType("Standard") // StackType | the type of entity
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.StackAPI.GetEntity(context.Background(), type_).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetEntity``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetEntity`: interface{}
-    fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetEntity`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.StackAPI.GetEntity(context.Background(), type_).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `StackAPI.GetEntity``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetEntity`: interface{}
+	fmt.Fprintf(os.Stdout, "Response from `StackAPI.GetEntity`: %v\n", resp)
 }
 ```
 

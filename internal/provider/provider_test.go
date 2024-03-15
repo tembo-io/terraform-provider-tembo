@@ -15,12 +15,14 @@ import (
 func testProviderConfig() string {
 	host := os.Getenv("TEMBO_HOST")
 	access_token := os.Getenv("TEMBO_ACCESS_TOKEN")
+	data_host := os.Getenv("TEMBO_DATA_HOST")
 
 	return fmt.Sprintf(`
 provider "tembo" {
   host     = "%v"
   access_token = "%v"
-}`, host, access_token)
+  data_host = "%v"
+}`, host, access_token, data_host)
 
 }
 
