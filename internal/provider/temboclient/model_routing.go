@@ -70,7 +70,7 @@ func (o *Routing) GetEntryPointsOk() ([]string, bool) {
 
 // HasEntryPoints returns a boolean if a field has been set.
 func (o *Routing) HasEntryPoints() bool {
-	if o != nil && IsNil(o.EntryPoints) {
+	if o != nil && !IsNil(o.EntryPoints) {
 		return true
 	}
 
@@ -187,7 +187,7 @@ func (o *Routing) GetMiddlewaresOk() ([]string, bool) {
 
 // HasMiddlewares returns a boolean if a field has been set.
 func (o *Routing) HasMiddlewares() bool {
-	if o != nil && IsNil(o.Middlewares) {
+	if o != nil && !IsNil(o.Middlewares) {
 		return true
 	}
 

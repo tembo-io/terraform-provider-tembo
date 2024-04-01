@@ -61,7 +61,7 @@ func (o *AppConfig) GetEnvOk() ([]EnvVar, bool) {
 
 // HasEnv returns a boolean if a field has been set.
 func (o *AppConfig) HasEnv() bool {
-	if o != nil && IsNil(o.Env) {
+	if o != nil && !IsNil(o.Env) {
 		return true
 	}
 

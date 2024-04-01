@@ -82,7 +82,7 @@ func (o *AppService) GetArgsOk() ([]string, bool) {
 
 // HasArgs returns a boolean if a field has been set.
 func (o *AppService) HasArgs() bool {
-	if o != nil && IsNil(o.Args) {
+	if o != nil && !IsNil(o.Args) {
 		return true
 	}
 
@@ -115,7 +115,7 @@ func (o *AppService) GetCommandOk() ([]string, bool) {
 
 // HasCommand returns a boolean if a field has been set.
 func (o *AppService) HasCommand() bool {
-	if o != nil && IsNil(o.Command) {
+	if o != nil && !IsNil(o.Command) {
 		return true
 	}
 
@@ -148,7 +148,7 @@ func (o *AppService) GetEnvOk() ([]EnvVar, bool) {
 
 // HasEnv returns a boolean if a field has been set.
 func (o *AppService) HasEnv() bool {
-	if o != nil && IsNil(o.Env) {
+	if o != nil && !IsNil(o.Env) {
 		return true
 	}
 
@@ -205,7 +205,7 @@ func (o *AppService) GetMiddlewaresOk() ([]Middleware, bool) {
 
 // HasMiddlewares returns a boolean if a field has been set.
 func (o *AppService) HasMiddlewares() bool {
-	if o != nil && IsNil(o.Middlewares) {
+	if o != nil && !IsNil(o.Middlewares) {
 		return true
 	}
 
@@ -336,7 +336,7 @@ func (o *AppService) GetRoutingOk() ([]Routing, bool) {
 
 // HasRouting returns a boolean if a field has been set.
 func (o *AppService) HasRouting() bool {
-	if o != nil && IsNil(o.Routing) {
+	if o != nil && !IsNil(o.Routing) {
 		return true
 	}
 

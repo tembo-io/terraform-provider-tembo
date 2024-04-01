@@ -74,7 +74,7 @@ func (o *RestoreInstance) GetAppServicesOk() ([]AppType, bool) {
 
 // HasAppServices returns a boolean if a field has been set.
 func (o *RestoreInstance) HasAppServices() bool {
-	if o != nil && IsNil(o.AppServices) {
+	if o != nil && !IsNil(o.AppServices) {
 		return true
 	}
 
@@ -233,7 +233,7 @@ func (o *RestoreInstance) GetExtraDomainsRwOk() ([]string, bool) {
 
 // HasExtraDomainsRw returns a boolean if a field has been set.
 func (o *RestoreInstance) HasExtraDomainsRw() bool {
-	if o != nil && IsNil(o.ExtraDomainsRw) {
+	if o != nil && !IsNil(o.ExtraDomainsRw) {
 		return true
 	}
 

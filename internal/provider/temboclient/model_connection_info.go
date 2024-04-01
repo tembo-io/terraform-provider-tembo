@@ -22,7 +22,6 @@ var _ MappedNullable = &ConnectionInfo{}
 // ConnectionInfo struct for ConnectionInfo
 type ConnectionInfo struct {
 	Host string `json:"host"`
-	Password string `json:"password"`
 	PoolerHost NullableString `json:"pooler_host,omitempty"`
 	Port int32 `json:"port"`
 	User string `json:"user"`
@@ -34,10 +33,9 @@ type _ConnectionInfo ConnectionInfo
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConnectionInfo(host string, password string, port int32, user string) *ConnectionInfo {
+func NewConnectionInfo(host string, port int32, user string) *ConnectionInfo {
 	this := ConnectionInfo{}
 	this.Host = host
-	this.Password = password
 	this.Port = port
 	this.User = user
 	return &this
@@ -73,30 +71,6 @@ func (o *ConnectionInfo) GetHostOk() (*string, bool) {
 // SetHost sets field value
 func (o *ConnectionInfo) SetHost(v string) {
 	o.Host = v
-}
-
-// GetPassword returns the Password field value
-func (o *ConnectionInfo) GetPassword() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Password
-}
-
-// GetPasswordOk returns a tuple with the Password field value
-// and a boolean to check if the value has been set.
-func (o *ConnectionInfo) GetPasswordOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Password, true
-}
-
-// SetPassword sets field value
-func (o *ConnectionInfo) SetPassword(v string) {
-	o.Password = v
 }
 
 // GetPoolerHost returns the PoolerHost field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -200,7 +174,6 @@ func (o ConnectionInfo) MarshalJSON() ([]byte, error) {
 func (o ConnectionInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["host"] = o.Host
-	toSerialize["password"] = o.Password
 	if o.PoolerHost.IsSet() {
 		toSerialize["pooler_host"] = o.PoolerHost.Get()
 	}
@@ -215,7 +188,6 @@ func (o *ConnectionInfo) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"host",
-		"password",
 		"port",
 		"user",
 	}

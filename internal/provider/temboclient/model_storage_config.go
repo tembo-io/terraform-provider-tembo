@@ -60,7 +60,7 @@ func (o *StorageConfig) GetVolumeMountsOk() ([]VolumeMount, bool) {
 
 // HasVolumeMounts returns a boolean if a field has been set.
 func (o *StorageConfig) HasVolumeMounts() bool {
-	if o != nil && IsNil(o.VolumeMounts) {
+	if o != nil && !IsNil(o.VolumeMounts) {
 		return true
 	}
 

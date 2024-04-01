@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Host** | **string** |  | 
-**Password** | **string** |  | 
 **PoolerHost** | Pointer to **NullableString** |  | [optional] 
 **Port** | **int32** |  | 
 **User** | **string** |  | 
@@ -14,7 +13,7 @@ Name | Type | Description | Notes
 
 ### NewConnectionInfo
 
-`func NewConnectionInfo(host string, password string, port int32, user string, ) *ConnectionInfo`
+`func NewConnectionInfo(host string, port int32, user string, ) *ConnectionInfo`
 
 NewConnectionInfo instantiates a new ConnectionInfo object
 This constructor will assign default values to properties that have it defined,
@@ -47,26 +46,6 @@ and a boolean to check if the value has been set.
 `func (o *ConnectionInfo) SetHost(v string)`
 
 SetHost sets Host field to given value.
-
-
-### GetPassword
-
-`func (o *ConnectionInfo) GetPassword() string`
-
-GetPassword returns the Password field if non-nil, zero value otherwise.
-
-### GetPasswordOk
-
-`func (o *ConnectionInfo) GetPasswordOk() (*string, bool)`
-
-GetPasswordOk returns a tuple with the Password field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPassword
-
-`func (o *ConnectionInfo) SetPassword(v string)`
-
-SetPassword sets Password field to given value.
 
 
 ### GetPoolerHost

@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -133,7 +132,4 @@ model_trunk_install_status.go
 model_update_instance.go
 model_volume_mount.go
 response.go
-test/api_app_test.go
-test/api_instance_test.go
-test/api_stack_test.go
 utils.go
