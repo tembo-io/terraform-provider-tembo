@@ -101,7 +101,7 @@ func (o *Instance) GetAppServicesOk() ([]AppType, bool) {
 
 // HasAppServices returns a boolean if a field has been set.
 func (o *Instance) HasAppServices() bool {
-	if o != nil && IsNil(o.AppServices) {
+	if o != nil && !IsNil(o.AppServices) {
 		return true
 	}
 
@@ -298,7 +298,7 @@ func (o *Instance) GetExtensionsOk() ([]ExtensionStatus, bool) {
 
 // HasExtensions returns a boolean if a field has been set.
 func (o *Instance) HasExtensions() bool {
-	if o != nil && IsNil(o.Extensions) {
+	if o != nil && !IsNil(o.Extensions) {
 		return true
 	}
 
@@ -331,7 +331,7 @@ func (o *Instance) GetExtraDomainsRwOk() ([]string, bool) {
 
 // HasExtraDomainsRw returns a boolean if a field has been set.
 func (o *Instance) HasExtraDomainsRw() bool {
-	if o != nil && IsNil(o.ExtraDomainsRw) {
+	if o != nil && !IsNil(o.ExtraDomainsRw) {
 		return true
 	}
 
@@ -454,7 +454,7 @@ func (o *Instance) GetIpAllowListOk() ([]string, bool) {
 
 // HasIpAllowList returns a boolean if a field has been set.
 func (o *Instance) HasIpAllowList() bool {
-	if o != nil && IsNil(o.IpAllowList) {
+	if o != nil && !IsNil(o.IpAllowList) {
 		return true
 	}
 
@@ -591,7 +591,7 @@ func (o *Instance) GetPostgresConfigsOk() ([]PgConfig, bool) {
 
 // HasPostgresConfigs returns a boolean if a field has been set.
 func (o *Instance) HasPostgresConfigs() bool {
-	if o != nil && IsNil(o.PostgresConfigs) {
+	if o != nil && !IsNil(o.PostgresConfigs) {
 		return true
 	}
 
@@ -672,7 +672,7 @@ func (o *Instance) GetRuntimeConfigOk() ([]PgConfig, bool) {
 
 // HasRuntimeConfig returns a boolean if a field has been set.
 func (o *Instance) HasRuntimeConfig() bool {
-	if o != nil && IsNil(o.RuntimeConfig) {
+	if o != nil && !IsNil(o.RuntimeConfig) {
 		return true
 	}
 
@@ -777,7 +777,7 @@ func (o *Instance) GetTrunkInstallsOk() ([]TrunkInstallStatus, bool) {
 
 // HasTrunkInstalls returns a boolean if a field has been set.
 func (o *Instance) HasTrunkInstalls() bool {
-	if o != nil && IsNil(o.TrunkInstalls) {
+	if o != nil && !IsNil(o.TrunkInstalls) {
 		return true
 	}
 

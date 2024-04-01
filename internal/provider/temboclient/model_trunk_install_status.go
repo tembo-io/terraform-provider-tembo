@@ -137,7 +137,7 @@ func (o *TrunkInstallStatus) GetInstalledToPodsOk() ([]string, bool) {
 
 // HasInstalledToPods returns a boolean if a field has been set.
 func (o *TrunkInstallStatus) HasInstalledToPods() bool {
-	if o != nil && IsNil(o.InstalledToPods) {
+	if o != nil && !IsNil(o.InstalledToPods) {
 		return true
 	}
 

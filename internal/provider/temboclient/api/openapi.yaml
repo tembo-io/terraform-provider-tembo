@@ -294,6 +294,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponseSchema'
           description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Instance not found
       summary: Get an existing Tembo instance
       tags:
       - instance
@@ -739,8 +745,6 @@ components:
       properties:
         host:
           type: string
-        password:
-          type: string
         pooler_host:
           nullable: true
           type: string
@@ -751,7 +755,6 @@ components:
           type: string
       required:
       - host
-      - password
       - port
       - user
       type: object

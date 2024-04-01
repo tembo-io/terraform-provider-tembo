@@ -80,7 +80,7 @@ func (o *UpdateInstance) GetAppServicesOk() ([]AppType, bool) {
 
 // HasAppServices returns a boolean if a field has been set.
 func (o *UpdateInstance) HasAppServices() bool {
-	if o != nil && IsNil(o.AppServices) {
+	if o != nil && !IsNil(o.AppServices) {
 		return true
 	}
 
@@ -203,7 +203,7 @@ func (o *UpdateInstance) GetExtensionsOk() ([]Extension, bool) {
 
 // HasExtensions returns a boolean if a field has been set.
 func (o *UpdateInstance) HasExtensions() bool {
-	if o != nil && IsNil(o.Extensions) {
+	if o != nil && !IsNil(o.Extensions) {
 		return true
 	}
 
@@ -236,7 +236,7 @@ func (o *UpdateInstance) GetExtraDomainsRwOk() ([]string, bool) {
 
 // HasExtraDomainsRw returns a boolean if a field has been set.
 func (o *UpdateInstance) HasExtraDomainsRw() bool {
-	if o != nil && IsNil(o.ExtraDomainsRw) {
+	if o != nil && !IsNil(o.ExtraDomainsRw) {
 		return true
 	}
 
@@ -269,7 +269,7 @@ func (o *UpdateInstance) GetIpAllowListOk() ([]string, bool) {
 
 // HasIpAllowList returns a boolean if a field has been set.
 func (o *UpdateInstance) HasIpAllowList() bool {
-	if o != nil && IsNil(o.IpAllowList) {
+	if o != nil && !IsNil(o.IpAllowList) {
 		return true
 	}
 
@@ -326,7 +326,7 @@ func (o *UpdateInstance) GetPostgresConfigsOk() ([]PgConfig, bool) {
 
 // HasPostgresConfigs returns a boolean if a field has been set.
 func (o *UpdateInstance) HasPostgresConfigs() bool {
-	if o != nil && IsNil(o.PostgresConfigs) {
+	if o != nil && !IsNil(o.PostgresConfigs) {
 		return true
 	}
 
@@ -407,7 +407,7 @@ func (o *UpdateInstance) GetTrunkInstallsOk() ([]TrunkInstall, bool) {
 
 // HasTrunkInstalls returns a boolean if a field has been set.
 func (o *UpdateInstance) HasTrunkInstalls() bool {
-	if o != nil && IsNil(o.TrunkInstalls) {
+	if o != nil && !IsNil(o.TrunkInstalls) {
 		return true
 	}
 

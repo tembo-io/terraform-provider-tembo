@@ -65,7 +65,7 @@ func (o *PoolerTemplateSpecContainersResources) GetClaimsOk() ([]PoolerTemplateS
 
 // HasClaims returns a boolean if a field has been set.
 func (o *PoolerTemplateSpecContainersResources) HasClaims() bool {
-	if o != nil && IsNil(o.Claims) {
+	if o != nil && !IsNil(o.Claims) {
 		return true
 	}
 
@@ -98,7 +98,7 @@ func (o *PoolerTemplateSpecContainersResources) GetLimitsOk() (*map[string]IntOr
 
 // HasLimits returns a boolean if a field has been set.
 func (o *PoolerTemplateSpecContainersResources) HasLimits() bool {
-	if o != nil && IsNil(o.Limits) {
+	if o != nil && !IsNil(o.Limits) {
 		return true
 	}
 
@@ -131,7 +131,7 @@ func (o *PoolerTemplateSpecContainersResources) GetRequestsOk() (*map[string]Int
 
 // HasRequests returns a boolean if a field has been set.
 func (o *PoolerTemplateSpecContainersResources) HasRequests() bool {
-	if o != nil && IsNil(o.Requests) {
+	if o != nil && !IsNil(o.Requests) {
 		return true
 	}
 
