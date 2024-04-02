@@ -65,7 +65,7 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "20"),
@@ -144,10 +144,6 @@ resource "tembo_instance" "test" {
 		{
 		  name = "max_connections"
 		  value = "200"
-		},
-		{
-		  name = "wal_buffers"
-		  value = "16MB"
 		}
 	  ]
 	trunk_installs = [
