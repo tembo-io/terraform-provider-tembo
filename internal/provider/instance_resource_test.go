@@ -35,11 +35,6 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "20"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "100"),
 				),
 			},
 			// ImportState testing
@@ -65,11 +60,6 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "20"),
-					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "100"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -88,12 +78,6 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		}
-	  ]
 	trunk_installs = [
 	{
 		name    = "pgmq"
@@ -115,16 +99,6 @@ resource "tembo_instance" "test" {
 			enabled  = true
 		}]
 	}]
-	connection_pooler = {
-		enabled = true,
-		pooler = {
-		  pool_mode = "transaction",
-		  parameters = {
-			max_client_conn   = "20"
-			default_pool_size = "100"
-		  }
-		}
-	  }
   }
 	`, instanceName, orgId)
 }
@@ -140,12 +114,6 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		}
-	  ]
 	trunk_installs = [
 		{
           name    = "pgmq"
@@ -171,16 +139,6 @@ resource "tembo_instance" "test" {
 			enabled  = true
 		}]
 	}]
-	connection_pooler = {
-		enabled = true,
-		pooler = {
-		  pool_mode = "transaction",
-		  parameters = {
-			max_client_conn   = "20"
-			default_pool_size = "100"
-		  }
-		}
-	  }
   }
 	`, instanceName, orgId)
 }
