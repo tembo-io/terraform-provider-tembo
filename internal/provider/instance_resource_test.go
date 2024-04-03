@@ -35,7 +35,6 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
 				),
 			},
 			// ImportState testing
@@ -61,7 +60,6 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
-					resource.TestCheckResourceAttr(resourceName, "postgres_configs.#", "1"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -80,12 +78,6 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		}
-	  ]
 	trunk_installs = [
 	{
 		name    = "pgmq"
@@ -122,12 +114,6 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"
-	postgres_configs = [
-		{
-		  name = "max_connections"
-		  value = "200"
-		}
-	  ]
 	trunk_installs = [
 		{
           name    = "pgmq"
@@ -152,6 +138,28 @@ resource "tembo_instance" "test" {
 			version  = "1.0"
 			enabled  = true
 		}]
+	},
+	{
+		"name" : "pltclu",
+		"description" : "PL/TclU untrusted procedural language",
+		"locations" : [
+		{
+			"database" : "app",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
+		},
+		{
+			"database" : "postgres",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
+		}
+		]
 	}]
   }
 	`, instanceName, orgId)
