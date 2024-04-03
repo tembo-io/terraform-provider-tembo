@@ -57,11 +57,11 @@ func TestTemboInstanceResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "instance_name", instanceName),
 					resource.TestCheckResourceAttr(resourceName, "org_id", orgId),
-					resource.TestCheckResourceAttr(resourceName, "cpu", "1"),
+					resource.TestCheckResourceAttr(resourceName, "cpu", "2"),
 					resource.TestCheckResourceAttr(resourceName, "stack_type", "Standard"),
 					resource.TestCheckResourceAttr(resourceName, "replicas", "1"),
 					resource.TestCheckResourceAttr(resourceName, "environment", "dev"),
-					resource.TestCheckResourceAttr(resourceName, "memory", "4Gi"),
+					resource.TestCheckResourceAttr(resourceName, "memory", "8Gi"),
 					resource.TestCheckResourceAttr(resourceName, "storage", "10Gi"),
 					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "last_updated"),
@@ -134,11 +134,11 @@ func testInstanceResourceUpdateConfig(instanceName string, orgId string) string 
 resource "tembo_instance" "test" {
 	instance_name   = "%v"
 	org_id 			= "%v"
-	cpu             = "1"
+	cpu             = "2"
 	stack_type      = "Standard"
 	replicas        = 1
 	environment     = "dev"
-	memory          = "4Gi"
+	memory          = "8Gi"
 	storage         = "10Gi"
 	postgres_configs = [
 		{
