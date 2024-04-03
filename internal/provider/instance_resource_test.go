@@ -174,6 +174,28 @@ resource "tembo_instance" "test" {
 			version  = "1.0"
 			enabled  = true
 		}]
+	},
+	{
+		"name" : "pltclu",
+		"description" : "PL/TclU untrusted procedural language",
+		"locations" : [
+		{
+			"database" : "app",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
+		},
+		{
+			"database" : "postgres",
+			"schema" : "public",
+			"version" : "1.0",
+			"enabled" : false,
+			"error" : false,
+			"error_message" : null
+		}
+		]
 	}]
 	connection_pooler = {
 		enabled = true,
