@@ -405,11 +405,7 @@ func createInstance(plan temboInstanceResourceModel,
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating Tembo Instance",
-			"Could not create instance, unexpected error: "+err.Error(),
-		)
-		resp.Diagnostics.AddError(
-			"Error creating Tembo Instance:",
-			"Could not create Tembo Instance, unexpected error: "+getErrorFromResponse(response),
+			"Could not create instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
 		)
 		return nil, "", true
 	}
@@ -445,11 +441,7 @@ func restoreInstance(plan temboInstanceResourceModel,
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error restoring Tembo Instance",
-			"Could not create instance, unexpected error: "+err.Error(),
-		)
-		resp.Diagnostics.AddError(
-			"Error restoring Tembo Instance:",
-			"Could not restore Tembo Instance, unexpected error: "+getErrorFromResponse(response),
+			"Could not restore instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
 		)
 		return nil, "", true
 	}
@@ -472,12 +464,9 @@ func (r *temboInstanceResource) Read(ctx context.Context, req resource.ReadReque
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error reading Tembo Instance",
-			"Could not read instance, unexpected error: "+err.Error(),
+			"Could not read instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
 		)
-		resp.Diagnostics.AddError(
-			"Error Reading Tembo Instance",
-			"Could not read Tembo Instance ID "+state.InstanceID.ValueString()+": "+getErrorFromResponse(response),
-		)
+
 		return
 	}
 
@@ -567,12 +556,8 @@ func (r *temboInstanceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Updating Tembo Instance",
-			"Could not update instance, unexpected error: "+err.Error(),
-		)
-		resp.Diagnostics.AddError(
-			"Error Updating Tembo Instance",
-			"Could not update Tembo Instance ID "+plan.InstanceID.ValueString()+": "+getErrorFromResponse(response),
+			"Error updating Tembo Instance",
+			"Could not update instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
 		)
 		return
 	}
@@ -620,12 +605,8 @@ func (r *temboInstanceResource) Delete(ctx context.Context, req resource.DeleteR
 	_, response, err := (r.temboInstanceConfig.client.InstanceAPI).DeleteInstance(ctx, state.OrgId.ValueString(), state.InstanceID.ValueString()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Deleting Tembo Instance",
-			"Could not delete instance, unexpected error: "+err.Error(),
-		)
-		resp.Diagnostics.AddError(
-			"Error Deleting Tembo Instance",
-			"Could not delete instance, unexpected error: "+getErrorFromResponse(response),
+			"Error deleting Tembo Instance",
+			"Could not delete instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
 		)
 		return
 	}
