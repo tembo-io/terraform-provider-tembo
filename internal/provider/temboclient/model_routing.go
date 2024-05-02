@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type Routing struct {
 	// provide name of the middleware resources to apply to this route
 	Middlewares []string `json:"middlewares,omitempty"`
 	Port int32 `json:"port"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Routing Routing
@@ -246,6 +246,11 @@ func (o Routing) ToMap() (map[string]interface{}, error) {
 		toSerialize["middlewares"] = o.Middlewares
 	}
 	toSerialize["port"] = o.Port
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -273,15 +278,24 @@ func (o *Routing) UnmarshalJSON(data []byte) (err error) {
 
 	varRouting := _Routing{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRouting)
+	err = json.Unmarshal(data, &varRouting)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Routing(varRouting)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "entryPoints")
+		delete(additionalProperties, "ingressPath")
+		delete(additionalProperties, "ingressType")
+		delete(additionalProperties, "middlewares")
+		delete(additionalProperties, "port")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

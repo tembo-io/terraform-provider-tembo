@@ -25,7 +25,10 @@ type PoolerTemplateSpecContainersResources struct {
 	Limits map[string]IntOrString `json:"limits,omitempty"`
 	// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 	Requests map[string]IntOrString `json:"requests,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PoolerTemplateSpecContainersResources PoolerTemplateSpecContainersResources
 
 // NewPoolerTemplateSpecContainersResources instantiates a new PoolerTemplateSpecContainersResources object
 // This constructor will assign default values to properties that have it defined,
@@ -162,7 +165,35 @@ func (o PoolerTemplateSpecContainersResources) ToMap() (map[string]interface{}, 
 	if o.Requests != nil {
 		toSerialize["requests"] = o.Requests
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PoolerTemplateSpecContainersResources) UnmarshalJSON(data []byte) (err error) {
+	varPoolerTemplateSpecContainersResources := _PoolerTemplateSpecContainersResources{}
+
+	err = json.Unmarshal(data, &varPoolerTemplateSpecContainersResources)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PoolerTemplateSpecContainersResources(varPoolerTemplateSpecContainersResources)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "claims")
+		delete(additionalProperties, "limits")
+		delete(additionalProperties, "requests")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePoolerTemplateSpecContainersResources struct {

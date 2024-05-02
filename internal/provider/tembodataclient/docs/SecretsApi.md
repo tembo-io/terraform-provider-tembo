@@ -8,6 +8,7 @@ Method | HTTP request | Description
 [**GetSecretNames**](SecretsAPI.md#GetSecretNames) | **Get** /{namespace}/secrets | Please use /api/v1/orgs/{org_id}/instances/{instance_id}/secrets
 [**GetSecretNamesV1**](SecretsAPI.md#GetSecretNamesV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets | 
 [**GetSecretV1**](SecretsAPI.md#GetSecretV1) | **Get** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name} | 
+[**UpdatePostgresPassword**](SecretsAPI.md#UpdatePostgresPassword) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name} | 
 
 
 
@@ -293,6 +294,80 @@ Name | Type | Description  | Notes
 
 - **Content-Type**: Not defined
 - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## UpdatePostgresPassword
+
+> UpdatePostgresPassword(ctx, orgId, instanceId, secretName).PasswordString(passwordString).Execute()
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tembo-io/terraform-provider-tembo/tembodataclient"
+)
+
+func main() {
+	orgId := "org_2T7FJA0DpaNBnELVLU1IS4XzZG0" // string | Tembo Cloud Organization ID
+	instanceId := "inst_1696253936968_TblNOY_6" // string | Tembo Cloud Instance ID
+	secretName := "readonly-role" // string | Secret name
+	passwordString := *openapiclient.NewPasswordString("Password_example") // PasswordString | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.SecretsAPI.UpdatePostgresPassword(context.Background(), orgId, instanceId, secretName).PasswordString(passwordString).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SecretsAPI.UpdatePostgresPassword``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**orgId** | **string** | Tembo Cloud Organization ID | 
+**instanceId** | **string** | Tembo Cloud Instance ID | 
+**secretName** | **string** | Secret name | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiUpdatePostgresPasswordRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+
+ **passwordString** | [**PasswordString**](PasswordString.md) |  | 
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+[jwt_token](../README.md#jwt_token)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)

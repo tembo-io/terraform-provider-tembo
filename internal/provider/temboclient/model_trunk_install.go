@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type TrunkInstall struct {
 	Name string `json:"name"`
 	// The version of the extension to install. If not specified, the latest version will be used. (Optional)
 	Version NullableString `json:"version,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _TrunkInstall TrunkInstall
@@ -127,6 +127,11 @@ func (o TrunkInstall) ToMap() (map[string]interface{}, error) {
 	if o.Version.IsSet() {
 		toSerialize["version"] = o.Version.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -154,15 +159,21 @@ func (o *TrunkInstall) UnmarshalJSON(data []byte) (err error) {
 
 	varTrunkInstall := _TrunkInstall{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTrunkInstall)
+	err = json.Unmarshal(data, &varTrunkInstall)
 
 	if err != nil {
 		return err
 	}
 
 	*o = TrunkInstall(varTrunkInstall)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "version")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

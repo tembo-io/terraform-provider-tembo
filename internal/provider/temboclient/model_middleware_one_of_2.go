@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &MiddlewareOneOf2{}
 // MiddlewareOneOf2 struct for MiddlewareOneOf2
 type MiddlewareOneOf2 struct {
 	ReplacePathRegex ReplacePathRegexConfig `json:"replacePathRegex"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _MiddlewareOneOf2 MiddlewareOneOf2
@@ -79,6 +79,11 @@ func (o MiddlewareOneOf2) MarshalJSON() ([]byte, error) {
 func (o MiddlewareOneOf2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["replacePathRegex"] = o.ReplacePathRegex
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *MiddlewareOneOf2) UnmarshalJSON(data []byte) (err error) {
 
 	varMiddlewareOneOf2 := _MiddlewareOneOf2{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varMiddlewareOneOf2)
+	err = json.Unmarshal(data, &varMiddlewareOneOf2)
 
 	if err != nil {
 		return err
 	}
 
 	*o = MiddlewareOneOf2(varMiddlewareOneOf2)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "replacePathRegex")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

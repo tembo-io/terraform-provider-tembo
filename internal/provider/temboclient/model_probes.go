@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &Probes{}
 type Probes struct {
 	Liveness Probe `json:"liveness"`
 	Readiness Probe `json:"readiness"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Probes Probes
@@ -106,6 +106,11 @@ func (o Probes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["liveness"] = o.Liveness
 	toSerialize["readiness"] = o.Readiness
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *Probes) UnmarshalJSON(data []byte) (err error) {
 
 	varProbes := _Probes{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varProbes)
+	err = json.Unmarshal(data, &varProbes)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Probes(varProbes)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "liveness")
+		delete(additionalProperties, "readiness")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

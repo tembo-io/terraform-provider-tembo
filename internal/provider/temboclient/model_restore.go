@@ -13,7 +13,6 @@ package temboclient
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ var _ MappedNullable = &Restore{}
 type Restore struct {
 	InstanceId string `json:"instance_id"`
 	RecoveryTargetTime NullableTime `json:"recovery_target_time,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Restore Restore
@@ -126,6 +126,11 @@ func (o Restore) ToMap() (map[string]interface{}, error) {
 	if o.RecoveryTargetTime.IsSet() {
 		toSerialize["recovery_target_time"] = o.RecoveryTargetTime.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -153,15 +158,21 @@ func (o *Restore) UnmarshalJSON(data []byte) (err error) {
 
 	varRestore := _Restore{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRestore)
+	err = json.Unmarshal(data, &varRestore)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Restore(varRestore)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "instance_id")
+		delete(additionalProperties, "recovery_target_time")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

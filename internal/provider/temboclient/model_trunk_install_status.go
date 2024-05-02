@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type TrunkInstallStatus struct {
 	Loading *bool `json:"loading,omitempty"`
 	Name string `json:"name"`
 	Version NullableString `json:"version,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _TrunkInstallStatus TrunkInstallStatus
@@ -271,6 +271,11 @@ func (o TrunkInstallStatus) ToMap() (map[string]interface{}, error) {
 	if o.Version.IsSet() {
 		toSerialize["version"] = o.Version.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -299,15 +304,25 @@ func (o *TrunkInstallStatus) UnmarshalJSON(data []byte) (err error) {
 
 	varTrunkInstallStatus := _TrunkInstallStatus{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTrunkInstallStatus)
+	err = json.Unmarshal(data, &varTrunkInstallStatus)
 
 	if err != nil {
 		return err
 	}
 
 	*o = TrunkInstallStatus(varTrunkInstallStatus)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "error")
+		delete(additionalProperties, "error_message")
+		delete(additionalProperties, "installed_to_pods")
+		delete(additionalProperties, "loading")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "version")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

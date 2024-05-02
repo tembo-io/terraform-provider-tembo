@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &Ingress{}
 type Ingress struct {
 	Enabled bool `json:"enabled"`
 	Path NullableString `json:"path,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Ingress Ingress
@@ -125,6 +125,11 @@ func (o Ingress) ToMap() (map[string]interface{}, error) {
 	if o.Path.IsSet() {
 		toSerialize["path"] = o.Path.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -152,15 +157,21 @@ func (o *Ingress) UnmarshalJSON(data []byte) (err error) {
 
 	varIngress := _Ingress{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varIngress)
+	err = json.Unmarshal(data, &varIngress)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Ingress(varIngress)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "enabled")
+		delete(additionalProperties, "path")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

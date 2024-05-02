@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ type Probe struct {
 	InitialDelaySeconds int32 `json:"initialDelaySeconds"`
 	Path string `json:"path"`
 	Port int32 `json:"port"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Probe Probe
@@ -133,6 +133,11 @@ func (o Probe) ToMap() (map[string]interface{}, error) {
 	toSerialize["initialDelaySeconds"] = o.InitialDelaySeconds
 	toSerialize["path"] = o.Path
 	toSerialize["port"] = o.Port
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -162,15 +167,22 @@ func (o *Probe) UnmarshalJSON(data []byte) (err error) {
 
 	varProbe := _Probe{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varProbe)
+	err = json.Unmarshal(data, &varProbe)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Probe(varProbe)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "initialDelaySeconds")
+		delete(additionalProperties, "path")
+		delete(additionalProperties, "port")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

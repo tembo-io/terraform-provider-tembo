@@ -20,7 +20,10 @@ var _ MappedNullable = &StorageConfig{}
 // StorageConfig struct for StorageConfig
 type StorageConfig struct {
 	VolumeMounts []VolumeMount `json:"volumeMounts,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _StorageConfig StorageConfig
 
 // NewStorageConfig instantiates a new StorageConfig object
 // This constructor will assign default values to properties that have it defined,
@@ -85,7 +88,33 @@ func (o StorageConfig) ToMap() (map[string]interface{}, error) {
 	if o.VolumeMounts != nil {
 		toSerialize["volumeMounts"] = o.VolumeMounts
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *StorageConfig) UnmarshalJSON(data []byte) (err error) {
+	varStorageConfig := _StorageConfig{}
+
+	err = json.Unmarshal(data, &varStorageConfig)
+
+	if err != nil {
+		return err
+	}
+
+	*o = StorageConfig(varStorageConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "volumeMounts")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableStorageConfig struct {

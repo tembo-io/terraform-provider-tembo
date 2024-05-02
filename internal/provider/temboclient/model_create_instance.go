@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -36,6 +35,7 @@ type CreateInstance struct {
 	StackType StackType `json:"stack_type"`
 	Storage Storage `json:"storage"`
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CreateInstance CreateInstance
@@ -554,6 +554,11 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	if o.TrunkInstalls != nil {
 		toSerialize["trunk_installs"] = o.TrunkInstalls
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -586,15 +591,34 @@ func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
 
 	varCreateInstance := _CreateInstance{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateInstance)
+	err = json.Unmarshal(data, &varCreateInstance)
 
 	if err != nil {
 		return err
 	}
 
 	*o = CreateInstance(varCreateInstance)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "connection_pooler")
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "environment")
+		delete(additionalProperties, "extensions")
+		delete(additionalProperties, "extra_domains_rw")
+		delete(additionalProperties, "instance_name")
+		delete(additionalProperties, "ip_allow_list")
+		delete(additionalProperties, "memory")
+		delete(additionalProperties, "pg_version")
+		delete(additionalProperties, "postgres_configs")
+		delete(additionalProperties, "replicas")
+		delete(additionalProperties, "stack_type")
+		delete(additionalProperties, "storage")
+		delete(additionalProperties, "trunk_installs")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &ReplacePathRegexConfig{}
 type ReplacePathRegexConfig struct {
 	Config ReplacePathRegexConfigType `json:"config"`
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ReplacePathRegexConfig ReplacePathRegexConfig
@@ -106,6 +106,11 @@ func (o ReplacePathRegexConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["config"] = o.Config
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *ReplacePathRegexConfig) UnmarshalJSON(data []byte) (err error) {
 
 	varReplacePathRegexConfig := _ReplacePathRegexConfig{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varReplacePathRegexConfig)
+	err = json.Unmarshal(data, &varReplacePathRegexConfig)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ReplacePathRegexConfig(varReplacePathRegexConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "config")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

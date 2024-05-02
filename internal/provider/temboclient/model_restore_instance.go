@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -30,6 +29,7 @@ type RestoreInstance struct {
 	Memory NullableMemory `json:"memory,omitempty"`
 	Restore Restore `json:"restore"`
 	Storage NullableStorage `json:"storage,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RestoreInstance RestoreInstance
@@ -410,6 +410,11 @@ func (o RestoreInstance) ToMap() (map[string]interface{}, error) {
 	if o.Storage.IsSet() {
 		toSerialize["storage"] = o.Storage.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -438,15 +443,28 @@ func (o *RestoreInstance) UnmarshalJSON(data []byte) (err error) {
 
 	varRestoreInstance := _RestoreInstance{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRestoreInstance)
+	err = json.Unmarshal(data, &varRestoreInstance)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RestoreInstance(varRestoreInstance)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "connection_pooler")
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "environment")
+		delete(additionalProperties, "extra_domains_rw")
+		delete(additionalProperties, "instance_name")
+		delete(additionalProperties, "memory")
+		delete(additionalProperties, "restore")
+		delete(additionalProperties, "storage")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -25,7 +25,10 @@ type ExtensionInstallLocationStatus struct {
 	ErrorMessage NullableString `json:"error_message,omitempty"`
 	Schema NullableString `json:"schema,omitempty"`
 	Version NullableString `json:"version,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _ExtensionInstallLocationStatus ExtensionInstallLocationStatus
 
 // NewExtensionInstallLocationStatus instantiates a new ExtensionInstallLocationStatus object
 // This constructor will assign default values to properties that have it defined,
@@ -314,7 +317,38 @@ func (o ExtensionInstallLocationStatus) ToMap() (map[string]interface{}, error) 
 	if o.Version.IsSet() {
 		toSerialize["version"] = o.Version.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *ExtensionInstallLocationStatus) UnmarshalJSON(data []byte) (err error) {
+	varExtensionInstallLocationStatus := _ExtensionInstallLocationStatus{}
+
+	err = json.Unmarshal(data, &varExtensionInstallLocationStatus)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ExtensionInstallLocationStatus(varExtensionInstallLocationStatus)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "database")
+		delete(additionalProperties, "enabled")
+		delete(additionalProperties, "error")
+		delete(additionalProperties, "error_message")
+		delete(additionalProperties, "schema")
+		delete(additionalProperties, "version")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableExtensionInstallLocationStatus struct {

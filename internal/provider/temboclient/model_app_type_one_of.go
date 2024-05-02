@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &AppTypeOneOf{}
 // AppTypeOneOf struct for AppTypeOneOf
 type AppTypeOneOf struct {
 	Restapi NullableAppConfig `json:"restapi"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AppTypeOneOf AppTypeOneOf
@@ -81,6 +81,11 @@ func (o AppTypeOneOf) MarshalJSON() ([]byte, error) {
 func (o AppTypeOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["restapi"] = o.Restapi.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -108,15 +113,20 @@ func (o *AppTypeOneOf) UnmarshalJSON(data []byte) (err error) {
 
 	varAppTypeOneOf := _AppTypeOneOf{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAppTypeOneOf)
+	err = json.Unmarshal(data, &varAppTypeOneOf)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AppTypeOneOf(varAppTypeOneOf)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "restapi")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

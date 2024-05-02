@@ -11,10 +11,9 @@ package temboclient
 
 import (
 	"context"
-	"testing"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"testing"
 	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
@@ -25,7 +24,7 @@ func Test_temboclient_StackAPIService(t *testing.T) {
 
 	t.Run("Test StackAPIService GetAllEntities", func(t *testing.T) {
 
-		t.Skip("skip test") // remove to run test
+		t.Skip("skip test")  // remove to run test
 
 		resp, httpRes, err := apiClient.StackAPI.GetAllEntities(context.Background()).Execute()
 
@@ -37,7 +36,7 @@ func Test_temboclient_StackAPIService(t *testing.T) {
 
 	t.Run("Test StackAPIService GetEntity", func(t *testing.T) {
 
-		t.Skip("skip test") // remove to run test
+		t.Skip("skip test")  // remove to run test
 
 		var type_ StackType
 

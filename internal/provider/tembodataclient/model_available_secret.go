@@ -12,7 +12,6 @@ package tembodataclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type AvailableSecret struct {
 	Name string `json:"name"`
 	// For this secret, available keys
 	PossibleKeys []string `json:"possible_keys"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AvailableSecret AvailableSecret
@@ -108,6 +108,11 @@ func (o AvailableSecret) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
 	toSerialize["possible_keys"] = o.PossibleKeys
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -136,15 +141,21 @@ func (o *AvailableSecret) UnmarshalJSON(data []byte) (err error) {
 
 	varAvailableSecret := _AvailableSecret{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAvailableSecret)
+	err = json.Unmarshal(data, &varAvailableSecret)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AvailableSecret(varAvailableSecret)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "possible_keys")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

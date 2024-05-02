@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &AppTypeOneOf4{}
 // AppTypeOneOf4 struct for AppTypeOneOf4
 type AppTypeOneOf4 struct {
 	Pganalyze NullableAppConfig `json:"pganalyze"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AppTypeOneOf4 AppTypeOneOf4
@@ -81,6 +81,11 @@ func (o AppTypeOneOf4) MarshalJSON() ([]byte, error) {
 func (o AppTypeOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["pganalyze"] = o.Pganalyze.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -108,15 +113,20 @@ func (o *AppTypeOneOf4) UnmarshalJSON(data []byte) (err error) {
 
 	varAppTypeOneOf4 := _AppTypeOneOf4{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAppTypeOneOf4)
+	err = json.Unmarshal(data, &varAppTypeOneOf4)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AppTypeOneOf4(varAppTypeOneOf4)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pganalyze")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type VolumeMount struct {
 	ReadOnly NullableBool `json:"read_only,omitempty"`
 	SubPath NullableString `json:"sub_path,omitempty"`
 	SubPathExpr NullableString `json:"sub_path_expr,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _VolumeMount VolumeMount
@@ -290,6 +290,11 @@ func (o VolumeMount) ToMap() (map[string]interface{}, error) {
 	if o.SubPathExpr.IsSet() {
 		toSerialize["sub_path_expr"] = o.SubPathExpr.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -318,15 +323,25 @@ func (o *VolumeMount) UnmarshalJSON(data []byte) (err error) {
 
 	varVolumeMount := _VolumeMount{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varVolumeMount)
+	err = json.Unmarshal(data, &varVolumeMount)
 
 	if err != nil {
 		return err
 	}
 
 	*o = VolumeMount(varVolumeMount)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "mount_path")
+		delete(additionalProperties, "mount_propagation")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "read_only")
+		delete(additionalProperties, "sub_path")
+		delete(additionalProperties, "sub_path_expr")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

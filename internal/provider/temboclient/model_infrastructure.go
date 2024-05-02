@@ -22,7 +22,10 @@ type Infrastructure struct {
 	Cpu *string `json:"cpu,omitempty"`
 	Memory *string `json:"memory,omitempty"`
 	Storage *string `json:"storage,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _Infrastructure Infrastructure
 
 // NewInfrastructure instantiates a new Infrastructure object
 // This constructor will assign default values to properties that have it defined,
@@ -156,7 +159,35 @@ func (o Infrastructure) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Storage) {
 		toSerialize["storage"] = o.Storage
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *Infrastructure) UnmarshalJSON(data []byte) (err error) {
+	varInfrastructure := _Infrastructure{}
+
+	err = json.Unmarshal(data, &varInfrastructure)
+
+	if err != nil {
+		return err
+	}
+
+	*o = Infrastructure(varInfrastructure)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "memory")
+		delete(additionalProperties, "storage")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableInfrastructure struct {

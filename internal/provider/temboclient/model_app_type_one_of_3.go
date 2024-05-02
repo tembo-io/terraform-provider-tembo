@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &AppTypeOneOf3{}
 // AppTypeOneOf3 struct for AppTypeOneOf3
 type AppTypeOneOf3 struct {
 	Embeddings NullableAppConfig `json:"embeddings"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AppTypeOneOf3 AppTypeOneOf3
@@ -81,6 +81,11 @@ func (o AppTypeOneOf3) MarshalJSON() ([]byte, error) {
 func (o AppTypeOneOf3) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["embeddings"] = o.Embeddings.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -108,15 +113,20 @@ func (o *AppTypeOneOf3) UnmarshalJSON(data []byte) (err error) {
 
 	varAppTypeOneOf3 := _AppTypeOneOf3{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAppTypeOneOf3)
+	err = json.Unmarshal(data, &varAppTypeOneOf3)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AppTypeOneOf3(varAppTypeOneOf3)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "embeddings")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

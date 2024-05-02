@@ -452,3 +452,112 @@ func (a *SecretsAPIService) GetSecretV1Execute(r ApiGetSecretV1Request) (map[str
 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
+
+type ApiUpdatePostgresPasswordRequest struct {
+	ctx context.Context
+	ApiService *SecretsAPIService
+	orgId string
+	instanceId string
+	secretName string
+	passwordString *PasswordString
+}
+
+func (r ApiUpdatePostgresPasswordRequest) PasswordString(passwordString PasswordString) ApiUpdatePostgresPasswordRequest {
+	r.passwordString = &passwordString
+	return r
+}
+
+func (r ApiUpdatePostgresPasswordRequest) Execute() (*http.Response, error) {
+	return r.ApiService.UpdatePostgresPasswordExecute(r)
+}
+
+/*
+UpdatePostgresPassword Method for UpdatePostgresPassword
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgId Tembo Cloud Organization ID
+ @param instanceId Tembo Cloud Instance ID
+ @param secretName Secret name
+ @return ApiUpdatePostgresPasswordRequest
+*/
+func (a *SecretsAPIService) UpdatePostgresPassword(ctx context.Context, orgId string, instanceId string, secretName string) ApiUpdatePostgresPasswordRequest {
+	return ApiUpdatePostgresPasswordRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgId: orgId,
+		instanceId: instanceId,
+		secretName: secretName,
+	}
+}
+
+// Execute executes the request
+func (a *SecretsAPIService) UpdatePostgresPasswordExecute(r ApiUpdatePostgresPasswordRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SecretsAPIService.UpdatePostgresPassword")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/orgs/{org_id}/instances/{instance_id}/secrets/{secret_name}"
+	localVarPath = strings.Replace(localVarPath, "{"+"org_id"+"}", url.PathEscape(parameterValueToString(r.orgId, "orgId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"instance_id"+"}", url.PathEscape(parameterValueToString(r.instanceId, "instanceId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"secret_name"+"}", url.PathEscape(parameterValueToString(r.secretName, "secretName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.passwordString == nil {
+		return nil, reportError("passwordString is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.passwordString
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}

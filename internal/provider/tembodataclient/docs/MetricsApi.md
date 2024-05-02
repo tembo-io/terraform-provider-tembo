@@ -29,7 +29,7 @@ import (
 
 func main() {
 	namespace := "org-coredb-inst-control-plane-dev" // string | Instance namespace
-	query := "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace="org-coredb-inst-control-plane-dev"}[1h])))" // string | PromQL range query, must include a 'namespace' label matching the query path
+	query := "(sum by (namespace) (max_over_time(cnpg_backends_total{namespace="org-coredb-inst-control-plane-dev"}[1h])))" // string | PromQL range query, must include a 'namespace' label matching the query path
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
@@ -99,7 +99,7 @@ import (
 
 func main() {
 	namespace := "org-coredb-inst-control-plane-dev" // string | Instance namespace
-	query := "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace="org-coredb-inst-control-plane-dev"}[1h])))" // string | PromQL range query, must include a 'namespace' label matching the query path
+	query := "(sum by (namespace) (max_over_time(cnpg_backends_total{namespace="org-coredb-inst-control-plane-dev"}[1h])))" // string | PromQL range query, must include a 'namespace' label matching the query path
 	start := int64(1686780828) // int64 | Range start, unix timestamp
 	end := int64(1686862041) // int64 | Range end, unix timestamp. Default is now. (optional)
 	step := "60s" // string | Step size duration string, defaults to 60s (optional)
