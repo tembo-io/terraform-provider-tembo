@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &ErrorResponseSchema{}
 // ErrorResponseSchema struct for ErrorResponseSchema
 type ErrorResponseSchema struct {
 	Error string `json:"error"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ErrorResponseSchema ErrorResponseSchema
@@ -79,6 +79,11 @@ func (o ErrorResponseSchema) MarshalJSON() ([]byte, error) {
 func (o ErrorResponseSchema) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["error"] = o.Error
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *ErrorResponseSchema) UnmarshalJSON(data []byte) (err error) {
 
 	varErrorResponseSchema := _ErrorResponseSchema{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varErrorResponseSchema)
+	err = json.Unmarshal(data, &varErrorResponseSchema)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ErrorResponseSchema(varErrorResponseSchema)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "error")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

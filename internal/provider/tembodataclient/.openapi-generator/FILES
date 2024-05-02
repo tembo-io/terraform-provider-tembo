@@ -9,11 +9,13 @@ client.go
 configuration.go
 docs/AvailableSecret.md
 docs/MetricsAPI.md
+docs/PasswordString.md
 docs/SecretsAPI.md
 git_push.sh
 go.mod
 go.sum
 model_available_secret.go
+model_password_string.go
 response.go
 test/api_metrics_test.go
 test/api_secrets_test.go

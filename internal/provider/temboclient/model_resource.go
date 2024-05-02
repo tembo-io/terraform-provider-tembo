@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &Resource{}
 type Resource struct {
 	Cpu string `json:"cpu"`
 	Memory string `json:"memory"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Resource Resource
@@ -106,6 +106,11 @@ func (o Resource) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["cpu"] = o.Cpu
 	toSerialize["memory"] = o.Memory
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *Resource) UnmarshalJSON(data []byte) (err error) {
 
 	varResource := _Resource{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varResource)
+	err = json.Unmarshal(data, &varResource)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Resource(varResource)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "memory")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

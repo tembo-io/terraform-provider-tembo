@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -38,6 +37,7 @@ type AppService struct {
 	// Defines the routing configuration for the appService.
 	Routing []Routing `json:"routing,omitempty"`
 	Storage NullableStorageConfig `json:"storage,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AppService AppService
@@ -426,6 +426,11 @@ func (o AppService) ToMap() (map[string]interface{}, error) {
 	if o.Storage.IsSet() {
 		toSerialize["storage"] = o.Storage.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -454,15 +459,29 @@ func (o *AppService) UnmarshalJSON(data []byte) (err error) {
 
 	varAppService := _AppService{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAppService)
+	err = json.Unmarshal(data, &varAppService)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AppService(varAppService)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "args")
+		delete(additionalProperties, "command")
+		delete(additionalProperties, "env")
+		delete(additionalProperties, "image")
+		delete(additionalProperties, "middlewares")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "probes")
+		delete(additionalProperties, "resources")
+		delete(additionalProperties, "routing")
+		delete(additionalProperties, "storage")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

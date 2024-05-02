@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type ConnectionInfo struct {
 	PoolerHost NullableString `json:"pooler_host,omitempty"`
 	Port int32 `json:"port"`
 	User string `json:"user"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ConnectionInfo ConnectionInfo
@@ -179,6 +179,11 @@ func (o ConnectionInfo) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["port"] = o.Port
 	toSerialize["user"] = o.User
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -208,15 +213,23 @@ func (o *ConnectionInfo) UnmarshalJSON(data []byte) (err error) {
 
 	varConnectionInfo := _ConnectionInfo{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varConnectionInfo)
+	err = json.Unmarshal(data, &varConnectionInfo)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ConnectionInfo(varConnectionInfo)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "host")
+		delete(additionalProperties, "pooler_host")
+		delete(additionalProperties, "port")
+		delete(additionalProperties, "user")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

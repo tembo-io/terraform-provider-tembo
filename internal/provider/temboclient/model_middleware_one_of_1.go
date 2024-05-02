@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &MiddlewareOneOf1{}
 // MiddlewareOneOf1 struct for MiddlewareOneOf1
 type MiddlewareOneOf1 struct {
 	StripPrefix StripPrefixConfig `json:"stripPrefix"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _MiddlewareOneOf1 MiddlewareOneOf1
@@ -79,6 +79,11 @@ func (o MiddlewareOneOf1) MarshalJSON() ([]byte, error) {
 func (o MiddlewareOneOf1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["stripPrefix"] = o.StripPrefix
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *MiddlewareOneOf1) UnmarshalJSON(data []byte) (err error) {
 
 	varMiddlewareOneOf1 := _MiddlewareOneOf1{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varMiddlewareOneOf1)
+	err = json.Unmarshal(data, &varMiddlewareOneOf1)
 
 	if err != nil {
 		return err
 	}
 
 	*o = MiddlewareOneOf1(varMiddlewareOneOf1)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "stripPrefix")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

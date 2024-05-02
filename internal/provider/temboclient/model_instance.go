@@ -13,7 +13,6 @@ package temboclient
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -47,6 +46,7 @@ type Instance struct {
 	State State `json:"state"`
 	Storage Storage `json:"storage"`
 	TrunkInstalls []TrunkInstallStatus `json:"trunk_installs,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Instance Instance
@@ -847,6 +847,11 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	if o.TrunkInstalls != nil {
 		toSerialize["trunk_installs"] = o.TrunkInstalls
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -885,15 +890,43 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 
 	varInstance := _Instance{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInstance)
+	err = json.Unmarshal(data, &varInstance)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Instance(varInstance)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "connection_info")
+		delete(additionalProperties, "connection_pooler")
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "created_at")
+		delete(additionalProperties, "environment")
+		delete(additionalProperties, "extensions")
+		delete(additionalProperties, "extra_domains_rw")
+		delete(additionalProperties, "first_recoverability_time")
+		delete(additionalProperties, "instance_id")
+		delete(additionalProperties, "instance_name")
+		delete(additionalProperties, "ip_allow_list")
+		delete(additionalProperties, "last_updated_at")
+		delete(additionalProperties, "memory")
+		delete(additionalProperties, "organization_id")
+		delete(additionalProperties, "organization_name")
+		delete(additionalProperties, "postgres_configs")
+		delete(additionalProperties, "postgres_version")
+		delete(additionalProperties, "replicas")
+		delete(additionalProperties, "runtime_config")
+		delete(additionalProperties, "stack_type")
+		delete(additionalProperties, "state")
+		delete(additionalProperties, "storage")
+		delete(additionalProperties, "trunk_installs")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

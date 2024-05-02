@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &HeaderConfig{}
 type HeaderConfig struct {
 	Config map[string]string `json:"config"`
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _HeaderConfig HeaderConfig
@@ -106,6 +106,11 @@ func (o HeaderConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["config"] = o.Config
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *HeaderConfig) UnmarshalJSON(data []byte) (err error) {
 
 	varHeaderConfig := _HeaderConfig{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varHeaderConfig)
+	err = json.Unmarshal(data, &varHeaderConfig)
 
 	if err != nil {
 		return err
 	}
 
 	*o = HeaderConfig(varHeaderConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "config")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

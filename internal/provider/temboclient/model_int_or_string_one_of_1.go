@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &IntOrStringOneOf1{}
 // IntOrStringOneOf1 struct for IntOrStringOneOf1
 type IntOrStringOneOf1 struct {
 	String string `json:"String"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _IntOrStringOneOf1 IntOrStringOneOf1
@@ -79,6 +79,11 @@ func (o IntOrStringOneOf1) MarshalJSON() ([]byte, error) {
 func (o IntOrStringOneOf1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["String"] = o.String
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *IntOrStringOneOf1) UnmarshalJSON(data []byte) (err error) {
 
 	varIntOrStringOneOf1 := _IntOrStringOneOf1{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varIntOrStringOneOf1)
+	err = json.Unmarshal(data, &varIntOrStringOneOf1)
 
 	if err != nil {
 		return err
 	}
 
 	*o = IntOrStringOneOf1(varIntOrStringOneOf1)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "String")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type Extension struct {
 	Locations []ExtensionInstallLocation `json:"locations"`
 	// The name of the extension to enable.
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Extension Extension
@@ -155,6 +155,11 @@ func (o Extension) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["locations"] = o.Locations
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -183,15 +188,22 @@ func (o *Extension) UnmarshalJSON(data []byte) (err error) {
 
 	varExtension := _Extension{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varExtension)
+	err = json.Unmarshal(data, &varExtension)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Extension(varExtension)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "description")
+		delete(additionalProperties, "locations")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

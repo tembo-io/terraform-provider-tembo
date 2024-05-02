@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &AppTypeOneOf2{}
 // AppTypeOneOf2 struct for AppTypeOneOf2
 type AppTypeOneOf2 struct {
 	MqApi NullableAppConfig `json:"mq-api"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AppTypeOneOf2 AppTypeOneOf2
@@ -81,6 +81,11 @@ func (o AppTypeOneOf2) MarshalJSON() ([]byte, error) {
 func (o AppTypeOneOf2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["mq-api"] = o.MqApi.Get()
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -108,15 +113,20 @@ func (o *AppTypeOneOf2) UnmarshalJSON(data []byte) (err error) {
 
 	varAppTypeOneOf2 := _AppTypeOneOf2{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAppTypeOneOf2)
+	err = json.Unmarshal(data, &varAppTypeOneOf2)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AppTypeOneOf2(varAppTypeOneOf2)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "mq-api")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -111,6 +111,49 @@ paths:
           description: Not authorized for query
       tags:
       - secrets
+    patch:
+      operationId: update_postgres_password
+      parameters:
+      - description: Tembo Cloud Organization ID
+        example: org_2T7FJA0DpaNBnELVLU1IS4XzZG0
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Tembo Cloud Instance ID
+        example: inst_1696253936968_TblNOY_6
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Secret name
+        example: readonly-role
+        explode: false
+        in: path
+        name: secret_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordString'
+        required: true
+      responses:
+        "200":
+          description: Password successfully changed.
+        "403":
+          description: Not authorized for query
+      tags:
+      - secrets
   /{namespace}/metrics/query:
     get:
       operationId: query
@@ -126,7 +169,7 @@ paths:
         style: simple
       - description: "PromQL range query, must include a 'namespace' label matching\
           \ the query path"
-        example: "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace=\"\
+        example: "(sum by (namespace) (max_over_time(cnpg_backends_total{namespace=\"\
           org-coredb-inst-control-plane-dev\"}[1h])))"
         explode: true
         in: query
@@ -140,35 +183,18 @@ paths:
           content:
             application/json:
               example:
-                status: success
                 data:
-                  resultType: matrix
                   result:
                   - metric:
-                      __name__: up
-                      job: prometheus
-                      instance: localhost:9090
-                    values:
-                    - - 1.435781430781E9
-                      - "1"
-                    - - 1.435781445781E9
-                      - "1"
-                    - - 1.435781460781E9
-                      - "1"
-                  - metric:
-                      __name__: up
-                      job: node
-                      instance: localhost:9091
-                    values:
-                    - - 1.435781430781E9
-                      - "0"
-                    - - 1.435781445781E9
-                      - "0"
-                    - - 1.435781460781E9
-                      - "1"
+                      namespace: org-coredb-inst-control-plane-dev
+                    value:
+                    - 1435781430
+                    - "2"
+                  resultType: vector
+                status: success
               schema: {}
           description: "Success range query to Prometheus, please see Prometheus documentation\
-            \ for response format details. https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries"
+            \ for response format details. https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries"
         "400":
           description: Parameters are missing or incorrect
         "403":
@@ -194,7 +220,7 @@ paths:
         style: simple
       - description: "PromQL range query, must include a 'namespace' label matching\
           \ the query path"
-        example: "(sum by (namespace) (max_over_time(pg_stat_activity_count{namespace=\"\
+        example: "(sum by (namespace) (max_over_time(cnpg_backends_total{namespace=\"\
           org-coredb-inst-control-plane-dev\"}[1h])))"
         explode: true
         in: query
@@ -241,32 +267,17 @@ paths:
           content:
             application/json:
               example:
-                status: success
                 data:
-                  resultType: matrix
                   result:
                   - metric:
-                      __name__: up
-                      job: prometheus
-                      instance: localhost:9090
+                      namespace: org-uc-ceas-inst-set
                     values:
-                    - - 1.435781430781E9
-                      - "1"
-                    - - 1.435781445781E9
-                      - "1"
-                    - - 1.435781460781E9
-                      - "1"
-                  - metric:
-                      __name__: up
-                      job: node
-                      instance: localhost:9091
-                    values:
-                    - - 1.435781430781E9
-                      - "0"
-                    - - 1.435781445781E9
-                      - "0"
-                    - - 1.435781460781E9
-                      - "1"
+                    - - 1435781430
+                      - "2"
+                    - - 1435781445
+                      - "2"
+                  resultType: matrix
+                status: success
               schema: {}
           description: "Success range query to Prometheus, please see Prometheus documentation\
             \ for response format details. https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries"
@@ -387,6 +398,16 @@ components:
       required:
       - name
       - possible_keys
+      type: object
+    PasswordString:
+      example:
+        password: password
+      properties:
+        password:
+          description: The New Password
+          type: string
+      required:
+      - password
       type: object
   securitySchemes:
     jwt_token:

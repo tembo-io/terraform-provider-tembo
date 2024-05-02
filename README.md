@@ -150,7 +150,7 @@ Go to `internal/provider/temboclient` directory in your terminal.
 Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
 
 ```bash
-openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient
+openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
 ```
 
 Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`
@@ -162,7 +162,7 @@ Go to `internal/provider/tembodataclient` directory in your terminal.
 Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
 
 ```bash
-openapi-generator generate -i https://api.data-1.use1.tembo.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=tembodataclient
+openapi-generator generate -i https://api.data-1.use1.tembo.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=tembodataclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
 ```
 
 Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`

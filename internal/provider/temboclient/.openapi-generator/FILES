@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -67,7 +68,6 @@ docs/StorageConfig.md
 docs/StripPrefixConfig.md
 docs/TrunkInstall.md
 docs/TrunkInstallStatus.md
-docs/UpdateInstance.md
 docs/VolumeMount.md
 git_push.sh
 go.mod
@@ -129,7 +129,9 @@ model_storage_config.go
 model_strip_prefix_config.go
 model_trunk_install.go
 model_trunk_install_status.go
-model_update_instance.go
 model_volume_mount.go
 response.go
+test/api_app_test.go
+test/api_instance_test.go
+test/api_stack_test.go
 utils.go

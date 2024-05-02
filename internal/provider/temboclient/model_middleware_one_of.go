@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &MiddlewareOneOf{}
 // MiddlewareOneOf struct for MiddlewareOneOf
 type MiddlewareOneOf struct {
 	CustomRequestHeaders HeaderConfig `json:"customRequestHeaders"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _MiddlewareOneOf MiddlewareOneOf
@@ -79,6 +79,11 @@ func (o MiddlewareOneOf) MarshalJSON() ([]byte, error) {
 func (o MiddlewareOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["customRequestHeaders"] = o.CustomRequestHeaders
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *MiddlewareOneOf) UnmarshalJSON(data []byte) (err error) {
 
 	varMiddlewareOneOf := _MiddlewareOneOf{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varMiddlewareOneOf)
+	err = json.Unmarshal(data, &varMiddlewareOneOf)
 
 	if err != nil {
 		return err
 	}
 
 	*o = MiddlewareOneOf(varMiddlewareOneOf)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "customRequestHeaders")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -82,4 +82,19 @@ func Test_tembodataclient_SecretsAPIService(t *testing.T) {
 
 	})
 
+	t.Run("Test SecretsAPIService UpdatePostgresPassword", func(t *testing.T) {
+
+		t.Skip("skip test")  // remove to run test
+
+		var orgId string
+		var instanceId string
+		var secretName string
+
+		httpRes, err := apiClient.SecretsAPI.UpdatePostgresPassword(context.Background(), orgId, instanceId, secretName).Execute()
+
+		require.Nil(t, err)
+		assert.Equal(t, 200, httpRes.StatusCode)
+
+	})
+
 }

@@ -21,7 +21,10 @@ var _ MappedNullable = &AppConfig{}
 type AppConfig struct {
 	Env []EnvVar `json:"env,omitempty"`
 	Resources NullableResourceRequirements `json:"resources,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _AppConfig AppConfig
 
 // NewAppConfig instantiates a new AppConfig object
 // This constructor will assign default values to properties that have it defined,
@@ -131,7 +134,34 @@ func (o AppConfig) ToMap() (map[string]interface{}, error) {
 	if o.Resources.IsSet() {
 		toSerialize["resources"] = o.Resources.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *AppConfig) UnmarshalJSON(data []byte) (err error) {
+	varAppConfig := _AppConfig{}
+
+	err = json.Unmarshal(data, &varAppConfig)
+
+	if err != nil {
+		return err
+	}
+
+	*o = AppConfig(varAppConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "env")
+		delete(additionalProperties, "resources")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableAppConfig struct {

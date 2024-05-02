@@ -22,7 +22,10 @@ type ConnectionPooler struct {
 	// Enable the connection pooler  **Default**: false.
 	Enabled *bool `json:"enabled,omitempty"`
 	Pooler *PgBouncer `json:"pooler,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _ConnectionPooler ConnectionPooler
 
 // NewConnectionPooler instantiates a new ConnectionPooler object
 // This constructor will assign default values to properties that have it defined,
@@ -121,7 +124,34 @@ func (o ConnectionPooler) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Pooler) {
 		toSerialize["pooler"] = o.Pooler
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *ConnectionPooler) UnmarshalJSON(data []byte) (err error) {
+	varConnectionPooler := _ConnectionPooler{}
+
+	err = json.Unmarshal(data, &varConnectionPooler)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ConnectionPooler(varConnectionPooler)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "enabled")
+		delete(additionalProperties, "pooler")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableConnectionPooler struct {

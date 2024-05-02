@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ type EnvVar struct {
 	Name string `json:"name"`
 	Value NullableString `json:"value,omitempty"`
 	ValueFromPlatform NullableEnvVarRef `json:"valueFromPlatform,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _EnvVar EnvVar
@@ -171,6 +171,11 @@ func (o EnvVar) ToMap() (map[string]interface{}, error) {
 	if o.ValueFromPlatform.IsSet() {
 		toSerialize["valueFromPlatform"] = o.ValueFromPlatform.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -198,15 +203,22 @@ func (o *EnvVar) UnmarshalJSON(data []byte) (err error) {
 
 	varEnvVar := _EnvVar{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varEnvVar)
+	err = json.Unmarshal(data, &varEnvVar)
 
 	if err != nil {
 		return err
 	}
 
 	*o = EnvVar(varEnvVar)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "value")
+		delete(additionalProperties, "valueFromPlatform")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

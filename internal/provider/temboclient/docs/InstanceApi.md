@@ -11,7 +11,6 @@ Method | HTTP request | Description
 [**GetSchema**](InstanceAPI.md#GetSchema) | **Get** /api/v1/orgs/instances/schema | Get the json-schema for an instance
 [**InstanceEvent**](InstanceAPI.md#InstanceEvent) | **Post** /api/v1/orgs/{org_id}/instances/{instance_id} | Lifecycle events for a Tembo instance
 [**PatchInstance**](InstanceAPI.md#PatchInstance) | **Patch** /api/v1/orgs/{org_id}/instances/{instance_id} | Update attributes on an existing Tembo instance
-[**PutInstance**](InstanceAPI.md#PutInstance) | **Put** /api/v1/orgs/{org_id}/instances/{instance_id} | Replace all attributes of an existing Tembo instance
 [**RestoreInstance**](InstanceAPI.md#RestoreInstance) | **Post** /api/v1/orgs/{org_id}/restore | Restore a Tembo instance
 
 
@@ -509,81 +508,6 @@ Name | Type | Description  | Notes
 
 - **Content-Type**: application/json
 - **Accept**: application/json, text/plain
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## PutInstance
-
-> Instance PutInstance(ctx, orgId, instanceId).UpdateInstance(updateInstance).Execute()
-
-Replace all attributes of an existing Tembo instance
-
-
-
-### Example
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-	openapiclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
-)
-
-func main() {
-	orgId := "orgId_example" // string | Organization ID that owns the Tembo instance
-	instanceId := "instanceId_example" // string | 
-	updateInstance := *openapiclient.NewUpdateInstance(openapiclient.Cpu("0.25"), openapiclient.Environment("dev"), openapiclient.Memory("1Gi"), int32(123), openapiclient.Storage("10Gi")) // UpdateInstance | 
-
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.InstanceAPI.PutInstance(context.Background(), orgId, instanceId).UpdateInstance(updateInstance).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `InstanceAPI.PutInstance``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-	}
-	// response from `PutInstance`: Instance
-	fmt.Fprintf(os.Stdout, "Response from `InstanceAPI.PutInstance`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**orgId** | **string** | Organization ID that owns the Tembo instance | 
-**instanceId** | **string** |  | 
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiPutInstanceRequest struct via the builder pattern
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-
-
- **updateInstance** | [**UpdateInstance**](UpdateInstance.md) |  | 
-
-### Return type
-
-[**Instance**](Instance.md)
-
-### Authorization
-
-[jwt_token](../README.md#jwt_token)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)

@@ -31,7 +31,10 @@ type PatchInstance struct {
 	Replicas NullableInt32 `json:"replicas,omitempty"`
 	Storage NullableStorage `json:"storage,omitempty"`
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PatchInstance PatchInstance
 
 // NewPatchInstance instantiates a new PatchInstance object
 // This constructor will assign default values to properties that have it defined,
@@ -546,7 +549,44 @@ func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	if o.TrunkInstalls != nil {
 		toSerialize["trunk_installs"] = o.TrunkInstalls
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PatchInstance) UnmarshalJSON(data []byte) (err error) {
+	varPatchInstance := _PatchInstance{}
+
+	err = json.Unmarshal(data, &varPatchInstance)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PatchInstance(varPatchInstance)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "connection_pooler")
+		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "environment")
+		delete(additionalProperties, "extensions")
+		delete(additionalProperties, "extra_domains_rw")
+		delete(additionalProperties, "ip_allow_list")
+		delete(additionalProperties, "memory")
+		delete(additionalProperties, "postgres_configs")
+		delete(additionalProperties, "replicas")
+		delete(additionalProperties, "storage")
+		delete(additionalProperties, "trunk_installs")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePatchInstance struct {

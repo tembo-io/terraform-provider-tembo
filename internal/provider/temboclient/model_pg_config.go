@@ -12,7 +12,6 @@ package temboclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &PgConfig{}
 type PgConfig struct {
 	Name string `json:"name"`
 	Value string `json:"value"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PgConfig PgConfig
@@ -106,6 +106,11 @@ func (o PgConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
 	toSerialize["value"] = o.Value
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *PgConfig) UnmarshalJSON(data []byte) (err error) {
 
 	varPgConfig := _PgConfig{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPgConfig)
+	err = json.Unmarshal(data, &varPgConfig)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PgConfig(varPgConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "value")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

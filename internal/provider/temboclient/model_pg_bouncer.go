@@ -23,7 +23,10 @@ type PgBouncer struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	PoolMode *PoolerPgbouncerPoolMode `json:"poolMode,omitempty"`
 	Resources NullablePoolerTemplateSpecContainersResources `json:"resources,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PgBouncer PgBouncer
 
 // NewPgBouncer instantiates a new PgBouncer object
 // This constructor will assign default values to properties that have it defined,
@@ -168,7 +171,35 @@ func (o PgBouncer) ToMap() (map[string]interface{}, error) {
 	if o.Resources.IsSet() {
 		toSerialize["resources"] = o.Resources.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PgBouncer) UnmarshalJSON(data []byte) (err error) {
+	varPgBouncer := _PgBouncer{}
+
+	err = json.Unmarshal(data, &varPgBouncer)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PgBouncer(varPgBouncer)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "parameters")
+		delete(additionalProperties, "poolMode")
+		delete(additionalProperties, "resources")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePgBouncer struct {
