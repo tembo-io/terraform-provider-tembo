@@ -118,6 +118,7 @@ Class | Method | HTTP request | Description
  - [EnvVarRef](docs/EnvVarRef.md)
  - [Environment](docs/Environment.md)
  - [ErrorResponseSchema](docs/ErrorResponseSchema.md)
+ - [Experimental](docs/Experimental.md)
  - [Extension](docs/Extension.md)
  - [ExtensionInstallLocation](docs/ExtensionInstallLocation.md)
  - [ExtensionInstallLocationStatus](docs/ExtensionInstallLocationStatus.md)

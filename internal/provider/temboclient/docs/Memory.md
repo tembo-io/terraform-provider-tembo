@@ -11,7 +11,11 @@
 
 * `_8_GI` (value: `"8Gi"`)
 
+* `_12_GI` (value: `"12Gi"`)
+
 * `_16_GI` (value: `"16Gi"`)
+
+* `_24_GI` (value: `"24Gi"`)
 
 * `_32_GI` (value: `"32Gi"`)
 

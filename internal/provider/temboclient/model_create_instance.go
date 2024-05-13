@@ -24,6 +24,7 @@ type CreateInstance struct {
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu Cpu `json:"cpu"`
 	Environment Environment `json:"environment"`
+	Experimental NullableExperimental `json:"experimental,omitempty"`
 	Extensions []Extension `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
 	InstanceName string `json:"instance_name"`
@@ -32,6 +33,7 @@ type CreateInstance struct {
 	PgVersion *int32 `json:"pg_version,omitempty"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
 	Replicas *int32 `json:"replicas,omitempty"`
+	Spot NullableBool `json:"spot,omitempty"`
 	StackType StackType `json:"stack_type"`
 	Storage Storage `json:"storage"`
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
@@ -184,6 +186,48 @@ func (o *CreateInstance) GetEnvironmentOk() (*Environment, bool) {
 // SetEnvironment sets field value
 func (o *CreateInstance) SetEnvironment(v Environment) {
 	o.Environment = v
+}
+
+// GetExperimental returns the Experimental field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateInstance) GetExperimental() Experimental {
+	if o == nil || IsNil(o.Experimental.Get()) {
+		var ret Experimental
+		return ret
+	}
+	return *o.Experimental.Get()
+}
+
+// GetExperimentalOk returns a tuple with the Experimental field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateInstance) GetExperimentalOk() (*Experimental, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Experimental.Get(), o.Experimental.IsSet()
+}
+
+// HasExperimental returns a boolean if a field has been set.
+func (o *CreateInstance) HasExperimental() bool {
+	if o != nil && o.Experimental.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExperimental gets a reference to the given NullableExperimental and assigns it to the Experimental field.
+func (o *CreateInstance) SetExperimental(v Experimental) {
+	o.Experimental.Set(&v)
+}
+// SetExperimentalNil sets the value for Experimental to be an explicit nil
+func (o *CreateInstance) SetExperimentalNil() {
+	o.Experimental.Set(nil)
+}
+
+// UnsetExperimental ensures that no value is present for Experimental, not even an explicit nil
+func (o *CreateInstance) UnsetExperimental() {
+	o.Experimental.Unset()
 }
 
 // GetExtensions returns the Extensions field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -430,6 +474,48 @@ func (o *CreateInstance) SetReplicas(v int32) {
 	o.Replicas = &v
 }
 
+// GetSpot returns the Spot field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateInstance) GetSpot() bool {
+	if o == nil || IsNil(o.Spot.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.Spot.Get()
+}
+
+// GetSpotOk returns a tuple with the Spot field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateInstance) GetSpotOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Spot.Get(), o.Spot.IsSet()
+}
+
+// HasSpot returns a boolean if a field has been set.
+func (o *CreateInstance) HasSpot() bool {
+	if o != nil && o.Spot.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpot gets a reference to the given NullableBool and assigns it to the Spot field.
+func (o *CreateInstance) SetSpot(v bool) {
+	o.Spot.Set(&v)
+}
+// SetSpotNil sets the value for Spot to be an explicit nil
+func (o *CreateInstance) SetSpotNil() {
+	o.Spot.Set(nil)
+}
+
+// UnsetSpot ensures that no value is present for Spot, not even an explicit nil
+func (o *CreateInstance) UnsetSpot() {
+	o.Spot.Unset()
+}
+
 // GetStackType returns the StackType field value
 func (o *CreateInstance) GetStackType() StackType {
 	if o == nil {
@@ -529,6 +615,9 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["cpu"] = o.Cpu
 	toSerialize["environment"] = o.Environment
+	if o.Experimental.IsSet() {
+		toSerialize["experimental"] = o.Experimental.Get()
+	}
 	if o.Extensions != nil {
 		toSerialize["extensions"] = o.Extensions
 	}
@@ -548,6 +637,9 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Replicas) {
 		toSerialize["replicas"] = o.Replicas
+	}
+	if o.Spot.IsSet() {
+		toSerialize["spot"] = o.Spot.Get()
 	}
 	toSerialize["stack_type"] = o.StackType
 	toSerialize["storage"] = o.Storage
@@ -606,6 +698,7 @@ func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
 		delete(additionalProperties, "environment")
+		delete(additionalProperties, "experimental")
 		delete(additionalProperties, "extensions")
 		delete(additionalProperties, "extra_domains_rw")
 		delete(additionalProperties, "instance_name")
@@ -614,6 +707,7 @@ func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "pg_version")
 		delete(additionalProperties, "postgres_configs")
 		delete(additionalProperties, "replicas")
+		delete(additionalProperties, "spot")
 		delete(additionalProperties, "stack_type")
 		delete(additionalProperties, "storage")
 		delete(additionalProperties, "trunk_installs")

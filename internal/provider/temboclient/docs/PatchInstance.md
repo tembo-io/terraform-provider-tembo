@@ -8,12 +8,14 @@ Name | Type | Description | Notes
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | Pointer to [**NullableCpu**](Cpu.md) |  | [optional] 
 **Environment** | Pointer to [**NullableEnvironment**](Environment.md) |  | [optional] 
+**Experimental** | Pointer to [**NullableExperimental**](Experimental.md) |  | [optional] 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **IpAllowList** | Pointer to **[]string** |  | [optional] 
 **Memory** | Pointer to [**NullableMemory**](Memory.md) |  | [optional] 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | Pointer to **NullableInt32** |  | [optional] 
+**Spot** | Pointer to **NullableBool** |  | [optional] 
 **Storage** | Pointer to [**NullableStorage**](Storage.md) |  | [optional] 
 **TrunkInstalls** | Pointer to [**[]TrunkInstall**](TrunkInstall.md) |  | [optional] 
 
@@ -176,6 +178,41 @@ HasEnvironment returns a boolean if a field has been set.
 `func (o *PatchInstance) UnsetEnvironment()`
 
 UnsetEnvironment ensures that no value is present for Environment, not even an explicit nil
+### GetExperimental
+
+`func (o *PatchInstance) GetExperimental() Experimental`
+
+GetExperimental returns the Experimental field if non-nil, zero value otherwise.
+
+### GetExperimentalOk
+
+`func (o *PatchInstance) GetExperimentalOk() (*Experimental, bool)`
+
+GetExperimentalOk returns a tuple with the Experimental field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExperimental
+
+`func (o *PatchInstance) SetExperimental(v Experimental)`
+
+SetExperimental sets Experimental field to given value.
+
+### HasExperimental
+
+`func (o *PatchInstance) HasExperimental() bool`
+
+HasExperimental returns a boolean if a field has been set.
+
+### SetExperimentalNil
+
+`func (o *PatchInstance) SetExperimentalNil(b bool)`
+
+ SetExperimentalNil sets the value for Experimental to be an explicit nil
+
+### UnsetExperimental
+`func (o *PatchInstance) UnsetExperimental()`
+
+UnsetExperimental ensures that no value is present for Experimental, not even an explicit nil
 ### GetExtensions
 
 `func (o *PatchInstance) GetExtensions() []Extension`
@@ -386,6 +423,41 @@ HasReplicas returns a boolean if a field has been set.
 `func (o *PatchInstance) UnsetReplicas()`
 
 UnsetReplicas ensures that no value is present for Replicas, not even an explicit nil
+### GetSpot
+
+`func (o *PatchInstance) GetSpot() bool`
+
+GetSpot returns the Spot field if non-nil, zero value otherwise.
+
+### GetSpotOk
+
+`func (o *PatchInstance) GetSpotOk() (*bool, bool)`
+
+GetSpotOk returns a tuple with the Spot field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpot
+
+`func (o *PatchInstance) SetSpot(v bool)`
+
+SetSpot sets Spot field to given value.
+
+### HasSpot
+
+`func (o *PatchInstance) HasSpot() bool`
+
+HasSpot returns a boolean if a field has been set.
+
+### SetSpotNil
+
+`func (o *PatchInstance) SetSpotNil(b bool)`
+
+ SetSpotNil sets the value for Spot to be an explicit nil
+
+### UnsetSpot
+`func (o *PatchInstance) UnsetSpot()`
+
+UnsetSpot ensures that no value is present for Spot, not even an explicit nil
 ### GetStorage
 
 `func (o *PatchInstance) GetStorage() Storage`

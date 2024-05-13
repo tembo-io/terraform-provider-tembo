@@ -156,6 +156,7 @@ paths:
               storage: 10Gi
               replicas: 1
               environment: dev
+              spot: true
             schema:
               $ref: '#/components/schemas/CreateInstance'
         required: true
@@ -762,6 +763,7 @@ components:
         - restapi: ""
         replicas: 6
         cpu: null
+        experimental: ""
         storage: null
         environment: null
         extensions:
@@ -796,6 +798,7 @@ components:
           value: value
         - name: name
           value: value
+        spot: true
         trunk_installs:
         - name: name
           version: version
@@ -820,6 +823,10 @@ components:
           $ref: '#/components/schemas/Cpu'
         environment:
           $ref: '#/components/schemas/Environment'
+        experimental:
+          allOf:
+          - $ref: '#/components/schemas/Experimental'
+          nullable: true
         extensions:
           items:
             $ref: '#/components/schemas/Extension'
@@ -851,6 +858,9 @@ components:
         replicas:
           format: int32
           type: integer
+        spot:
+          nullable: true
+          type: boolean
         stack_type:
           $ref: '#/components/schemas/StackType'
         storage:
@@ -901,6 +911,12 @@ components:
           type: string
       required:
       - error
+      type: object
+    Experimental:
+      properties:
+        image:
+          nullable: true
+          type: string
       type: object
     Extension:
       description: |-
@@ -1086,23 +1102,47 @@ components:
       type: string
     Instance:
       example:
-        first_recoverability_time: 2000-01-23T04:56:07.000+00:00
-        instance_name: instance_name
         memory: null
+        created_at: 2000-01-23T04:56:07.000+00:00
+        storage: null
+        postgres_version: 0
+        postgres_configs:
+        - name: name
+          value: value
+        - name: name
+          value: value
+        trunk_installs:
+        - error_message: error_message
+          installed_to_pods:
+          - installed_to_pods
+          - installed_to_pods
+          name: name
+          error: true
+          loading: true
+          version: version
+        - error_message: error_message
+          installed_to_pods:
+          - installed_to_pods
+          - installed_to_pods
+          name: name
+          error: true
+          loading: true
+          version: version
+        state: null
+        first_recoverability_time: 2000-01-23T04:56:07.000+00:00
+        image: image
+        instance_name: instance_name
         app_services:
         - restapi: ""
         - restapi: ""
         replicas: 6
         cpu: null
-        created_at: 2000-01-23T04:56:07.000+00:00
         organization_name: organization_name
-        storage: null
         runtime_config:
         - name: name
           value: value
         - name: name
           value: value
-        postgres_version: 0
         environment: null
         extensions:
         - name: name
@@ -1142,33 +1182,12 @@ components:
         stack_type: null
         connection_info: ""
         last_updated_at: 2000-01-23T04:56:07.000+00:00
-        postgres_configs:
-        - name: name
-          value: value
-        - name: name
-          value: value
         organization_id: organization_id
-        trunk_installs:
-        - error_message: error_message
-          installed_to_pods:
-          - installed_to_pods
-          - installed_to_pods
-          name: name
-          error: true
-          loading: true
-          version: version
-        - error_message: error_message
-          installed_to_pods:
-          - installed_to_pods
-          - installed_to_pods
-          name: name
-          error: true
-          loading: true
-          version: version
+        spot: true
+        namespace: namespace
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
-        state: null
         connection_pooler: ""
       properties:
         app_services:
@@ -1205,6 +1224,9 @@ components:
           format: date-time
           nullable: true
           type: string
+        image:
+          nullable: true
+          type: string
         instance_id:
           type: string
         instance_name:
@@ -1219,6 +1241,8 @@ components:
           type: string
         memory:
           $ref: '#/components/schemas/Memory'
+        namespace:
+          type: string
         organization_id:
           type: string
         organization_name:
@@ -1243,6 +1267,9 @@ components:
             $ref: '#/components/schemas/PgConfig'
           nullable: true
           type: array
+        spot:
+          nullable: true
+          type: boolean
         stack_type:
           $ref: '#/components/schemas/StackType'
         state:
@@ -1260,6 +1287,7 @@ components:
       - instance_id
       - instance_name
       - memory
+      - namespace
       - organization_id
       - organization_name
       - postgres_version
@@ -1282,7 +1310,9 @@ components:
       - 2Gi
       - 4Gi
       - 8Gi
+      - 12Gi
       - 16Gi
+      - 24Gi
       - 32Gi
       type: string
     Middleware:
@@ -1297,6 +1327,14 @@ components:
       - $ref: '#/components/schemas/Middleware_oneOf_2'
     PatchInstance:
       example:
+        memory: ""
+        app_services:
+        - restapi: ""
+        - restapi: ""
+        replicas: ""
+        cpu: ""
+        experimental: ""
+        storage: ""
         environment: ""
         extensions:
         - name: name
@@ -1324,26 +1362,20 @@ components:
         extra_domains_rw:
         - extra_domains_rw
         - extra_domains_rw
-        memory: ""
-        app_services:
-        - restapi: ""
-        - restapi: ""
         postgres_configs:
         - name: name
           value: value
         - name: name
           value: value
-        replicas: ""
+        spot: true
         trunk_installs:
         - name: name
           version: version
         - name: name
           version: version
-        cpu: ""
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
-        storage: ""
         connection_pooler: ""
       properties:
         app_services:
@@ -1362,6 +1394,10 @@ components:
         environment:
           allOf:
           - $ref: '#/components/schemas/Environment'
+          nullable: true
+        experimental:
+          allOf:
+          - $ref: '#/components/schemas/Experimental'
           nullable: true
         extensions:
           items:
@@ -1391,6 +1427,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/Replicas'
           nullable: true
+        spot:
+          nullable: true
+          type: boolean
         storage:
           allOf:
           - $ref: '#/components/schemas/Storage'

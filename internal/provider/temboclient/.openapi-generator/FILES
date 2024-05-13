@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -26,6 +25,7 @@ docs/EnvVar.md
 docs/EnvVarRef.md
 docs/Environment.md
 docs/ErrorResponseSchema.md
+docs/Experimental.md
 docs/Extension.md
 docs/ExtensionInstallLocation.md
 docs/ExtensionInstallLocationStatus.md
@@ -89,6 +89,7 @@ model_env_var.go
 model_env_var_ref.go
 model_environment.go
 model_error_response_schema.go
+model_experimental.go
 model_extension.go
 model_extension_install_location.go
 model_extension_install_location_status.go
