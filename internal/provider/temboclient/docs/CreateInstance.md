@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
 **Environment** | [**Environment**](Environment.md) |  | 
+**Experimental** | Pointer to [**NullableExperimental**](Experimental.md) |  | [optional] 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **InstanceName** | **string** |  | 
@@ -16,6 +17,7 @@ Name | Type | Description | Notes
 **PgVersion** | Pointer to **int32** |  | [optional] 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Replicas** | Pointer to **int32** |  | [optional] 
+**Spot** | Pointer to **NullableBool** |  | [optional] 
 **StackType** | [**StackType**](StackType.md) |  | 
 **Storage** | [**Storage**](Storage.md) |  | 
 **TrunkInstalls** | Pointer to [**[]TrunkInstall**](TrunkInstall.md) |  | [optional] 
@@ -149,6 +151,41 @@ and a boolean to check if the value has been set.
 SetEnvironment sets Environment field to given value.
 
 
+### GetExperimental
+
+`func (o *CreateInstance) GetExperimental() Experimental`
+
+GetExperimental returns the Experimental field if non-nil, zero value otherwise.
+
+### GetExperimentalOk
+
+`func (o *CreateInstance) GetExperimentalOk() (*Experimental, bool)`
+
+GetExperimentalOk returns a tuple with the Experimental field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExperimental
+
+`func (o *CreateInstance) SetExperimental(v Experimental)`
+
+SetExperimental sets Experimental field to given value.
+
+### HasExperimental
+
+`func (o *CreateInstance) HasExperimental() bool`
+
+HasExperimental returns a boolean if a field has been set.
+
+### SetExperimentalNil
+
+`func (o *CreateInstance) SetExperimentalNil(b bool)`
+
+ SetExperimentalNil sets the value for Experimental to be an explicit nil
+
+### UnsetExperimental
+`func (o *CreateInstance) UnsetExperimental()`
+
+UnsetExperimental ensures that no value is present for Experimental, not even an explicit nil
 ### GetExtensions
 
 `func (o *CreateInstance) GetExtensions() []Extension`
@@ -379,6 +416,41 @@ SetReplicas sets Replicas field to given value.
 
 HasReplicas returns a boolean if a field has been set.
 
+### GetSpot
+
+`func (o *CreateInstance) GetSpot() bool`
+
+GetSpot returns the Spot field if non-nil, zero value otherwise.
+
+### GetSpotOk
+
+`func (o *CreateInstance) GetSpotOk() (*bool, bool)`
+
+GetSpotOk returns a tuple with the Spot field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpot
+
+`func (o *CreateInstance) SetSpot(v bool)`
+
+SetSpot sets Spot field to given value.
+
+### HasSpot
+
+`func (o *CreateInstance) HasSpot() bool`
+
+HasSpot returns a boolean if a field has been set.
+
+### SetSpotNil
+
+`func (o *CreateInstance) SetSpotNil(b bool)`
+
+ SetSpotNil sets the value for Spot to be an explicit nil
+
+### UnsetSpot
+`func (o *CreateInstance) UnsetSpot()`
+
+UnsetSpot ensures that no value is present for Spot, not even an explicit nil
 ### GetStackType
 
 `func (o *CreateInstance) GetStackType() StackType`

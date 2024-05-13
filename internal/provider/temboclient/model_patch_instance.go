@@ -23,12 +23,14 @@ type PatchInstance struct {
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu NullableCpu `json:"cpu,omitempty"`
 	Environment NullableEnvironment `json:"environment,omitempty"`
+	Experimental NullableExperimental `json:"experimental,omitempty"`
 	Extensions []Extension `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
 	IpAllowList []string `json:"ip_allow_list,omitempty"`
 	Memory NullableMemory `json:"memory,omitempty"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
 	Replicas NullableInt32 `json:"replicas,omitempty"`
+	Spot NullableBool `json:"spot,omitempty"`
 	Storage NullableStorage `json:"storage,omitempty"`
 	TrunkInstalls []TrunkInstall `json:"trunk_installs,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -210,6 +212,48 @@ func (o *PatchInstance) SetEnvironmentNil() {
 // UnsetEnvironment ensures that no value is present for Environment, not even an explicit nil
 func (o *PatchInstance) UnsetEnvironment() {
 	o.Environment.Unset()
+}
+
+// GetExperimental returns the Experimental field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchInstance) GetExperimental() Experimental {
+	if o == nil || IsNil(o.Experimental.Get()) {
+		var ret Experimental
+		return ret
+	}
+	return *o.Experimental.Get()
+}
+
+// GetExperimentalOk returns a tuple with the Experimental field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchInstance) GetExperimentalOk() (*Experimental, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Experimental.Get(), o.Experimental.IsSet()
+}
+
+// HasExperimental returns a boolean if a field has been set.
+func (o *PatchInstance) HasExperimental() bool {
+	if o != nil && o.Experimental.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExperimental gets a reference to the given NullableExperimental and assigns it to the Experimental field.
+func (o *PatchInstance) SetExperimental(v Experimental) {
+	o.Experimental.Set(&v)
+}
+// SetExperimentalNil sets the value for Experimental to be an explicit nil
+func (o *PatchInstance) SetExperimentalNil() {
+	o.Experimental.Set(nil)
+}
+
+// UnsetExperimental ensures that no value is present for Experimental, not even an explicit nil
+func (o *PatchInstance) UnsetExperimental() {
+	o.Experimental.Unset()
 }
 
 // GetExtensions returns the Extensions field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -428,6 +472,48 @@ func (o *PatchInstance) UnsetReplicas() {
 	o.Replicas.Unset()
 }
 
+// GetSpot returns the Spot field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchInstance) GetSpot() bool {
+	if o == nil || IsNil(o.Spot.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.Spot.Get()
+}
+
+// GetSpotOk returns a tuple with the Spot field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchInstance) GetSpotOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Spot.Get(), o.Spot.IsSet()
+}
+
+// HasSpot returns a boolean if a field has been set.
+func (o *PatchInstance) HasSpot() bool {
+	if o != nil && o.Spot.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpot gets a reference to the given NullableBool and assigns it to the Spot field.
+func (o *PatchInstance) SetSpot(v bool) {
+	o.Spot.Set(&v)
+}
+// SetSpotNil sets the value for Spot to be an explicit nil
+func (o *PatchInstance) SetSpotNil() {
+	o.Spot.Set(nil)
+}
+
+// UnsetSpot ensures that no value is present for Spot, not even an explicit nil
+func (o *PatchInstance) UnsetSpot() {
+	o.Spot.Unset()
+}
+
 // GetStorage returns the Storage field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PatchInstance) GetStorage() Storage {
 	if o == nil || IsNil(o.Storage.Get()) {
@@ -525,6 +611,9 @@ func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	if o.Environment.IsSet() {
 		toSerialize["environment"] = o.Environment.Get()
 	}
+	if o.Experimental.IsSet() {
+		toSerialize["experimental"] = o.Experimental.Get()
+	}
 	if o.Extensions != nil {
 		toSerialize["extensions"] = o.Extensions
 	}
@@ -542,6 +631,9 @@ func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Replicas.IsSet() {
 		toSerialize["replicas"] = o.Replicas.Get()
+	}
+	if o.Spot.IsSet() {
+		toSerialize["spot"] = o.Spot.Get()
 	}
 	if o.Storage.IsSet() {
 		toSerialize["storage"] = o.Storage.Get()
@@ -575,12 +667,14 @@ func (o *PatchInstance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
 		delete(additionalProperties, "environment")
+		delete(additionalProperties, "experimental")
 		delete(additionalProperties, "extensions")
 		delete(additionalProperties, "extra_domains_rw")
 		delete(additionalProperties, "ip_allow_list")
 		delete(additionalProperties, "memory")
 		delete(additionalProperties, "postgres_configs")
 		delete(additionalProperties, "replicas")
+		delete(additionalProperties, "spot")
 		delete(additionalProperties, "storage")
 		delete(additionalProperties, "trunk_installs")
 		o.AdditionalProperties = additionalProperties

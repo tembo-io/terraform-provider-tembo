@@ -30,11 +30,13 @@ type Instance struct {
 	Extensions []ExtensionStatus `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
 	FirstRecoverabilityTime NullableTime `json:"first_recoverability_time,omitempty"`
+	Image NullableString `json:"image,omitempty"`
 	InstanceId string `json:"instance_id"`
 	InstanceName string `json:"instance_name"`
 	IpAllowList []string `json:"ip_allow_list,omitempty"`
 	LastUpdatedAt *time.Time `json:"last_updated_at,omitempty"`
 	Memory Memory `json:"memory"`
+	Namespace string `json:"namespace"`
 	OrganizationId string `json:"organization_id"`
 	OrganizationName string `json:"organization_name"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
@@ -42,6 +44,7 @@ type Instance struct {
 	PostgresVersion int32 `json:"postgres_version"`
 	Replicas int32 `json:"replicas"`
 	RuntimeConfig []PgConfig `json:"runtime_config,omitempty"`
+	Spot NullableBool `json:"spot,omitempty"`
 	StackType StackType `json:"stack_type"`
 	State State `json:"state"`
 	Storage Storage `json:"storage"`
@@ -55,13 +58,14 @@ type _Instance Instance
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage) *Instance {
+func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage) *Instance {
 	this := Instance{}
 	this.Cpu = cpu
 	this.Environment = environment
 	this.InstanceId = instanceId
 	this.InstanceName = instanceName
 	this.Memory = memory
+	this.Namespace = namespace
 	this.OrganizationId = organizationId
 	this.OrganizationName = organizationName
 	this.PostgresVersion = postgresVersion
@@ -385,6 +389,48 @@ func (o *Instance) UnsetFirstRecoverabilityTime() {
 	o.FirstRecoverabilityTime.Unset()
 }
 
+// GetImage returns the Image field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Instance) GetImage() string {
+	if o == nil || IsNil(o.Image.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Image.Get()
+}
+
+// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Instance) GetImageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Image.Get(), o.Image.IsSet()
+}
+
+// HasImage returns a boolean if a field has been set.
+func (o *Instance) HasImage() bool {
+	if o != nil && o.Image.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetImage gets a reference to the given NullableString and assigns it to the Image field.
+func (o *Instance) SetImage(v string) {
+	o.Image.Set(&v)
+}
+// SetImageNil sets the value for Image to be an explicit nil
+func (o *Instance) SetImageNil() {
+	o.Image.Set(nil)
+}
+
+// UnsetImage ensures that no value is present for Image, not even an explicit nil
+func (o *Instance) UnsetImage() {
+	o.Image.Unset()
+}
+
 // GetInstanceId returns the InstanceId field value
 func (o *Instance) GetInstanceId() string {
 	if o == nil {
@@ -520,6 +566,30 @@ func (o *Instance) GetMemoryOk() (*Memory, bool) {
 // SetMemory sets field value
 func (o *Instance) SetMemory(v Memory) {
 	o.Memory = v
+}
+
+// GetNamespace returns the Namespace field value
+func (o *Instance) GetNamespace() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Namespace
+}
+
+// GetNamespaceOk returns a tuple with the Namespace field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetNamespaceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Namespace, true
+}
+
+// SetNamespace sets field value
+func (o *Instance) SetNamespace(v string) {
+	o.Namespace = v
 }
 
 // GetOrganizationId returns the OrganizationId field value
@@ -684,6 +754,48 @@ func (o *Instance) SetRuntimeConfig(v []PgConfig) {
 	o.RuntimeConfig = v
 }
 
+// GetSpot returns the Spot field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Instance) GetSpot() bool {
+	if o == nil || IsNil(o.Spot.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.Spot.Get()
+}
+
+// GetSpotOk returns a tuple with the Spot field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Instance) GetSpotOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Spot.Get(), o.Spot.IsSet()
+}
+
+// HasSpot returns a boolean if a field has been set.
+func (o *Instance) HasSpot() bool {
+	if o != nil && o.Spot.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpot gets a reference to the given NullableBool and assigns it to the Spot field.
+func (o *Instance) SetSpot(v bool) {
+	o.Spot.Set(&v)
+}
+// SetSpotNil sets the value for Spot to be an explicit nil
+func (o *Instance) SetSpotNil() {
+	o.Spot.Set(nil)
+}
+
+// UnsetSpot ensures that no value is present for Spot, not even an explicit nil
+func (o *Instance) UnsetSpot() {
+	o.Spot.Unset()
+}
+
 // GetStackType returns the StackType field value
 func (o *Instance) GetStackType() StackType {
 	if o == nil {
@@ -822,6 +934,9 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	if o.FirstRecoverabilityTime.IsSet() {
 		toSerialize["first_recoverability_time"] = o.FirstRecoverabilityTime.Get()
 	}
+	if o.Image.IsSet() {
+		toSerialize["image"] = o.Image.Get()
+	}
 	toSerialize["instance_id"] = o.InstanceId
 	toSerialize["instance_name"] = o.InstanceName
 	if o.IpAllowList != nil {
@@ -831,6 +946,7 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 		toSerialize["last_updated_at"] = o.LastUpdatedAt
 	}
 	toSerialize["memory"] = o.Memory
+	toSerialize["namespace"] = o.Namespace
 	toSerialize["organization_id"] = o.OrganizationId
 	toSerialize["organization_name"] = o.OrganizationName
 	if o.PostgresConfigs != nil {
@@ -840,6 +956,9 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	toSerialize["replicas"] = o.Replicas
 	if o.RuntimeConfig != nil {
 		toSerialize["runtime_config"] = o.RuntimeConfig
+	}
+	if o.Spot.IsSet() {
+		toSerialize["spot"] = o.Spot.Get()
 	}
 	toSerialize["stack_type"] = o.StackType
 	toSerialize["state"] = o.State
@@ -865,6 +984,7 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 		"instance_id",
 		"instance_name",
 		"memory",
+		"namespace",
 		"organization_id",
 		"organization_name",
 		"postgres_version",
@@ -910,17 +1030,20 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "extensions")
 		delete(additionalProperties, "extra_domains_rw")
 		delete(additionalProperties, "first_recoverability_time")
+		delete(additionalProperties, "image")
 		delete(additionalProperties, "instance_id")
 		delete(additionalProperties, "instance_name")
 		delete(additionalProperties, "ip_allow_list")
 		delete(additionalProperties, "last_updated_at")
 		delete(additionalProperties, "memory")
+		delete(additionalProperties, "namespace")
 		delete(additionalProperties, "organization_id")
 		delete(additionalProperties, "organization_name")
 		delete(additionalProperties, "postgres_configs")
 		delete(additionalProperties, "postgres_version")
 		delete(additionalProperties, "replicas")
 		delete(additionalProperties, "runtime_config")
+		delete(additionalProperties, "spot")
 		delete(additionalProperties, "stack_type")
 		delete(additionalProperties, "state")
 		delete(additionalProperties, "storage")

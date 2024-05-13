@@ -13,17 +13,20 @@ Name | Type | Description | Notes
 **Extensions** | Pointer to [**[]ExtensionStatus**](ExtensionStatus.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
 **FirstRecoverabilityTime** | Pointer to **NullableTime** |  | [optional] 
+**Image** | Pointer to **NullableString** |  | [optional] 
 **InstanceId** | **string** |  | 
 **InstanceName** | **string** |  | 
 **IpAllowList** | Pointer to **[]string** |  | [optional] 
 **LastUpdatedAt** | Pointer to **time.Time** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
+**Namespace** | **string** |  | 
 **OrganizationId** | **string** |  | 
 **OrganizationName** | **string** |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **PostgresVersion** | **int32** | Major Postgres version this instance is using. Currently: 14, 15 or 16 | 
 **Replicas** | **int32** |  | 
 **RuntimeConfig** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
+**Spot** | Pointer to **NullableBool** |  | [optional] 
 **StackType** | [**StackType**](StackType.md) |  | 
 **State** | [**State**](State.md) |  | 
 **Storage** | [**Storage**](Storage.md) |  | 
@@ -33,7 +36,7 @@ Name | Type | Description | Notes
 
 ### NewInstance
 
-`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
+`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
 
 NewInstance instantiates a new Instance object
 This constructor will assign default values to properties that have it defined,
@@ -323,6 +326,41 @@ HasFirstRecoverabilityTime returns a boolean if a field has been set.
 `func (o *Instance) UnsetFirstRecoverabilityTime()`
 
 UnsetFirstRecoverabilityTime ensures that no value is present for FirstRecoverabilityTime, not even an explicit nil
+### GetImage
+
+`func (o *Instance) GetImage() string`
+
+GetImage returns the Image field if non-nil, zero value otherwise.
+
+### GetImageOk
+
+`func (o *Instance) GetImageOk() (*string, bool)`
+
+GetImageOk returns a tuple with the Image field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetImage
+
+`func (o *Instance) SetImage(v string)`
+
+SetImage sets Image field to given value.
+
+### HasImage
+
+`func (o *Instance) HasImage() bool`
+
+HasImage returns a boolean if a field has been set.
+
+### SetImageNil
+
+`func (o *Instance) SetImageNil(b bool)`
+
+ SetImageNil sets the value for Image to be an explicit nil
+
+### UnsetImage
+`func (o *Instance) UnsetImage()`
+
+UnsetImage ensures that no value is present for Image, not even an explicit nil
 ### GetInstanceId
 
 `func (o *Instance) GetInstanceId() string`
@@ -441,6 +479,26 @@ and a boolean to check if the value has been set.
 `func (o *Instance) SetMemory(v Memory)`
 
 SetMemory sets Memory field to given value.
+
+
+### GetNamespace
+
+`func (o *Instance) GetNamespace() string`
+
+GetNamespace returns the Namespace field if non-nil, zero value otherwise.
+
+### GetNamespaceOk
+
+`func (o *Instance) GetNamespaceOk() (*string, bool)`
+
+GetNamespaceOk returns a tuple with the Namespace field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNamespace
+
+`func (o *Instance) SetNamespace(v string)`
+
+SetNamespace sets Namespace field to given value.
 
 
 ### GetOrganizationId
@@ -593,6 +651,41 @@ HasRuntimeConfig returns a boolean if a field has been set.
 `func (o *Instance) UnsetRuntimeConfig()`
 
 UnsetRuntimeConfig ensures that no value is present for RuntimeConfig, not even an explicit nil
+### GetSpot
+
+`func (o *Instance) GetSpot() bool`
+
+GetSpot returns the Spot field if non-nil, zero value otherwise.
+
+### GetSpotOk
+
+`func (o *Instance) GetSpotOk() (*bool, bool)`
+
+GetSpotOk returns a tuple with the Spot field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpot
+
+`func (o *Instance) SetSpot(v bool)`
+
+SetSpot sets Spot field to given value.
+
+### HasSpot
+
+`func (o *Instance) HasSpot() bool`
+
+HasSpot returns a boolean if a field has been set.
+
+### SetSpotNil
+
+`func (o *Instance) SetSpotNil(b bool)`
+
+ SetSpotNil sets the value for Spot to be an explicit nil
+
+### UnsetSpot
+`func (o *Instance) UnsetSpot()`
+
+UnsetSpot ensures that no value is present for Spot, not even an explicit nil
 ### GetStackType
 
 `func (o *Instance) GetStackType() StackType`

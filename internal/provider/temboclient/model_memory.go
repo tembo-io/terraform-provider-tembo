@@ -24,7 +24,9 @@ const (
 	_2_GI Memory = "2Gi"
 	_4_GI Memory = "4Gi"
 	_8_GI Memory = "8Gi"
+	_12_GI Memory = "12Gi"
 	_16_GI Memory = "16Gi"
+	_24_GI Memory = "24Gi"
 	_32_GI Memory = "32Gi"
 )
 
@@ -34,7 +36,9 @@ var AllowedMemoryEnumValues = []Memory{
 	"2Gi",
 	"4Gi",
 	"8Gi",
+	"12Gi",
 	"16Gi",
+	"24Gi",
 	"32Gi",
 }
 
