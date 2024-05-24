@@ -39,9 +39,11 @@ type temboProvider struct {
 
 // temboProviderModel maps provider schema data to a Go type.
 type temboProviderModel struct {
-	Host        types.String `tfsdk:"host"`
-	DataHost    types.String `tfsdk:"data_host"`
-	AccessToken types.String `tfsdk:"access_token"`
+	Host              types.String `tfsdk:"host"`
+	HostURLScheme     types.String `tfsdk:"host_url_scheme"`
+	DataHost          types.String `tfsdk:"data_host"`
+	DataHostURLScheme types.String `tfsdk:"data_host_url_scheme"`
+	AccessToken       types.String `tfsdk:"access_token"`
 }
 
 // Metadata returns the provider type name.
@@ -59,8 +61,16 @@ func (p *temboProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				MarkdownDescription: "Tembo API the provider should connect to. By default it connects to Tembo Cloud Production API.",
 				Optional:            true,
 			},
+			"host_url_scheme": schema.StringAttribute{
+				MarkdownDescription: "Url scheme for Tembo API. By default it is https.",
+				Optional:            true,
+			},
 			"data_host": schema.StringAttribute{
 				MarkdownDescription: "Tembo Data API the provider should connect to. By default it connects to Tembo Data Cloud Production API.",
+				Optional:            true,
+			},
+			"data_host_url_scheme": schema.StringAttribute{
+				MarkdownDescription: "Url scheme for Tembo Data API. By default it is https.",
 				Optional:            true,
 			},
 			"access_token": schema.StringAttribute{
@@ -119,7 +129,9 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	// with Terraform configuration value if set.
 
 	host := os.Getenv("TEMBO_HOST")
+	host_url_scheme := os.Getenv("TEMBO_HOST_URL_SCHEME")
 	data_host := os.Getenv("TEMBO_DATA_HOST")
+	data_host_url_scheme := os.Getenv("TEMBO_DATA_HOST_URL_SCHEME")
 	access_token := os.Getenv("TEMBO_ACCESS_TOKEN")
 
 	if !config.Host.IsNull() {
@@ -130,12 +142,28 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		host = "https://api.coredb.io"
 	}
 
+	if !config.HostURLScheme.IsNull() {
+		host_url_scheme = config.HostURLScheme.ValueString()
+	}
+
+	if host_url_scheme == "" {
+		host_url_scheme = "https"
+	}
+
 	if !config.DataHost.IsNull() {
 		data_host = config.DataHost.ValueString()
 	}
 
 	if data_host == "" {
 		data_host = "https://api.data-1.use1.tembo.io"
+	}
+
+	if !config.DataHostURLScheme.IsNull() {
+		data_host_url_scheme = config.DataHostURLScheme.ValueString()
+	}
+
+	if data_host_url_scheme == "" {
+		data_host_url_scheme = "https"
 	}
 
 	if !config.AccessToken.IsNull() {
@@ -176,7 +204,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		panic(err)
 	}
 
-	configuration.Scheme = "https"
+	configuration.Scheme = host_url_scheme
 
 	configuration.Host = hostUrl.Host
 
@@ -190,7 +218,7 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		panic(err)
 	}
 
-	data_configuration.Scheme = "https"
+	data_configuration.Scheme = data_host_url_scheme
 
 	data_configuration.Host = dataHostUrl.Host
 
