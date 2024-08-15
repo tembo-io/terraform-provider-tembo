@@ -12,6 +12,28 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
+func testCheckFirstRecoverabilityTimeSet(resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		retryInterval := 30 * time.Second
+		timeout := 10 * time.Minute
+		startTime := time.Now()
+
+		for {
+			err := resource.TestCheckResourceAttrSet(resourceName, "first_recoverability_time")(s)
+			if err == nil {
+				// Test passed
+				return nil
+			}
+
+			if time.Since(startTime) > timeout {
+				return fmt.Errorf("Timeout reached waiting for first_recoverability_time to be set: %v", err)
+			}
+
+			time.Sleep(retryInterval)
+		}
+	}
+}
+
 func TestTemboInstanceResource(t *testing.T) {
 
 	instanceName := generateInstanceName()
@@ -40,6 +62,23 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.pool_mode", "transaction"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.max_client_conn", "20"),
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "100"),
+				),
+			},
+			// Wait for first_recoverability_time
+			{
+				Config: testProviderConfig() + testInstanceResourceCreateConfig(instanceName, orgId),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "org_id", orgId),
+					resource.TestCheckResourceAttrSet(resourceName, "instance_id"),
+					func(s *terraform.State) error {
+						fmt.Println("Starting to wait for first_recoverability_time")
+						return nil
+					},
+					testCheckFirstRecoverabilityTimeSet(resourceName),
+					func(s *terraform.State) error {
+						fmt.Println("first_recoverability_time has been set successfully")
+						return nil
+					},
 				),
 			},
 			// ImportState testing
