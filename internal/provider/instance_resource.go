@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
@@ -35,24 +36,25 @@ const (
 
 // temboInstanceResourceModel maps the resource schema data.
 type temboInstanceResourceModel struct {
-	InstanceID       types.String      `tfsdk:"instance_id"`
-	InstanceName     types.String      `tfsdk:"instance_name"`
-	OrgId            types.String      `tfsdk:"org_id"`
-	CPU              types.String      `tfsdk:"cpu"`
-	StackType        types.String      `tfsdk:"stack_type"`
-	Environment      types.String      `tfsdk:"environment"`
-	Replicas         types.Int64       `tfsdk:"replicas"`
-	Memory           types.String      `tfsdk:"memory"`
-	Storage          types.String      `tfsdk:"storage"`
-	LastUpdated      types.String      `tfsdk:"last_updated"`
-	State            types.String      `tfsdk:"state"`
-	ExtraDomainsRw   []types.String    `tfsdk:"extra_domains_rw"`
-	PostgresConfigs  []KeyValue        `tfsdk:"postgres_configs"`
-	TrunkInstalls    []TrunkInstall    `tfsdk:"trunk_installs"`
-	Extensions       []Extension       `tfsdk:"extensions"`
-	IpAllowList      []types.String    `tfsdk:"ip_allow_list"`
-	ConnectionPooler *ConnectionPooler `tfsdk:"connection_pooler"`
-	Restore          *Restore          `tfsdk:"restore"`
+	InstanceID              types.String      `tfsdk:"instance_id"`
+	InstanceName            types.String      `tfsdk:"instance_name"`
+	OrgId                   types.String      `tfsdk:"org_id"`
+	CPU                     types.String      `tfsdk:"cpu"`
+	StackType               types.String      `tfsdk:"stack_type"`
+	Environment             types.String      `tfsdk:"environment"`
+	Replicas                types.Int64       `tfsdk:"replicas"`
+	Memory                  types.String      `tfsdk:"memory"`
+	Storage                 types.String      `tfsdk:"storage"`
+	LastUpdated             types.String      `tfsdk:"last_updated"`
+	State                   types.String      `tfsdk:"state"`
+	ExtraDomainsRw          []types.String    `tfsdk:"extra_domains_rw"`
+	PostgresConfigs         []KeyValue        `tfsdk:"postgres_configs"`
+	TrunkInstalls           []TrunkInstall    `tfsdk:"trunk_installs"`
+	Extensions              []Extension       `tfsdk:"extensions"`
+	IpAllowList             []types.String    `tfsdk:"ip_allow_list"`
+	ConnectionPooler        *ConnectionPooler `tfsdk:"connection_pooler"`
+	Restore                 *Restore          `tfsdk:"restore"`
+	FirstRecoverabilityTime types.String      `tfsdk:"first_recoverability_time"`
 }
 
 type Restore struct {
@@ -308,6 +310,11 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 					},
 				},
 				Optional: true,
+			},
+			"first_recoverability_time": schema.StringAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: "The time at which the instance first became recoverable",
 			},
 		},
 	}
@@ -716,6 +723,19 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		}
 		instanceResourceModel.IpAllowList = localIpAllowList
 	}
+
+	if instance.FirstRecoverabilityTime. != nil && instance.FirstRecoverabilityTime.IsSet() {
+		// Happened right here
+		instanceResourceModel.FirstRecoverabilityTime = types.StringValue(instance.FirstRecoverabilityTime.Get().Format(time.RFC3339))
+	} else {
+		instanceResourceModel.FirstRecoverabilityTime = types.StringNull()
+	}
+
+	tflog.Debug(context.Background(), "Setting Tembo Instance state", map[string]interface{}{
+		"instance_id":               instanceResourceModel.InstanceID.ValueString(),
+		"first_recoverability_time": instanceResourceModel.FirstRecoverabilityTime.ValueString(),
+	})
+
 }
 
 func getStringArray(inputArray []basetypes.StringValue) []string {
