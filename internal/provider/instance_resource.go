@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	temboclient "github.com/tembo-io/terraform-provider-tembo/temboclient"
 )
 
@@ -724,18 +723,12 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.IpAllowList = localIpAllowList
 	}
 
-	if instance.FirstRecoverabilityTime. != nil && instance.FirstRecoverabilityTime.IsSet() {
-		// Happened right here
+	if instance.FirstRecoverabilityTime.IsSet() && instance.FirstRecoverabilityTime.Get() != nil {
+		fmt.Println("Setting FirstRecoverabilityTime")
 		instanceResourceModel.FirstRecoverabilityTime = types.StringValue(instance.FirstRecoverabilityTime.Get().Format(time.RFC3339))
 	} else {
 		instanceResourceModel.FirstRecoverabilityTime = types.StringNull()
 	}
-
-	tflog.Debug(context.Background(), "Setting Tembo Instance state", map[string]interface{}{
-		"instance_id":               instanceResourceModel.InstanceID.ValueString(),
-		"first_recoverability_time": instanceResourceModel.FirstRecoverabilityTime.ValueString(),
-	})
-
 }
 
 func getStringArray(inputArray []basetypes.StringValue) []string {
