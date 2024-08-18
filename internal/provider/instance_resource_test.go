@@ -12,28 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func testCheckFirstRecoverabilityTimeSet(resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		retryInterval := 30 * time.Second
-		timeout := 10 * time.Minute
-		startTime := time.Now()
-
-		for {
-			err := resource.TestCheckResourceAttrSet(resourceName, "first_recoverability_time")(s)
-			if err == nil {
-				// Test passed
-				return nil
-			}
-
-			if time.Since(startTime) > timeout {
-				return fmt.Errorf("Timeout reached waiting for first_recoverability_time to be set: %v", err)
-			}
-
-			time.Sleep(retryInterval)
-		}
-	}
-}
-
 func TestTemboInstanceResource(t *testing.T) {
 
 	instanceName := generateInstanceName()
