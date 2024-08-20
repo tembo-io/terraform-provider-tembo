@@ -91,6 +91,7 @@ output "instance" {
 - `connection_pooler` (Attributes) (see [below for nested schema](#nestedatt--connection_pooler))
 - `extensions` (Attributes List) Extensions to install in the instance (see [below for nested schema](#nestedatt--extensions))
 - `extra_domains_rw` (List of String) Custom domain. Read more [here](https://tembo.io/docs/tembo-cloud/custom-domains/)
+- `first_recoverability_time` (String) The time at which the instance first became recoverable
 - `ip_allow_list` (List of String) Allowed IP list
 - `postgres_configs` (Attributes List) Postgres configs (see [below for nested schema](#nestedatt--postgres_configs))
 - `replicas` (Number) Instance replicas
