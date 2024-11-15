@@ -83,4 +83,4 @@ jobs:
           TEMBO_HOST: ${{ secrets.TEMBO_HOST }}
           TEMBO_DATA_HOST: ${{ secrets.TEMBO_DATA_HOST }}
         run: go test -v -cover -timeout 20m ./internal/provider/
-        timeout-minutes: 20
+        timeout-minutes: 30
