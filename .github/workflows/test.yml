@@ -75,6 +75,7 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
+      - run: sudo apt-get update && sudo apt-get install -y build-essential gcc
       - run: go mod download
       - env:
           TF_ACC: "1"
