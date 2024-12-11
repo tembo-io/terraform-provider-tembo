@@ -42,13 +42,13 @@ func TestTemboInstanceResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "connection_pooler.pooler.parameters.default_pool_size", "100"),
 				),
 			},
-			// Wait for 6 minutes to ensure that the initial backup has gone through
+			// Wait for 10 minutes to ensure that the initial backup has gone through
 			{
 				Config: testProviderConfig() + testInstanceResourceCreateConfig(instanceName, orgId),
 				Check: resource.ComposeTestCheckFunc(
 					func(s *terraform.State) error {
-						fmt.Println("Waiting for 6 minutes before checking first_recoverability_time...")
-						time.Sleep(6 * time.Minute)
+						fmt.Println("Waiting for 10 minutes before checking first_recoverability_time...")
+						time.Sleep(10 * time.Minute)
 						return nil
 					},
 				),

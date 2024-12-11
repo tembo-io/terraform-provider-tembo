@@ -56,7 +56,7 @@ jobs:
       - self-hosted
       - dind
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -75,6 +75,7 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
+      - run: sudo apt-get update && sudo apt-get install -y build-essential gcc
       - run: go mod download
       - env:
           TF_ACC: "1"
@@ -82,5 +83,5 @@ jobs:
           ORG_ID: ${{ secrets.ORG_ID }}
           TEMBO_HOST: ${{ secrets.TEMBO_HOST }}
           TEMBO_DATA_HOST: ${{ secrets.TEMBO_DATA_HOST }}
-        run: go test -v -cover -timeout 20m ./internal/provider/
-        timeout-minutes: 20
+        run: go test -v -cover -timeout 30m ./internal/provider/
+        timeout-minutes: 30
