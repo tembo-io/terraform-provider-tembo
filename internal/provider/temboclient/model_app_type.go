@@ -13,6 +13,7 @@ package temboclient
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
 // AppType - struct for AppType
@@ -23,6 +24,7 @@ type AppType struct {
 	AppTypeOneOf3 *AppTypeOneOf3
 	AppTypeOneOf4 *AppTypeOneOf4
 	AppTypeOneOf5 *AppTypeOneOf5
+	AppTypeOneOf6 *AppTypeOneOf6
 }
 
 // AppTypeOneOfAsAppType is a convenience function that returns AppTypeOneOf wrapped in AppType
@@ -67,6 +69,13 @@ func AppTypeOneOf5AsAppType(v *AppTypeOneOf5) AppType {
 	}
 }
 
+// AppTypeOneOf6AsAppType is a convenience function that returns AppTypeOneOf6 wrapped in AppType
+func AppTypeOneOf6AsAppType(v *AppTypeOneOf6) AppType {
+	return AppType{
+		AppTypeOneOf6: v,
+	}
+}
+
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *AppType) UnmarshalJSON(data []byte) error {
@@ -79,7 +88,11 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf) == "{}" { // empty struct
 			dst.AppTypeOneOf = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf); err != nil {
+				dst.AppTypeOneOf = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf = nil
@@ -92,7 +105,11 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf1) == "{}" { // empty struct
 			dst.AppTypeOneOf1 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf1); err != nil {
+				dst.AppTypeOneOf1 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf1 = nil
@@ -105,7 +122,11 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf2) == "{}" { // empty struct
 			dst.AppTypeOneOf2 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf2); err != nil {
+				dst.AppTypeOneOf2 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf2 = nil
@@ -118,7 +139,11 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf3) == "{}" { // empty struct
 			dst.AppTypeOneOf3 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf3); err != nil {
+				dst.AppTypeOneOf3 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf3 = nil
@@ -131,7 +156,11 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf4) == "{}" { // empty struct
 			dst.AppTypeOneOf4 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf4); err != nil {
+				dst.AppTypeOneOf4 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf4 = nil
@@ -144,10 +173,31 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		if string(jsonAppTypeOneOf5) == "{}" { // empty struct
 			dst.AppTypeOneOf5 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.AppTypeOneOf5); err != nil {
+				dst.AppTypeOneOf5 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.AppTypeOneOf5 = nil
+	}
+
+	// try to unmarshal data into AppTypeOneOf6
+	err = newStrictDecoder(data).Decode(&dst.AppTypeOneOf6)
+	if err == nil {
+		jsonAppTypeOneOf6, _ := json.Marshal(dst.AppTypeOneOf6)
+		if string(jsonAppTypeOneOf6) == "{}" { // empty struct
+			dst.AppTypeOneOf6 = nil
+		} else {
+			if err = validator.Validate(dst.AppTypeOneOf6); err != nil {
+				dst.AppTypeOneOf6 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AppTypeOneOf6 = nil
 	}
 
 	if match > 1 { // more than 1 match
@@ -158,6 +208,7 @@ func (dst *AppType) UnmarshalJSON(data []byte) error {
 		dst.AppTypeOneOf3 = nil
 		dst.AppTypeOneOf4 = nil
 		dst.AppTypeOneOf5 = nil
+		dst.AppTypeOneOf6 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AppType)")
 	} else if match == 1 {
@@ -193,6 +244,10 @@ func (src AppType) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AppTypeOneOf5)
 	}
 
+	if src.AppTypeOneOf6 != nil {
+		return json.Marshal(&src.AppTypeOneOf6)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -223,6 +278,10 @@ func (obj *AppType) GetActualInstance() (interface{}) {
 
 	if obj.AppTypeOneOf5 != nil {
 		return obj.AppTypeOneOf5
+	}
+
+	if obj.AppTypeOneOf6 != nil {
+		return obj.AppTypeOneOf6
 	}
 
 	// all schemas are nil

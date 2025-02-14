@@ -13,6 +13,7 @@ package temboclient
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
 // IntOrString - struct for IntOrString
@@ -47,7 +48,11 @@ func (dst *IntOrString) UnmarshalJSON(data []byte) error {
 		if string(jsonIntOrStringOneOf) == "{}" { // empty struct
 			dst.IntOrStringOneOf = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.IntOrStringOneOf); err != nil {
+				dst.IntOrStringOneOf = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.IntOrStringOneOf = nil
@@ -60,7 +65,11 @@ func (dst *IntOrString) UnmarshalJSON(data []byte) error {
 		if string(jsonIntOrStringOneOf1) == "{}" { // empty struct
 			dst.IntOrStringOneOf1 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.IntOrStringOneOf1); err != nil {
+				dst.IntOrStringOneOf1 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.IntOrStringOneOf1 = nil

@@ -91,7 +91,7 @@ import (
 )
 
 func main() {
-	type_ := openapiclient.StackType("Standard") // StackType | the type of entity
+	type_ := openapiclient.StackType("Analytics") // StackType | the type of entity
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

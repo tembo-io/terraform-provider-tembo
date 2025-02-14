@@ -5,10 +5,13 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **AppServices** | Pointer to [**[]AppType**](AppType.md) |  | [optional] 
+**Autoscaling** | [**Autoscaling**](Autoscaling.md) |  | 
 **ConnectionInfo** | Pointer to [**NullableConnectionInfo**](ConnectionInfo.md) |  | [optional] 
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
 **CreatedAt** | Pointer to **time.Time** |  | [optional] 
+**DataplaneIndex** | **string** |  | 
+**DedicatedNetworking** | Pointer to [**NullableDedicatedNetworking**](DedicatedNetworking.md) |  | [optional] 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Extensions** | Pointer to [**[]ExtensionStatus**](ExtensionStatus.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
@@ -18,12 +21,16 @@ Name | Type | Description | Notes
 **InstanceName** | **string** |  | 
 **IpAllowList** | Pointer to **[]string** |  | [optional] 
 **LastUpdatedAt** | Pointer to **time.Time** |  | [optional] 
+**LastWalArchiveStatus** | Pointer to **NullableTime** |  | [optional] 
 **Memory** | [**Memory**](Memory.md) |  | 
 **Namespace** | **string** |  | 
 **OrganizationId** | **string** |  | 
 **OrganizationName** | **string** |  | 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
-**PostgresVersion** | **int32** | Major Postgres version this instance is using. Currently: 14, 15 or 16 | 
+**PostgresVersion** | **int32** | Major Postgres version this instance is using. Currently: 14, 15, 16 and 17 | 
+**ProviderId** | **string** |  | 
+**RegionId** | **string** |  | 
+**RegionName** | **string** |  | 
 **Replicas** | **int32** |  | 
 **RuntimeConfig** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
 **Spot** | Pointer to **NullableBool** |  | [optional] 
@@ -36,7 +43,7 @@ Name | Type | Description | Notes
 
 ### NewInstance
 
-`func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
+`func NewInstance(autoscaling Autoscaling, cpu Cpu, dataplaneIndex string, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, providerId string, regionId string, regionName string, replicas int32, stackType StackType, state State, storage Storage, ) *Instance`
 
 NewInstance instantiates a new Instance object
 This constructor will assign default values to properties that have it defined,
@@ -86,6 +93,26 @@ HasAppServices returns a boolean if a field has been set.
 `func (o *Instance) UnsetAppServices()`
 
 UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetAutoscaling
+
+`func (o *Instance) GetAutoscaling() Autoscaling`
+
+GetAutoscaling returns the Autoscaling field if non-nil, zero value otherwise.
+
+### GetAutoscalingOk
+
+`func (o *Instance) GetAutoscalingOk() (*Autoscaling, bool)`
+
+GetAutoscalingOk returns a tuple with the Autoscaling field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAutoscaling
+
+`func (o *Instance) SetAutoscaling(v Autoscaling)`
+
+SetAutoscaling sets Autoscaling field to given value.
+
+
 ### GetConnectionInfo
 
 `func (o *Instance) GetConnectionInfo() ConnectionInfo`
@@ -201,6 +228,61 @@ SetCreatedAt sets CreatedAt field to given value.
 
 HasCreatedAt returns a boolean if a field has been set.
 
+### GetDataplaneIndex
+
+`func (o *Instance) GetDataplaneIndex() string`
+
+GetDataplaneIndex returns the DataplaneIndex field if non-nil, zero value otherwise.
+
+### GetDataplaneIndexOk
+
+`func (o *Instance) GetDataplaneIndexOk() (*string, bool)`
+
+GetDataplaneIndexOk returns a tuple with the DataplaneIndex field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDataplaneIndex
+
+`func (o *Instance) SetDataplaneIndex(v string)`
+
+SetDataplaneIndex sets DataplaneIndex field to given value.
+
+
+### GetDedicatedNetworking
+
+`func (o *Instance) GetDedicatedNetworking() DedicatedNetworking`
+
+GetDedicatedNetworking returns the DedicatedNetworking field if non-nil, zero value otherwise.
+
+### GetDedicatedNetworkingOk
+
+`func (o *Instance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool)`
+
+GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDedicatedNetworking
+
+`func (o *Instance) SetDedicatedNetworking(v DedicatedNetworking)`
+
+SetDedicatedNetworking sets DedicatedNetworking field to given value.
+
+### HasDedicatedNetworking
+
+`func (o *Instance) HasDedicatedNetworking() bool`
+
+HasDedicatedNetworking returns a boolean if a field has been set.
+
+### SetDedicatedNetworkingNil
+
+`func (o *Instance) SetDedicatedNetworkingNil(b bool)`
+
+ SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+
+### UnsetDedicatedNetworking
+`func (o *Instance) UnsetDedicatedNetworking()`
+
+UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
 ### GetEnvironment
 
 `func (o *Instance) GetEnvironment() Environment`
@@ -461,6 +543,41 @@ SetLastUpdatedAt sets LastUpdatedAt field to given value.
 
 HasLastUpdatedAt returns a boolean if a field has been set.
 
+### GetLastWalArchiveStatus
+
+`func (o *Instance) GetLastWalArchiveStatus() time.Time`
+
+GetLastWalArchiveStatus returns the LastWalArchiveStatus field if non-nil, zero value otherwise.
+
+### GetLastWalArchiveStatusOk
+
+`func (o *Instance) GetLastWalArchiveStatusOk() (*time.Time, bool)`
+
+GetLastWalArchiveStatusOk returns a tuple with the LastWalArchiveStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLastWalArchiveStatus
+
+`func (o *Instance) SetLastWalArchiveStatus(v time.Time)`
+
+SetLastWalArchiveStatus sets LastWalArchiveStatus field to given value.
+
+### HasLastWalArchiveStatus
+
+`func (o *Instance) HasLastWalArchiveStatus() bool`
+
+HasLastWalArchiveStatus returns a boolean if a field has been set.
+
+### SetLastWalArchiveStatusNil
+
+`func (o *Instance) SetLastWalArchiveStatusNil(b bool)`
+
+ SetLastWalArchiveStatusNil sets the value for LastWalArchiveStatus to be an explicit nil
+
+### UnsetLastWalArchiveStatus
+`func (o *Instance) UnsetLastWalArchiveStatus()`
+
+UnsetLastWalArchiveStatus ensures that no value is present for LastWalArchiveStatus, not even an explicit nil
 ### GetMemory
 
 `func (o *Instance) GetMemory() Memory`
@@ -594,6 +711,66 @@ and a boolean to check if the value has been set.
 `func (o *Instance) SetPostgresVersion(v int32)`
 
 SetPostgresVersion sets PostgresVersion field to given value.
+
+
+### GetProviderId
+
+`func (o *Instance) GetProviderId() string`
+
+GetProviderId returns the ProviderId field if non-nil, zero value otherwise.
+
+### GetProviderIdOk
+
+`func (o *Instance) GetProviderIdOk() (*string, bool)`
+
+GetProviderIdOk returns a tuple with the ProviderId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetProviderId
+
+`func (o *Instance) SetProviderId(v string)`
+
+SetProviderId sets ProviderId field to given value.
+
+
+### GetRegionId
+
+`func (o *Instance) GetRegionId() string`
+
+GetRegionId returns the RegionId field if non-nil, zero value otherwise.
+
+### GetRegionIdOk
+
+`func (o *Instance) GetRegionIdOk() (*string, bool)`
+
+GetRegionIdOk returns a tuple with the RegionId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRegionId
+
+`func (o *Instance) SetRegionId(v string)`
+
+SetRegionId sets RegionId field to given value.
+
+
+### GetRegionName
+
+`func (o *Instance) GetRegionName() string`
+
+GetRegionName returns the RegionName field if non-nil, zero value otherwise.
+
+### GetRegionNameOk
+
+`func (o *Instance) GetRegionNameOk() (*string, bool)`
+
+GetRegionNameOk returns a tuple with the RegionName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRegionName
+
+`func (o *Instance) SetRegionName(v string)`
+
+SetRegionName sets RegionName field to given value.
 
 
 ### GetReplicas

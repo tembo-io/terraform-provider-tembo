@@ -9,13 +9,14 @@ Name | Type | Description | Notes
 **MqApi** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Embeddings** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Pganalyze** | [**NullableAppConfig**](AppConfig.md) |  | 
+**Sqlrunner** | [**NullableAppConfig**](AppConfig.md) |  | 
 **Custom** | [**AppService**](AppService.md) |  | 
 
 ## Methods
 
 ### NewAppType
 
-`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, mqApi NullableAppConfig, embeddings NullableAppConfig, pganalyze NullableAppConfig, custom AppService, ) *AppType`
+`func NewAppType(restapi NullableAppConfig, http NullableAppConfig, mqApi NullableAppConfig, embeddings NullableAppConfig, pganalyze NullableAppConfig, sqlrunner NullableAppConfig, custom AppService, ) *AppType`
 
 NewAppType instantiates a new AppType object
 This constructor will assign default values to properties that have it defined,
@@ -180,6 +181,36 @@ SetPganalyze sets Pganalyze field to given value.
 `func (o *AppType) UnsetPganalyze()`
 
 UnsetPganalyze ensures that no value is present for Pganalyze, not even an explicit nil
+### GetSqlrunner
+
+`func (o *AppType) GetSqlrunner() AppConfig`
+
+GetSqlrunner returns the Sqlrunner field if non-nil, zero value otherwise.
+
+### GetSqlrunnerOk
+
+`func (o *AppType) GetSqlrunnerOk() (*AppConfig, bool)`
+
+GetSqlrunnerOk returns a tuple with the Sqlrunner field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSqlrunner
+
+`func (o *AppType) SetSqlrunner(v AppConfig)`
+
+SetSqlrunner sets Sqlrunner field to given value.
+
+
+### SetSqlrunnerNil
+
+`func (o *AppType) SetSqlrunnerNil(b bool)`
+
+ SetSqlrunnerNil sets the value for Sqlrunner to be an explicit nil
+
+### UnsetSqlrunner
+`func (o *AppType) UnsetSqlrunner()`
+
+UnsetSqlrunner ensures that no value is present for Sqlrunner, not even an explicit nil
 ### GetCustom
 
 `func (o *AppType) GetCustom() AppService`

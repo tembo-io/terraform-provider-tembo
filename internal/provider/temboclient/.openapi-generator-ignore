@@ -21,3 +21,10 @@
 #docs/*.md
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
+
+## Ignore AI API related files
+api_ai.go
+docs/AiAPI.md
+docs/AskResult.md
+docs/SearchResponse.md
+test/api_ai_test.go

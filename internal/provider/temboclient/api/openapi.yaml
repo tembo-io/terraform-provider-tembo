@@ -67,6 +67,41 @@ paths:
       summary: Get the attributes of a single App
       tags:
       - app
+  /api/v1/ask/:
+    get:
+      description: |
+        Ask a question to Tembo Docs
+      operationId: ask
+      parameters:
+      - description: "The ask query. For example, \"how to create a Tembo instance\""
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AskResult'
+          description: Answer to the question
+        "400":
+          content:
+            application/json:
+              schema: {}
+          description: Invalid Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Ask a question to Tembo Docs
+      tags:
+      - ai
   /api/v1/orgs/instances/schema:
     get:
       description: |
@@ -88,6 +123,78 @@ paths:
       summary: Get the json-schema for an instance
       tags:
       - instance
+  /api/v1/orgs/{org_id}/actions:
+    get:
+      description: Get all actions
+      operationId: get_actions
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Action'
+                type: array
+          description: All actions available in your organization
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Get all actions
+      tags:
+      - rbac
+  /api/v1/orgs/{org_id}/dataplanes:
+    get:
+      operationId: get_all_dataplanes
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DataPlane'
+                type: array
+          description: List of all data planes
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      tags:
+      - dataplane
   /api/v1/orgs/{org_id}/instances:
     get:
       description: |
@@ -276,7 +383,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Instance'
-          description: The requested Tembo instance
+          description: Tembo.toml File Content
         "400":
           content:
             application/json:
@@ -421,6 +528,286 @@ paths:
       summary: Lifecycle events for a Tembo instance
       tags:
       - instance
+  /api/v1/orgs/{org_id}/instances/{instance_id}/history/{field}:
+    get:
+      description: Get historical information for a given instance
+      operationId: get_instance_history
+      parameters:
+      - description: Defaults to 24 hours ago
+        explode: true
+        in: query
+        name: start
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Defaults to now
+        explode: true
+        in: query
+        name: end
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Page to check
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          format: int32
+          minimum: 0
+          type: integer
+        style: form
+      - description: The maximum number of results per page
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          minimum: 0
+          type: integer
+        style: form
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The instance ID for the request
+        explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The field of the instance we are retrieving history for, currently\
+          \ only 'state' is supported"
+        explode: false
+        in: path
+        name: field
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryPage'
+          description: Historical results for the given instance are returned
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Instance not found
+      summary: Get historical information for a given instance
+      tags:
+      - instance
+  /api/v1/orgs/{org_id}/instances/{instance_id}/toml:
+    get:
+      description: |
+        Generate text for Tembo.toml
+      operationId: get_instance_toml
+      parameters:
+      - description: Organization ID that owns the instance
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                tembo.toml: |
+                  [my-tembo-instance]
+                  environment = "dev"
+                  instance_name = "my-tembo-instance"
+                  cpu = "0.25"
+                  memory = "1Gi"
+                  storage = "10Gi"
+                  replicas = 1
+                  stack_type = "OLTP"
+                  pg_version = 15
+
+                  [my-tembo-instance.extensions.pg_stat_statements]
+              schema: {}
+          description: The requested Tembo instance
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              example:
+                error: User not authorized for this organization
+                type: NotAuthorized
+              schema: {}
+          description: Forbidden
+      summary: Generate text for Tembo.toml
+      tags:
+      - instance
+  /api/v1/orgs/{org_id}/policies:
+    delete:
+      description: Delete a policy
+      operationId: delete_policy
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyInput'
+        description: Policy to delete
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Policy deleted or didn't exist
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Delete a policy
+      tags:
+      - rbac
+    get:
+      description: Get all policies
+      operationId: get_policies
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PolicyData'
+                type: array
+          description: All policies for your organization
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Get all policies
+      tags:
+      - rbac
+    post:
+      description: Create or update a policy
+      operationId: set_policy
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyInput'
+        description: Policy to set
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Policy updated successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Invalid request body
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Create or update a policy
+      tags:
+      - rbac
   /api/v1/orgs/{org_id}/restore:
     post:
       description: |
@@ -475,6 +862,88 @@ paths:
       summary: Restore a Tembo instance
       tags:
       - instance
+  /api/v1/orgs/{org_id}/roles:
+    get:
+      description: Get all roles
+      operationId: get_roles
+      parameters:
+      - description: Organization ID for the request
+        explode: false
+        in: path
+        name: org_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Role'
+                type: array
+          description: All roles in your organization
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Get all roles
+      tags:
+      - rbac
+  /api/v1/search/:
+    get:
+      description: |
+        Search Tembo Docs Database
+      operationId: search
+      parameters:
+      - description: "The search query. For example, \"how to create a Tembo instance\""
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "The number of results to return. Default is 10, max is 20."
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          nullable: true
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+          description: Search results
+        "400":
+          content:
+            application/json:
+              schema: {}
+          description: Invalid Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+      summary: Search Tembo Docs Database
+      tags:
+      - ai
   /api/v1/stacks:
     get:
       description: |
@@ -532,8 +1001,61 @@ paths:
       summary: Get the attributes of a single stack
       tags:
       - stack
+  /api/v1/tokens/invalidate:
+    delete:
+      description: |-
+        Invalidate the token included in the Authorization header
+
+        May take a up to a minute for subsequent requests to be rejected
+        after the invalidation has been accepted.
+      operationId: invalidate_token
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: The token included in the Authorization header has been invalidated
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseSchema'
+          description: Forbidden
+      summary: Invalidate the token included in the Authorization header
+      tags:
+      - tokens
 components:
   schemas:
+    Action:
+      example:
+        name: Create Instance
+        description: Allows creating a new instance within an organization.
+        id: CreateInstance
+      properties:
+        description:
+          example: Allows creating a new instance within an organization.
+          type: string
+        id:
+          description: |-
+            A valid Action ID. Available Action IDs include 'CreateInstance' and 'ManagePermissions'.
+            Find all available Actions on the Actions API.
+          example: CreateInstance
+          type: string
+        name:
+          example: Create Instance
+          type: string
+      required:
+      - description
+      - id
+      - name
+      type: object
     AppConfig:
       properties:
         env:
@@ -545,6 +1067,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/ResourceRequirements'
           nullable: true
+      type: object
+    AppMetrics:
+      properties:
+        path:
+          description: path to scrape metrics
+          type: string
+        port:
+          description: "port must be also exposed in one of AppService.routing[]"
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+      - path
+      - port
       type: object
     AppService:
       description: |-
@@ -643,6 +1179,10 @@ components:
         image:
           description: Defines the container image to use for the appService.
           type: string
+        metrics:
+          allOf:
+          - $ref: '#/components/schemas/AppMetrics'
+          nullable: true
         middlewares:
           description: |-
             Defines the ingress middeware configuration for the appService.
@@ -682,6 +1222,83 @@ components:
       - $ref: '#/components/schemas/AppType_oneOf_3'
       - $ref: '#/components/schemas/AppType_oneOf_4'
       - $ref: '#/components/schemas/AppType_oneOf_5'
+      - $ref: '#/components/schemas/AppType_oneOf_6'
+    AskParams:
+      properties:
+        query:
+          description: "The ask query. For example, \"how to create a Tembo instance\""
+          type: string
+      required:
+      - query
+      type: object
+    AskResult:
+      example:
+        context:
+        - file_path: file_path
+          front_matter: ""
+          similarity_score: 0.8008281904610115
+        - file_path: file_path
+          front_matter: ""
+          similarity_score: 0.8008281904610115
+        chat_response: chat_response
+      properties:
+        chat_response:
+          description: "The ask query. For example, \"how to create a Tembo instance\""
+          type: string
+        context:
+          description: an array of json objects referencing documents used to generate
+            the response
+          items:
+            $ref: '#/components/schemas/SearchResponse'
+          nullable: true
+          type: array
+      required:
+      - chat_response
+      type: object
+    AutoStop:
+      description: |-
+        AutoStop configures automatic stopping of idle instances.
+        An instance is considered idle if it is more than two days old, hasn't been connected to in over a day, and has not been resumed within the last day.
+        Idle instances are stopped in the time window 9-9:30 AM ET.
+      example:
+        enabled: true
+      properties:
+        enabled:
+          description: Enable automatic stopping of the instance when idle.
+          type: boolean
+      required:
+      - enabled
+      type: object
+    Autoscaling:
+      example:
+        storage:
+          maximum: ""
+          enabled: true
+        autostop:
+          enabled: true
+      properties:
+        autostop:
+          $ref: '#/components/schemas/AutoStop'
+        storage:
+          $ref: '#/components/schemas/AutoscalingStorage'
+      type: object
+    AutoscalingStorage:
+      description: AutoscalingStorage configures the automatic scaling of instance
+        storage.
+      example:
+        maximum: ""
+        enabled: true
+      properties:
+        enabled:
+          description: Enable autoscaling for storage
+          type: boolean
+        maximum:
+          allOf:
+          - $ref: '#/components/schemas/Storage'
+          nullable: true
+      required:
+      - enabled
+      type: object
     ConnectionInfo:
       properties:
         host:
@@ -757,15 +1374,16 @@ components:
     CreateInstance:
       example:
         instance_name: instance_name
-        memory: null
+        memory: 512Mi
         app_services:
         - restapi: ""
         - restapi: ""
         replicas: 6
-        cpu: null
+        region_id: region_id
+        cpu: "0.25"
         experimental: ""
-        storage: null
-        environment: null
+        storage: 10Gi
+        environment: dev
         extensions:
         - name: name
           description: description
@@ -792,7 +1410,8 @@ components:
         extra_domains_rw:
         - extra_domains_rw
         - extra_domains_rw
-        stack_type: null
+        dedicated_networking: ""
+        stack_type: Analytics
         postgres_configs:
         - name: name
           value: value
@@ -804,6 +1423,8 @@ components:
           version: version
         - name: name
           version: version
+        provider_id: provider_id
+        autoscaling: ""
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
@@ -815,12 +1436,20 @@ components:
             $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
+        autoscaling:
+          allOf:
+          - $ref: '#/components/schemas/PatchAutoscaling'
+          nullable: true
         connection_pooler:
           allOf:
           - $ref: '#/components/schemas/ConnectionPooler'
           nullable: true
         cpu:
           $ref: '#/components/schemas/Cpu'
+        dedicated_networking:
+          allOf:
+          - $ref: '#/components/schemas/dedicated_networking'
+          nullable: true
         environment:
           $ref: '#/components/schemas/Environment'
         experimental:
@@ -855,6 +1484,10 @@ components:
             $ref: '#/components/schemas/PgConfig'
           nullable: true
           type: array
+        provider_id:
+          type: string
+        region_id:
+          type: string
         replicas:
           format: int32
           type: integer
@@ -877,6 +1510,41 @@ components:
       - memory
       - stack_type
       - storage
+      type: object
+    DataPlane:
+      example:
+        region_id: use1
+        index: data-1
+        provider_id: aws
+        region_name: US East 1 (N. Virginia)
+        provider_name: AWS
+        region: us-east-1
+      properties:
+        index:
+          example: data-1
+          type: string
+        provider_id:
+          example: aws
+          type: string
+        provider_name:
+          example: AWS
+          type: string
+        region:
+          example: us-east-1
+          type: string
+        region_id:
+          example: use1
+          type: string
+        region_name:
+          example: US East 1 (N. Virginia)
+          type: string
+      required:
+      - index
+      - provider_id
+      - provider_name
+      - region
+      - region_id
+      - region_name
       type: object
     EnvVar:
       properties:
@@ -1076,6 +1744,47 @@ components:
       - config
       - name
       type: object
+    HistoryEntry:
+      example:
+        instance:
+          state: Submitted
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        instance:
+          $ref: '#/components/schemas/InstanceState'
+        timestamp:
+          description: The timestamp of the entry
+          format: date-time
+          type: string
+      required:
+      - instance
+      - timestamp
+      type: object
+    HistoryPage:
+      example:
+        pagination:
+          hasMore: true
+          limit: 0
+          currentPage: 0
+        history:
+        - instance:
+            state: Submitted
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - instance:
+            state: Submitted
+          timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        history:
+          description: List of historical results
+          items:
+            $ref: '#/components/schemas/HistoryEntry'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+      required:
+      - history
+      - pagination
+      type: object
     Infrastructure:
       properties:
         cpu:
@@ -1102,10 +1811,12 @@ components:
       type: string
     Instance:
       example:
-        memory: null
+        memory: 512Mi
         created_at: 2000-01-23T04:56:07.000+00:00
-        storage: null
+        storage: 10Gi
         postgres_version: 0
+        dedicated_networking: ""
+        dataplane_index: dataplane_index
         postgres_configs:
         - name: name
           value: value
@@ -1128,7 +1839,8 @@ components:
           error: true
           loading: true
           version: version
-        state: null
+        region_name: region_name
+        state: Submitted
         first_recoverability_time: 2000-01-23T04:56:07.000+00:00
         image: image
         instance_name: instance_name
@@ -1136,14 +1848,16 @@ components:
         - restapi: ""
         - restapi: ""
         replicas: 6
-        cpu: null
+        region_id: region_id
+        cpu: "0.25"
+        last_wal_archive_status: 2000-01-23T04:56:07.000+00:00
         organization_name: organization_name
         runtime_config:
         - name: name
           value: value
         - name: name
           value: value
-        environment: null
+        environment: dev
         extensions:
         - name: name
           description: description
@@ -1179,12 +1893,19 @@ components:
         - extra_domains_rw
         - extra_domains_rw
         instance_id: instance_id
-        stack_type: null
+        stack_type: Analytics
         connection_info: ""
         last_updated_at: 2000-01-23T04:56:07.000+00:00
         organization_id: organization_id
         spot: true
         namespace: namespace
+        provider_id: provider_id
+        autoscaling:
+          storage:
+            maximum: ""
+            enabled: true
+          autostop:
+            enabled: true
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
@@ -1195,6 +1916,8 @@ components:
             $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
+        autoscaling:
+          $ref: '#/components/schemas/Autoscaling'
         connection_info:
           allOf:
           - $ref: '#/components/schemas/ConnectionInfo'
@@ -1208,6 +1931,12 @@ components:
         created_at:
           format: date-time
           type: string
+        dataplane_index:
+          type: string
+        dedicated_networking:
+          allOf:
+          - $ref: '#/components/schemas/dedicated_networking'
+          nullable: true
         environment:
           $ref: '#/components/schemas/Environment'
         extensions:
@@ -1239,6 +1968,10 @@ components:
         last_updated_at:
           format: date-time
           type: string
+        last_wal_archive_status:
+          format: date-time
+          nullable: true
+          type: string
         memory:
           $ref: '#/components/schemas/Memory'
         namespace:
@@ -1246,6 +1979,7 @@ components:
         organization_id:
           type: string
         organization_name:
+          deprecated: true
           type: string
         postgres_configs:
           items:
@@ -1255,10 +1989,16 @@ components:
         postgres_version:
           description: |-
             Major Postgres version this instance is using.
-            Currently: 14, 15 or 16
+            Currently: 14, 15, 16 and 17
           format: int32
           minimum: 0
           type: integer
+        provider_id:
+          type: string
+        region_id:
+          type: string
+        region_name:
+          type: string
         replicas:
           format: int32
           type: integer
@@ -1282,7 +2022,9 @@ components:
           nullable: true
           type: array
       required:
+      - autoscaling
       - cpu
+      - dataplane_index
       - environment
       - instance_id
       - instance_name
@@ -1291,6 +2033,9 @@ components:
       - organization_id
       - organization_name
       - postgres_version
+      - provider_id
+      - region_id
+      - region_name
       - replicas
       - stack_type
       - state
@@ -1299,13 +2044,25 @@ components:
     InstanceEvent:
       enum:
       - restart
+      - stop
+      - start
       type: string
+    InstanceState:
+      example:
+        state: Submitted
+      properties:
+        state:
+          $ref: '#/components/schemas/State'
+      required:
+      - state
+      type: object
     IntOrString:
       oneOf:
       - $ref: '#/components/schemas/IntOrString_oneOf'
       - $ref: '#/components/schemas/IntOrString_oneOf_1'
     Memory:
       enum:
+      - 512Mi
       - 1Gi
       - 2Gi
       - 4Gi
@@ -1314,6 +2071,7 @@ components:
       - 16Gi
       - 24Gi
       - 32Gi
+      - 64Gi
       type: string
     Middleware:
       description: |-
@@ -1325,8 +2083,44 @@ components:
       - $ref: '#/components/schemas/Middleware_oneOf'
       - $ref: '#/components/schemas/Middleware_oneOf_1'
       - $ref: '#/components/schemas/Middleware_oneOf_2'
+    PaginationInfo:
+      example:
+        hasMore: true
+        limit: 0
+        currentPage: 0
+      properties:
+        currentPage:
+          description: The page returned
+          format: int32
+          minimum: 0
+          type: integer
+        hasMore:
+          description: True if more results are available on the next page
+          type: boolean
+        limit:
+          description: The maximum number of results returned
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+      - currentPage
+      - hasMore
+      - limit
+      type: object
+    PatchAutoscaling:
+      properties:
+        autostop:
+          allOf:
+          - $ref: '#/components/schemas/AutoStop'
+          nullable: true
+        storage:
+          allOf:
+          - $ref: '#/components/schemas/AutoscalingStorage'
+          nullable: true
+      type: object
     PatchInstance:
       example:
+        instance_name: instance_name
         memory: ""
         app_services:
         - restapi: ""
@@ -1362,6 +2156,7 @@ components:
         extra_domains_rw:
         - extra_domains_rw
         - extra_domains_rw
+        dedicated_networking: ""
         postgres_configs:
         - name: name
           value: value
@@ -1373,6 +2168,7 @@ components:
           version: version
         - name: name
           version: version
+        autoscaling: ""
         ip_allow_list:
         - ip_allow_list
         - ip_allow_list
@@ -1383,6 +2179,10 @@ components:
             $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
+        autoscaling:
+          allOf:
+          - $ref: '#/components/schemas/PatchAutoscaling'
+          nullable: true
         connection_pooler:
           allOf:
           - $ref: '#/components/schemas/ConnectionPooler'
@@ -1390,6 +2190,10 @@ components:
         cpu:
           allOf:
           - $ref: '#/components/schemas/Cpu'
+          nullable: true
+        dedicated_networking:
+          allOf:
+          - $ref: '#/components/schemas/dedicated_networking'
           nullable: true
         environment:
           allOf:
@@ -1409,6 +2213,9 @@ components:
             type: string
           nullable: true
           type: array
+        instance_name:
+          nullable: true
+          type: string
         ip_allow_list:
           items:
             type: string
@@ -1468,6 +2275,49 @@ components:
       required:
       - name
       - value
+      type: object
+    PolicyData:
+      example:
+        policies:
+        - role: admin
+          allowed: true
+          action: CreateInstance
+        - role: admin
+          allowed: true
+          action: CreateInstance
+      properties:
+        policies:
+          items:
+            $ref: '#/components/schemas/PolicyInput'
+          type: array
+      required:
+      - policies
+      type: object
+    PolicyInput:
+      example:
+        role: admin
+        allowed: true
+        action: CreateInstance
+      properties:
+        action:
+          description: |-
+            A valid Action ID. Available Action IDs include 'CreateInstance' and 'ManagePermissions'.
+            Find all available Actions on the Actions API.
+          example: CreateInstance
+          type: string
+        allowed:
+          description: Whether the Action is allowed or not for the Role
+          example: true
+          type: boolean
+        role:
+          description: A valid Role ID. Available Role IDs include 'admin' and 'basic_member'.
+          example: admin
+          type: string
+      required:
+      - action
+      - allowed
+      - role
+      title: Policy
       type: object
     PoolerPgbouncerPoolMode:
       description: The PgBouncer configuration
@@ -1619,6 +2469,7 @@ components:
         - restapi: ""
         - restapi: ""
         cpu: ""
+        autoscaling: ""
         storage: ""
         connection_pooler: ""
       properties:
@@ -1627,6 +2478,10 @@ components:
             $ref: '#/components/schemas/AppType'
           nullable: true
           type: array
+        autoscaling:
+          allOf:
+          - $ref: '#/components/schemas/PatchAutoscaling'
+          nullable: true
         connection_pooler:
           allOf:
           - $ref: '#/components/schemas/ConnectionPooler'
@@ -1660,6 +2515,21 @@ components:
       - instance_name
       - restore
       type: object
+    Role:
+      example:
+        name: name
+        id: id
+      properties:
+        id:
+          description: A valid Role ID. Available Role IDs include 'admin' and 'basic_member'.
+          type: string
+        name:
+          description: The name of the Role.
+          type: string
+      required:
+      - id
+      - name
+      type: object
     Routing:
       description: |-
         Routing is used if there is a routing port, then a service is created using
@@ -1691,19 +2561,49 @@ components:
       required:
       - port
       type: object
+    SearchParams:
+      properties:
+        limit:
+          description: "The number of results to return. Default is 10, max is 20."
+          format: int32
+          nullable: true
+          type: integer
+        query:
+          description: "The search query. For example, \"how to create a Tembo instance\""
+          type: string
+      required:
+      - query
+      type: object
+    SearchResponse:
+      example:
+        file_path: file_path
+        front_matter: ""
+        similarity_score: 0.8008281904610115
+      properties:
+        file_path:
+          description: The file path (in Tembo website repo) to the Tembo document
+          type: string
+        front_matter:
+          nullable: true
+        similarity_score:
+          format: double
+          type: number
+      required:
+      - file_path
+      - similarity_score
+      type: object
     StackType:
       enum:
-      - Standard
-      - MessageQueue
-      - MachineLearning
-      - OLAP
-      - OLTP
-      - VectorDB
-      - DataWarehouse
+      - Analytics
       - Geospatial
+      - MachineLearning
+      - MessageQueue
       - MongoAlternative
-      - RAG
+      - OLTP
+      - ParadeDB
+      - Standard
       - Timeseries
+      - VectorDB
       type: string
     State:
       enum:
@@ -1727,6 +2627,9 @@ components:
       - 300Gi
       - 400Gi
       - 500Gi
+      - 1Ti
+      - 1.5Ti
+      - 2Ti
       type: string
     StorageConfig:
       properties:
@@ -1838,6 +2741,19 @@ components:
       - mount_path
       - name
       type: object
+    dedicated_networking:
+      description: Configuration for dedicated networking.
+      properties:
+        enabled:
+          description: Enables or disables dedicated networking. Default is false.
+          nullable: true
+          type: boolean
+        includeStandby:
+          description: "If true, includes the standby instance in the dedicated networking\
+            \ setup. Default is false."
+          nullable: true
+          type: boolean
+      type: object
     AppType_oneOf:
       example:
         restapi: ""
@@ -1886,6 +2802,15 @@ components:
       - pganalyze
       type: object
     AppType_oneOf_5:
+      properties:
+        sqlrunner:
+          allOf:
+          - $ref: '#/components/schemas/AppConfig'
+          nullable: true
+      required:
+      - sqlrunner
+      type: object
+    AppType_oneOf_6:
       properties:
         custom:
           $ref: '#/components/schemas/AppService'

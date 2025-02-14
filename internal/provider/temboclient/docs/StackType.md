@@ -3,27 +3,25 @@
 ## Enum
 
 
-* `STANDARD` (value: `"Standard"`)
-
-* `MESSAGE_QUEUE` (value: `"MessageQueue"`)
-
-* `MACHINE_LEARNING` (value: `"MachineLearning"`)
-
-* `OLAP` (value: `"OLAP"`)
-
-* `OLTP` (value: `"OLTP"`)
-
-* `VECTOR_DB` (value: `"VectorDB"`)
-
-* `DATA_WAREHOUSE` (value: `"DataWarehouse"`)
+* `ANALYTICS` (value: `"Analytics"`)
 
 * `GEOSPATIAL` (value: `"Geospatial"`)
 
+* `MACHINE_LEARNING` (value: `"MachineLearning"`)
+
+* `MESSAGE_QUEUE` (value: `"MessageQueue"`)
+
 * `MONGO_ALTERNATIVE` (value: `"MongoAlternative"`)
 
-* `RAG` (value: `"RAG"`)
+* `OLTP` (value: `"OLTP"`)
+
+* `PARADE_DB` (value: `"ParadeDB"`)
+
+* `STANDARD` (value: `"Standard"`)
 
 * `TIMESERIES` (value: `"Timeseries"`)
+
+* `VECTOR_DB` (value: `"VectorDB"`)
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

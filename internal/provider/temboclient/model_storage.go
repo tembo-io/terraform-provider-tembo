@@ -27,6 +27,9 @@ const (
 	_300_GI Storage = "300Gi"
 	_400_GI Storage = "400Gi"
 	_500_GI Storage = "500Gi"
+	_1_TI Storage = "1Ti"
+	_1_5_TI Storage = "1.5Ti"
+	_2_TI Storage = "2Ti"
 )
 
 // All allowed values of Storage enum
@@ -38,6 +41,9 @@ var AllowedStorageEnumValues = []Storage{
 	"300Gi",
 	"400Gi",
 	"500Gi",
+	"1Ti",
+	"1.5Ti",
+	"2Ti",
 }
 
 func (v *Storage) UnmarshalJSON(src []byte) error {

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "golang": {
+    "enabled": true
+  },
+  "terraform": {
+    "enabled": true
+  },
+  "labels": ["dependencies"],
+  "prHourlyLimit": 4,
+  "semanticCommits": "enabled",
+  "dependencyDashboard": true,
+  "separateMultipleMajor": true,
+  "separateMinorPatch": true
+}

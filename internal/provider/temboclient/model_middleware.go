@@ -13,6 +13,7 @@ package temboclient
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
 // Middleware - Midddleware is used to configure the middleware for the appService. This is specifically configured for the ingress controller Traefik.  Please refer to the example in the `AppService` documentation.
@@ -55,7 +56,11 @@ func (dst *Middleware) UnmarshalJSON(data []byte) error {
 		if string(jsonMiddlewareOneOf) == "{}" { // empty struct
 			dst.MiddlewareOneOf = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.MiddlewareOneOf); err != nil {
+				dst.MiddlewareOneOf = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.MiddlewareOneOf = nil
@@ -68,7 +73,11 @@ func (dst *Middleware) UnmarshalJSON(data []byte) error {
 		if string(jsonMiddlewareOneOf1) == "{}" { // empty struct
 			dst.MiddlewareOneOf1 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.MiddlewareOneOf1); err != nil {
+				dst.MiddlewareOneOf1 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.MiddlewareOneOf1 = nil
@@ -81,7 +90,11 @@ func (dst *Middleware) UnmarshalJSON(data []byte) error {
 		if string(jsonMiddlewareOneOf2) == "{}" { // empty struct
 			dst.MiddlewareOneOf2 = nil
 		} else {
-			match++
+			if err = validator.Validate(dst.MiddlewareOneOf2); err != nil {
+				dst.MiddlewareOneOf2 = nil
+			} else {
+				match++
+			}
 		}
 	} else {
 		dst.MiddlewareOneOf2 = nil

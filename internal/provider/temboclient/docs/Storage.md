@@ -17,6 +17,12 @@
 
 * `_500_GI` (value: `"500Gi"`)
 
+* `_1_TI` (value: `"1Ti"`)
+
+* `_1_5_TI` (value: `"1.5Ti"`)
+
+* `_2_TI` (value: `"2Ti"`)
+
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

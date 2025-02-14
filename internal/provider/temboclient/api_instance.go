@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 
@@ -619,6 +620,318 @@ func (a *InstanceAPIService) GetInstanceExecute(r ApiGetInstanceRequest) (*Insta
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiGetInstanceHistoryRequest struct {
+	ctx context.Context
+	ApiService *InstanceAPIService
+	orgId string
+	instanceId string
+	field string
+	start *time.Time
+	end *time.Time
+	page *int32
+	limit *int32
+}
+
+// Defaults to 24 hours ago
+func (r ApiGetInstanceHistoryRequest) Start(start time.Time) ApiGetInstanceHistoryRequest {
+	r.start = &start
+	return r
+}
+
+// Defaults to now
+func (r ApiGetInstanceHistoryRequest) End(end time.Time) ApiGetInstanceHistoryRequest {
+	r.end = &end
+	return r
+}
+
+// Page to check
+func (r ApiGetInstanceHistoryRequest) Page(page int32) ApiGetInstanceHistoryRequest {
+	r.page = &page
+	return r
+}
+
+// The maximum number of results per page
+func (r ApiGetInstanceHistoryRequest) Limit(limit int32) ApiGetInstanceHistoryRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r ApiGetInstanceHistoryRequest) Execute() (*HistoryPage, *http.Response, error) {
+	return r.ApiService.GetInstanceHistoryExecute(r)
+}
+
+/*
+GetInstanceHistory Get historical information for a given instance
+
+Get historical information for a given instance
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgId Organization ID for the request
+ @param instanceId The instance ID for the request
+ @param field The field of the instance we are retrieving history for, currently only 'state' is supported
+ @return ApiGetInstanceHistoryRequest
+*/
+func (a *InstanceAPIService) GetInstanceHistory(ctx context.Context, orgId string, instanceId string, field string) ApiGetInstanceHistoryRequest {
+	return ApiGetInstanceHistoryRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgId: orgId,
+		instanceId: instanceId,
+		field: field,
+	}
+}
+
+// Execute executes the request
+//  @return HistoryPage
+func (a *InstanceAPIService) GetInstanceHistoryExecute(r ApiGetInstanceHistoryRequest) (*HistoryPage, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *HistoryPage
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.GetInstanceHistory")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/orgs/{org_id}/instances/{instance_id}/history/{field}"
+	localVarPath = strings.Replace(localVarPath, "{"+"org_id"+"}", url.PathEscape(parameterValueToString(r.orgId, "orgId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"instance_id"+"}", url.PathEscape(parameterValueToString(r.instanceId, "instanceId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"field"+"}", url.PathEscape(parameterValueToString(r.field, "field")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.start != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "start", r.start, "form", "")
+	}
+	if r.end != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "end", r.end, "form", "")
+	}
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponseSchema
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponseSchema
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponseSchema
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetInstanceTomlRequest struct {
+	ctx context.Context
+	ApiService *InstanceAPIService
+	orgId string
+	instanceId string
+}
+
+func (r ApiGetInstanceTomlRequest) Execute() (interface{}, *http.Response, error) {
+	return r.ApiService.GetInstanceTomlExecute(r)
+}
+
+/*
+GetInstanceToml Generate text for Tembo.toml
+
+Generate text for Tembo.toml
+
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgId Organization ID that owns the instance
+ @param instanceId
+ @return ApiGetInstanceTomlRequest
+*/
+func (a *InstanceAPIService) GetInstanceToml(ctx context.Context, orgId string, instanceId string) ApiGetInstanceTomlRequest {
+	return ApiGetInstanceTomlRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgId: orgId,
+		instanceId: instanceId,
+	}
+}
+
+// Execute executes the request
+//  @return interface{}
+func (a *InstanceAPIService) GetInstanceTomlExecute(r ApiGetInstanceTomlRequest) (interface{}, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  interface{}
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstanceAPIService.GetInstanceToml")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/orgs/{org_id}/instances/{instance_id}/toml"
+	localVarPath = strings.Replace(localVarPath, "{"+"org_id"+"}", url.PathEscape(parameterValueToString(r.orgId, "orgId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"instance_id"+"}", url.PathEscape(parameterValueToString(r.instanceId, "instanceId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponseSchema
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiGetSchemaRequest struct {
 	ctx context.Context
 	ApiService *InstanceAPIService
@@ -793,7 +1106,7 @@ func (a *InstanceAPIService) InstanceEventExecute(r ApiInstanceEventRequest) (*I
 		return localVarReturnValue, nil, reportError("eventType is required and must be specified")
 	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "event_type", r.eventType, "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "event_type", r.eventType, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

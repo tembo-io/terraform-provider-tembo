@@ -22,10 +22,13 @@ var _ MappedNullable = &Instance{}
 // Instance struct for Instance
 type Instance struct {
 	AppServices []AppType `json:"app_services,omitempty"`
+	Autoscaling Autoscaling `json:"autoscaling"`
 	ConnectionInfo NullableConnectionInfo `json:"connection_info,omitempty"`
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu Cpu `json:"cpu"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
+	DataplaneIndex string `json:"dataplane_index"`
+	DedicatedNetworking NullableDedicatedNetworking `json:"dedicated_networking,omitempty"`
 	Environment Environment `json:"environment"`
 	Extensions []ExtensionStatus `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
@@ -35,13 +38,18 @@ type Instance struct {
 	InstanceName string `json:"instance_name"`
 	IpAllowList []string `json:"ip_allow_list,omitempty"`
 	LastUpdatedAt *time.Time `json:"last_updated_at,omitempty"`
+	LastWalArchiveStatus NullableTime `json:"last_wal_archive_status,omitempty"`
 	Memory Memory `json:"memory"`
 	Namespace string `json:"namespace"`
 	OrganizationId string `json:"organization_id"`
+	// Deprecated
 	OrganizationName string `json:"organization_name"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
-	// Major Postgres version this instance is using. Currently: 14, 15 or 16
+	// Major Postgres version this instance is using. Currently: 14, 15, 16 and 17
 	PostgresVersion int32 `json:"postgres_version"`
+	ProviderId string `json:"provider_id"`
+	RegionId string `json:"region_id"`
+	RegionName string `json:"region_name"`
 	Replicas int32 `json:"replicas"`
 	RuntimeConfig []PgConfig `json:"runtime_config,omitempty"`
 	Spot NullableBool `json:"spot,omitempty"`
@@ -58,9 +66,11 @@ type _Instance Instance
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, replicas int32, stackType StackType, state State, storage Storage) *Instance {
+func NewInstance(autoscaling Autoscaling, cpu Cpu, dataplaneIndex string, environment Environment, instanceId string, instanceName string, memory Memory, namespace string, organizationId string, organizationName string, postgresVersion int32, providerId string, regionId string, regionName string, replicas int32, stackType StackType, state State, storage Storage) *Instance {
 	this := Instance{}
+	this.Autoscaling = autoscaling
 	this.Cpu = cpu
+	this.DataplaneIndex = dataplaneIndex
 	this.Environment = environment
 	this.InstanceId = instanceId
 	this.InstanceName = instanceName
@@ -69,6 +79,9 @@ func NewInstance(cpu Cpu, environment Environment, instanceId string, instanceNa
 	this.OrganizationId = organizationId
 	this.OrganizationName = organizationName
 	this.PostgresVersion = postgresVersion
+	this.ProviderId = providerId
+	this.RegionId = regionId
+	this.RegionName = regionName
 	this.Replicas = replicas
 	this.StackType = stackType
 	this.State = state
@@ -115,6 +128,30 @@ func (o *Instance) HasAppServices() bool {
 // SetAppServices gets a reference to the given []AppType and assigns it to the AppServices field.
 func (o *Instance) SetAppServices(v []AppType) {
 	o.AppServices = v
+}
+
+// GetAutoscaling returns the Autoscaling field value
+func (o *Instance) GetAutoscaling() Autoscaling {
+	if o == nil {
+		var ret Autoscaling
+		return ret
+	}
+
+	return o.Autoscaling
+}
+
+// GetAutoscalingOk returns a tuple with the Autoscaling field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetAutoscalingOk() (*Autoscaling, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Autoscaling, true
+}
+
+// SetAutoscaling sets field value
+func (o *Instance) SetAutoscaling(v Autoscaling) {
+	o.Autoscaling = v
 }
 
 // GetConnectionInfo returns the ConnectionInfo field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -255,6 +292,72 @@ func (o *Instance) HasCreatedAt() bool {
 // SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
 func (o *Instance) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
+}
+
+// GetDataplaneIndex returns the DataplaneIndex field value
+func (o *Instance) GetDataplaneIndex() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.DataplaneIndex
+}
+
+// GetDataplaneIndexOk returns a tuple with the DataplaneIndex field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetDataplaneIndexOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.DataplaneIndex, true
+}
+
+// SetDataplaneIndex sets field value
+func (o *Instance) SetDataplaneIndex(v string) {
+	o.DataplaneIndex = v
+}
+
+// GetDedicatedNetworking returns the DedicatedNetworking field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Instance) GetDedicatedNetworking() DedicatedNetworking {
+	if o == nil || IsNil(o.DedicatedNetworking.Get()) {
+		var ret DedicatedNetworking
+		return ret
+	}
+	return *o.DedicatedNetworking.Get()
+}
+
+// GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Instance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DedicatedNetworking.Get(), o.DedicatedNetworking.IsSet()
+}
+
+// HasDedicatedNetworking returns a boolean if a field has been set.
+func (o *Instance) HasDedicatedNetworking() bool {
+	if o != nil && o.DedicatedNetworking.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDedicatedNetworking gets a reference to the given NullableDedicatedNetworking and assigns it to the DedicatedNetworking field.
+func (o *Instance) SetDedicatedNetworking(v DedicatedNetworking) {
+	o.DedicatedNetworking.Set(&v)
+}
+// SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+func (o *Instance) SetDedicatedNetworkingNil() {
+	o.DedicatedNetworking.Set(nil)
+}
+
+// UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
+func (o *Instance) UnsetDedicatedNetworking() {
+	o.DedicatedNetworking.Unset()
 }
 
 // GetEnvironment returns the Environment field value
@@ -544,6 +647,48 @@ func (o *Instance) SetLastUpdatedAt(v time.Time) {
 	o.LastUpdatedAt = &v
 }
 
+// GetLastWalArchiveStatus returns the LastWalArchiveStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Instance) GetLastWalArchiveStatus() time.Time {
+	if o == nil || IsNil(o.LastWalArchiveStatus.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastWalArchiveStatus.Get()
+}
+
+// GetLastWalArchiveStatusOk returns a tuple with the LastWalArchiveStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Instance) GetLastWalArchiveStatusOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastWalArchiveStatus.Get(), o.LastWalArchiveStatus.IsSet()
+}
+
+// HasLastWalArchiveStatus returns a boolean if a field has been set.
+func (o *Instance) HasLastWalArchiveStatus() bool {
+	if o != nil && o.LastWalArchiveStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLastWalArchiveStatus gets a reference to the given NullableTime and assigns it to the LastWalArchiveStatus field.
+func (o *Instance) SetLastWalArchiveStatus(v time.Time) {
+	o.LastWalArchiveStatus.Set(&v)
+}
+// SetLastWalArchiveStatusNil sets the value for LastWalArchiveStatus to be an explicit nil
+func (o *Instance) SetLastWalArchiveStatusNil() {
+	o.LastWalArchiveStatus.Set(nil)
+}
+
+// UnsetLastWalArchiveStatus ensures that no value is present for LastWalArchiveStatus, not even an explicit nil
+func (o *Instance) UnsetLastWalArchiveStatus() {
+	o.LastWalArchiveStatus.Unset()
+}
+
 // GetMemory returns the Memory field value
 func (o *Instance) GetMemory() Memory {
 	if o == nil {
@@ -617,6 +762,7 @@ func (o *Instance) SetOrganizationId(v string) {
 }
 
 // GetOrganizationName returns the OrganizationName field value
+// Deprecated
 func (o *Instance) GetOrganizationName() string {
 	if o == nil {
 		var ret string
@@ -628,6 +774,7 @@ func (o *Instance) GetOrganizationName() string {
 
 // GetOrganizationNameOk returns a tuple with the OrganizationName field value
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *Instance) GetOrganizationNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
@@ -636,6 +783,7 @@ func (o *Instance) GetOrganizationNameOk() (*string, bool) {
 }
 
 // SetOrganizationName sets field value
+// Deprecated
 func (o *Instance) SetOrganizationName(v string) {
 	o.OrganizationName = v
 }
@@ -695,6 +843,78 @@ func (o *Instance) GetPostgresVersionOk() (*int32, bool) {
 // SetPostgresVersion sets field value
 func (o *Instance) SetPostgresVersion(v int32) {
 	o.PostgresVersion = v
+}
+
+// GetProviderId returns the ProviderId field value
+func (o *Instance) GetProviderId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.ProviderId
+}
+
+// GetProviderIdOk returns a tuple with the ProviderId field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetProviderIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ProviderId, true
+}
+
+// SetProviderId sets field value
+func (o *Instance) SetProviderId(v string) {
+	o.ProviderId = v
+}
+
+// GetRegionId returns the RegionId field value
+func (o *Instance) GetRegionId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.RegionId
+}
+
+// GetRegionIdOk returns a tuple with the RegionId field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetRegionIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RegionId, true
+}
+
+// SetRegionId sets field value
+func (o *Instance) SetRegionId(v string) {
+	o.RegionId = v
+}
+
+// GetRegionName returns the RegionName field value
+func (o *Instance) GetRegionName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.RegionName
+}
+
+// GetRegionNameOk returns a tuple with the RegionName field value
+// and a boolean to check if the value has been set.
+func (o *Instance) GetRegionNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RegionName, true
+}
+
+// SetRegionName sets field value
+func (o *Instance) SetRegionName(v string) {
+	o.RegionName = v
 }
 
 // GetReplicas returns the Replicas field value
@@ -914,6 +1134,7 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	if o.AppServices != nil {
 		toSerialize["app_services"] = o.AppServices
 	}
+	toSerialize["autoscaling"] = o.Autoscaling
 	if o.ConnectionInfo.IsSet() {
 		toSerialize["connection_info"] = o.ConnectionInfo.Get()
 	}
@@ -923,6 +1144,10 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	toSerialize["cpu"] = o.Cpu
 	if !IsNil(o.CreatedAt) {
 		toSerialize["created_at"] = o.CreatedAt
+	}
+	toSerialize["dataplane_index"] = o.DataplaneIndex
+	if o.DedicatedNetworking.IsSet() {
+		toSerialize["dedicated_networking"] = o.DedicatedNetworking.Get()
 	}
 	toSerialize["environment"] = o.Environment
 	if o.Extensions != nil {
@@ -945,6 +1170,9 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.LastUpdatedAt) {
 		toSerialize["last_updated_at"] = o.LastUpdatedAt
 	}
+	if o.LastWalArchiveStatus.IsSet() {
+		toSerialize["last_wal_archive_status"] = o.LastWalArchiveStatus.Get()
+	}
 	toSerialize["memory"] = o.Memory
 	toSerialize["namespace"] = o.Namespace
 	toSerialize["organization_id"] = o.OrganizationId
@@ -953,6 +1181,9 @@ func (o Instance) ToMap() (map[string]interface{}, error) {
 		toSerialize["postgres_configs"] = o.PostgresConfigs
 	}
 	toSerialize["postgres_version"] = o.PostgresVersion
+	toSerialize["provider_id"] = o.ProviderId
+	toSerialize["region_id"] = o.RegionId
+	toSerialize["region_name"] = o.RegionName
 	toSerialize["replicas"] = o.Replicas
 	if o.RuntimeConfig != nil {
 		toSerialize["runtime_config"] = o.RuntimeConfig
@@ -979,7 +1210,9 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"autoscaling",
 		"cpu",
+		"dataplane_index",
 		"environment",
 		"instance_id",
 		"instance_name",
@@ -988,6 +1221,9 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 		"organization_id",
 		"organization_name",
 		"postgres_version",
+		"provider_id",
+		"region_id",
+		"region_name",
 		"replicas",
 		"stack_type",
 		"state",
@@ -1022,10 +1258,13 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "autoscaling")
 		delete(additionalProperties, "connection_info")
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
 		delete(additionalProperties, "created_at")
+		delete(additionalProperties, "dataplane_index")
+		delete(additionalProperties, "dedicated_networking")
 		delete(additionalProperties, "environment")
 		delete(additionalProperties, "extensions")
 		delete(additionalProperties, "extra_domains_rw")
@@ -1035,12 +1274,16 @@ func (o *Instance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "instance_name")
 		delete(additionalProperties, "ip_allow_list")
 		delete(additionalProperties, "last_updated_at")
+		delete(additionalProperties, "last_wal_archive_status")
 		delete(additionalProperties, "memory")
 		delete(additionalProperties, "namespace")
 		delete(additionalProperties, "organization_id")
 		delete(additionalProperties, "organization_name")
 		delete(additionalProperties, "postgres_configs")
 		delete(additionalProperties, "postgres_version")
+		delete(additionalProperties, "provider_id")
+		delete(additionalProperties, "region_id")
+		delete(additionalProperties, "region_name")
 		delete(additionalProperties, "replicas")
 		delete(additionalProperties, "runtime_config")
 		delete(additionalProperties, "spot")

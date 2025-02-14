@@ -71,7 +71,7 @@ func TestTemboInstanceResource(t *testing.T) {
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "instance_id",
 				ImportStateIdFunc:                    testTemboInstanceClientImportStateIDFunc(resourceName),
-				ImportStateVerifyIgnore:              []string{"last_updated", "trunk_installs", "extensions"},
+				ImportStateVerifyIgnore:              []string{"last_updated", "trunk_installs", "extensions", "autoscaling", "provider_id", "region_id", "pg_version"},
 			},
 			// Update and Read testing
 			{
@@ -110,6 +110,18 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "4Gi"
 	storage         = "10Gi"
+	pg_version      = "17"
+	provider_id     = "aws"
+	region_id       = "use1"
+	autoscaling = {
+		autostop = {
+			enabled = false
+		}
+		storage = {
+			enabled = true
+			maximum = "50Gi"
+		}
+	}
 	postgres_configs = [
 		{
 		  name = "max_connections"
@@ -119,7 +131,7 @@ resource "tembo_instance" "test" {
 	trunk_installs = [
 	{
 		name    = "pgmq"
-		version = "0.24.0"
+		version = "1.5.0"
 	}]
 	extensions = [{
 	name        = "plperl"
@@ -162,6 +174,18 @@ resource "tembo_instance" "test" {
 	environment     = "dev"
 	memory          = "8Gi"
 	storage         = "10Gi"
+	pg_version      = "17"
+	provider_id     = "aws"
+	region_id       = "use1"
+	autoscaling = {
+		autostop = {
+			enabled = false
+		}
+		storage = {
+			enabled = true
+			maximum = "50Gi"
+		}
+	}
 	postgres_configs = [
 		{
 		  name = "max_connections"
@@ -175,11 +199,11 @@ resource "tembo_instance" "test" {
 	trunk_installs = [
 		{
           name    = "pgmq"
-		  version = "0.24.0"
+		  version = "1.5.0"
 		},
 		{
           name    = "pg_stat_statements"
-		  version = "1.10.0"
+		  version = "1.11.0"
 		}]
 	extensions = [{
 	name        = "plperl"
