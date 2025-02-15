@@ -46,6 +46,13 @@ type temboProviderModel struct {
 	AccessToken       types.String `tfsdk:"access_token"`
 }
 
+// Create a struct to hold both clients.
+type providerData struct {
+	apiClient   *temboclient.APIClient
+	dataClient  *tembodataclient.APIClient
+	accessToken string
+}
+
 // Metadata returns the provider type name.
 func (p *temboProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "tembo"
@@ -227,8 +234,9 @@ func (p *temboProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	// Make the tembo client available during DataSource and Resource
 	// type Configure methods.
-	resp.DataSourceData = instanceSecretsConfig{
-		client:      dataclient,
+	resp.DataSourceData = providerData{
+		apiClient:   client,
+		dataClient:  dataclient,
 		accessToken: access_token,
 	}
 
@@ -243,6 +251,7 @@ func (p *temboProvider) DataSources(_ context.Context) []func() datasource.DataS
 	return []func() datasource.DataSource{
 		NewTemboInstanceSecretsDataSource,
 		NewTemboInstanceSecretDataSource,
+		NewTemboInstanceDataSource,
 	}
 }
 

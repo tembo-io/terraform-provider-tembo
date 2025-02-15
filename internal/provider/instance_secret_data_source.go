@@ -26,7 +26,7 @@ func NewTemboInstanceSecretDataSource() datasource.DataSource {
 
 // TemboInstanceSecret is the data source implementation.
 type temboInstanceSecret struct {
-	temboInstanceSecretsConfig instanceSecretsConfig
+	temboInstanceConfig instanceSecretsConfig
 }
 
 // Metadata returns the data source type name.
@@ -66,18 +66,19 @@ func (d *temboInstanceSecret) Configure(_ context.Context, req datasource.Config
 		return
 	}
 
-	temboInstanceSecretConfig, ok := req.ProviderData.(instanceSecretsConfig)
-
+	data, ok := req.ProviderData.(providerData)
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *instanceSecretConfig, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected providerData, got: %T.", req.ProviderData),
 		)
-
 		return
 	}
 
-	d.temboInstanceSecretsConfig = temboInstanceSecretConfig
+	d.temboInstanceConfig = instanceSecretsConfig{
+		client:      data.dataClient,
+		accessToken: data.accessToken,
+	}
 }
 
 // temboInstanceSecretModel maps the data source schema data.
@@ -93,7 +94,7 @@ func (d *temboInstanceSecret) Read(ctx context.Context, req datasource.ReadReque
 	// Get current state
 	var state temboInstanceSecretModel
 
-	ctx = context.WithValue(ctx, tembodataclient.ContextAccessToken, d.temboInstanceSecretsConfig.accessToken)
+	ctx = context.WithValue(ctx, tembodataclient.ContextAccessToken, d.temboInstanceConfig.accessToken)
 
 	var orgId string
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("org_id"), &orgId)...)
@@ -109,7 +110,7 @@ func (d *temboInstanceSecret) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
+	availableSecrets, _, err := d.temboInstanceConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Available Secrets",
@@ -119,7 +120,7 @@ func (d *temboInstanceSecret) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Get refreshed Instance value from API
-	secret, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretV1(ctx, orgId, instanceId, secretName).Execute()
+	secret, _, err := d.temboInstanceConfig.client.SecretsAPI.GetSecretV1(ctx, orgId, instanceId, secretName).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Secret",

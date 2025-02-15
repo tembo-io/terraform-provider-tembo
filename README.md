@@ -110,6 +110,11 @@ data "tembo_instance_secret" "test_sec" {
   secret_name = "readonly-role"
 }
 
+data "tembo_instance" "test" {
+  org_id      = "org_test" # Replace this with your Tembo organization id
+  instance_id = tembo_instance.test_db.instance_id
+}
+
 output "instance" {
   value = tembo_instance.test_db
 }
@@ -120,6 +125,10 @@ output "data" {
 
 output "data_secret" {
   value = data.tembo_instance_secret.test_sec
+}
+
+output "data_tembo_instance" {
+  value = data.tembo_instance.test
 }
 ```
 
@@ -135,13 +144,13 @@ If in future there was a way to identify why extensions were installed (base ima
 
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
 
-To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
+To compile the provider, run `make install`. This will build the provider and put the provider binary in the `$HOME/.terraform.d/` directory.
 
-To generate or update documentation, run `go generate`.
+To generate or update documentation, run `make check`. This will format and regenerate/update the Terraform documentation
 
-In order to run the full suite of Acceptance tests, run `make testacc`.
+In order to run the full suite of Acceptance tests, run `make testacc`. You will need to set `TEMBO_ACCESS_TOKEN`, `TEMBO_HOST`, `TEMBO_DATA_HOST` and `ORG_ID` environment variables for the tests to run locally
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+_Note:_ Acceptance tests create real resources, and often cost money to run.
 
 ```shell
 make testacc
@@ -182,6 +191,10 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
 ```
 
 Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`
+
+```bash
+ /bin/find -type f -exec sed -i 's|github.com/GIT_USER_ID/GIT_REPO_ID|github.com/tembo-io/terraform-provider-tembo/temboclient|g' {} +
+```
 
 ## Releasing the Provider to Terraform Registry
 

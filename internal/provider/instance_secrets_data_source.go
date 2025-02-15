@@ -27,7 +27,7 @@ func NewTemboInstanceSecretsDataSource() datasource.DataSource {
 
 // TemboInstanceSecretsDataSource is the data source implementation.
 type temboInstanceSecretsDataSource struct {
-	temboInstanceSecretsConfig instanceSecretsConfig
+	temboInstanceConfig instanceSecretsConfig
 }
 
 // Tembo Cluster Configuration.
@@ -80,18 +80,19 @@ func (d *temboInstanceSecretsDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 
-	temboInstanceSecretsConfig, ok := req.ProviderData.(instanceSecretsConfig)
-
+	data, ok := req.ProviderData.(providerData)
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *instanceSecretsConfig, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected providerData, got: %T.", req.ProviderData),
 		)
-
 		return
 	}
 
-	d.temboInstanceSecretsConfig = temboInstanceSecretsConfig
+	d.temboInstanceConfig = instanceSecretsConfig{
+		client:      data.dataClient,
+		accessToken: data.accessToken,
+	}
 }
 
 // temboInstanceSecretsDataSourceModel maps the data source schema data.
@@ -114,7 +115,7 @@ func (d *temboInstanceSecretsDataSource) Read(ctx context.Context, req datasourc
 	// Get current state
 	var state temboInstanceSecretsDataSourceModel
 
-	ctx = context.WithValue(ctx, tembodataclient.ContextAccessToken, d.temboInstanceSecretsConfig.accessToken)
+	ctx = context.WithValue(ctx, tembodataclient.ContextAccessToken, d.temboInstanceConfig.accessToken)
 
 	var orgId string
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("org_id"), &orgId)...)
@@ -128,7 +129,7 @@ func (d *temboInstanceSecretsDataSource) Read(ctx context.Context, req datasourc
 	}
 
 	// Get Secret value from API
-	availableSecrets, _, err := d.temboInstanceSecretsConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
+	availableSecrets, _, err := d.temboInstanceConfig.client.SecretsAPI.GetSecretNamesV1(ctx, orgId, instanceId).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tembo Instance Available Secrets",
