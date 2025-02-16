@@ -5,8 +5,10 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **AppServices** | Pointer to [**[]AppType**](AppType.md) |  | [optional] 
+**Autoscaling** | Pointer to [**NullablePatchAutoscaling**](PatchAutoscaling.md) |  | [optional] 
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | [**Cpu**](Cpu.md) |  | 
+**DedicatedNetworking** | Pointer to [**NullableDedicatedNetworking**](DedicatedNetworking.md) |  | [optional] 
 **Environment** | [**Environment**](Environment.md) |  | 
 **Experimental** | Pointer to [**NullableExperimental**](Experimental.md) |  | [optional] 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
@@ -16,6 +18,8 @@ Name | Type | Description | Notes
 **Memory** | [**Memory**](Memory.md) |  | 
 **PgVersion** | Pointer to **int32** |  | [optional] 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
+**ProviderId** | Pointer to **string** |  | [optional] 
+**RegionId** | Pointer to **string** |  | [optional] 
 **Replicas** | Pointer to **int32** |  | [optional] 
 **Spot** | Pointer to **NullableBool** |  | [optional] 
 **StackType** | [**StackType**](StackType.md) |  | 
@@ -76,6 +80,41 @@ HasAppServices returns a boolean if a field has been set.
 `func (o *CreateInstance) UnsetAppServices()`
 
 UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetAutoscaling
+
+`func (o *CreateInstance) GetAutoscaling() PatchAutoscaling`
+
+GetAutoscaling returns the Autoscaling field if non-nil, zero value otherwise.
+
+### GetAutoscalingOk
+
+`func (o *CreateInstance) GetAutoscalingOk() (*PatchAutoscaling, bool)`
+
+GetAutoscalingOk returns a tuple with the Autoscaling field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAutoscaling
+
+`func (o *CreateInstance) SetAutoscaling(v PatchAutoscaling)`
+
+SetAutoscaling sets Autoscaling field to given value.
+
+### HasAutoscaling
+
+`func (o *CreateInstance) HasAutoscaling() bool`
+
+HasAutoscaling returns a boolean if a field has been set.
+
+### SetAutoscalingNil
+
+`func (o *CreateInstance) SetAutoscalingNil(b bool)`
+
+ SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+
+### UnsetAutoscaling
+`func (o *CreateInstance) UnsetAutoscaling()`
+
+UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
 ### GetConnectionPooler
 
 `func (o *CreateInstance) GetConnectionPooler() ConnectionPooler`
@@ -131,6 +170,41 @@ and a boolean to check if the value has been set.
 SetCpu sets Cpu field to given value.
 
 
+### GetDedicatedNetworking
+
+`func (o *CreateInstance) GetDedicatedNetworking() DedicatedNetworking`
+
+GetDedicatedNetworking returns the DedicatedNetworking field if non-nil, zero value otherwise.
+
+### GetDedicatedNetworkingOk
+
+`func (o *CreateInstance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool)`
+
+GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDedicatedNetworking
+
+`func (o *CreateInstance) SetDedicatedNetworking(v DedicatedNetworking)`
+
+SetDedicatedNetworking sets DedicatedNetworking field to given value.
+
+### HasDedicatedNetworking
+
+`func (o *CreateInstance) HasDedicatedNetworking() bool`
+
+HasDedicatedNetworking returns a boolean if a field has been set.
+
+### SetDedicatedNetworkingNil
+
+`func (o *CreateInstance) SetDedicatedNetworkingNil(b bool)`
+
+ SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+
+### UnsetDedicatedNetworking
+`func (o *CreateInstance) UnsetDedicatedNetworking()`
+
+UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
 ### GetEnvironment
 
 `func (o *CreateInstance) GetEnvironment() Environment`
@@ -391,6 +465,56 @@ HasPostgresConfigs returns a boolean if a field has been set.
 `func (o *CreateInstance) UnsetPostgresConfigs()`
 
 UnsetPostgresConfigs ensures that no value is present for PostgresConfigs, not even an explicit nil
+### GetProviderId
+
+`func (o *CreateInstance) GetProviderId() string`
+
+GetProviderId returns the ProviderId field if non-nil, zero value otherwise.
+
+### GetProviderIdOk
+
+`func (o *CreateInstance) GetProviderIdOk() (*string, bool)`
+
+GetProviderIdOk returns a tuple with the ProviderId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetProviderId
+
+`func (o *CreateInstance) SetProviderId(v string)`
+
+SetProviderId sets ProviderId field to given value.
+
+### HasProviderId
+
+`func (o *CreateInstance) HasProviderId() bool`
+
+HasProviderId returns a boolean if a field has been set.
+
+### GetRegionId
+
+`func (o *CreateInstance) GetRegionId() string`
+
+GetRegionId returns the RegionId field if non-nil, zero value otherwise.
+
+### GetRegionIdOk
+
+`func (o *CreateInstance) GetRegionIdOk() (*string, bool)`
+
+GetRegionIdOk returns a tuple with the RegionId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRegionId
+
+`func (o *CreateInstance) SetRegionId(v string)`
+
+SetRegionId sets RegionId field to given value.
+
+### HasRegionId
+
+`func (o *CreateInstance) HasRegionId() bool`
+
+HasRegionId returns a boolean if a field has been set.
+
 ### GetReplicas
 
 `func (o *CreateInstance) GetReplicas() int32`

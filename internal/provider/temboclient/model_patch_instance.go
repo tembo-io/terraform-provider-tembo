@@ -20,12 +20,15 @@ var _ MappedNullable = &PatchInstance{}
 // PatchInstance struct for PatchInstance
 type PatchInstance struct {
 	AppServices []AppType `json:"app_services,omitempty"`
+	Autoscaling NullablePatchAutoscaling `json:"autoscaling,omitempty"`
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu NullableCpu `json:"cpu,omitempty"`
+	DedicatedNetworking NullableDedicatedNetworking `json:"dedicated_networking,omitempty"`
 	Environment NullableEnvironment `json:"environment,omitempty"`
 	Experimental NullableExperimental `json:"experimental,omitempty"`
 	Extensions []Extension `json:"extensions,omitempty"`
 	ExtraDomainsRw []string `json:"extra_domains_rw,omitempty"`
+	InstanceName NullableString `json:"instance_name,omitempty"`
 	IpAllowList []string `json:"ip_allow_list,omitempty"`
 	Memory NullableMemory `json:"memory,omitempty"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
@@ -86,6 +89,48 @@ func (o *PatchInstance) HasAppServices() bool {
 // SetAppServices gets a reference to the given []AppType and assigns it to the AppServices field.
 func (o *PatchInstance) SetAppServices(v []AppType) {
 	o.AppServices = v
+}
+
+// GetAutoscaling returns the Autoscaling field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchInstance) GetAutoscaling() PatchAutoscaling {
+	if o == nil || IsNil(o.Autoscaling.Get()) {
+		var ret PatchAutoscaling
+		return ret
+	}
+	return *o.Autoscaling.Get()
+}
+
+// GetAutoscalingOk returns a tuple with the Autoscaling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchInstance) GetAutoscalingOk() (*PatchAutoscaling, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Autoscaling.Get(), o.Autoscaling.IsSet()
+}
+
+// HasAutoscaling returns a boolean if a field has been set.
+func (o *PatchInstance) HasAutoscaling() bool {
+	if o != nil && o.Autoscaling.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoscaling gets a reference to the given NullablePatchAutoscaling and assigns it to the Autoscaling field.
+func (o *PatchInstance) SetAutoscaling(v PatchAutoscaling) {
+	o.Autoscaling.Set(&v)
+}
+// SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+func (o *PatchInstance) SetAutoscalingNil() {
+	o.Autoscaling.Set(nil)
+}
+
+// UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
+func (o *PatchInstance) UnsetAutoscaling() {
+	o.Autoscaling.Unset()
 }
 
 // GetConnectionPooler returns the ConnectionPooler field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -170,6 +215,48 @@ func (o *PatchInstance) SetCpuNil() {
 // UnsetCpu ensures that no value is present for Cpu, not even an explicit nil
 func (o *PatchInstance) UnsetCpu() {
 	o.Cpu.Unset()
+}
+
+// GetDedicatedNetworking returns the DedicatedNetworking field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchInstance) GetDedicatedNetworking() DedicatedNetworking {
+	if o == nil || IsNil(o.DedicatedNetworking.Get()) {
+		var ret DedicatedNetworking
+		return ret
+	}
+	return *o.DedicatedNetworking.Get()
+}
+
+// GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchInstance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DedicatedNetworking.Get(), o.DedicatedNetworking.IsSet()
+}
+
+// HasDedicatedNetworking returns a boolean if a field has been set.
+func (o *PatchInstance) HasDedicatedNetworking() bool {
+	if o != nil && o.DedicatedNetworking.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDedicatedNetworking gets a reference to the given NullableDedicatedNetworking and assigns it to the DedicatedNetworking field.
+func (o *PatchInstance) SetDedicatedNetworking(v DedicatedNetworking) {
+	o.DedicatedNetworking.Set(&v)
+}
+// SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+func (o *PatchInstance) SetDedicatedNetworkingNil() {
+	o.DedicatedNetworking.Set(nil)
+}
+
+// UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
+func (o *PatchInstance) UnsetDedicatedNetworking() {
+	o.DedicatedNetworking.Unset()
 }
 
 // GetEnvironment returns the Environment field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -320,6 +407,48 @@ func (o *PatchInstance) HasExtraDomainsRw() bool {
 // SetExtraDomainsRw gets a reference to the given []string and assigns it to the ExtraDomainsRw field.
 func (o *PatchInstance) SetExtraDomainsRw(v []string) {
 	o.ExtraDomainsRw = v
+}
+
+// GetInstanceName returns the InstanceName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchInstance) GetInstanceName() string {
+	if o == nil || IsNil(o.InstanceName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.InstanceName.Get()
+}
+
+// GetInstanceNameOk returns a tuple with the InstanceName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchInstance) GetInstanceNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InstanceName.Get(), o.InstanceName.IsSet()
+}
+
+// HasInstanceName returns a boolean if a field has been set.
+func (o *PatchInstance) HasInstanceName() bool {
+	if o != nil && o.InstanceName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInstanceName gets a reference to the given NullableString and assigns it to the InstanceName field.
+func (o *PatchInstance) SetInstanceName(v string) {
+	o.InstanceName.Set(&v)
+}
+// SetInstanceNameNil sets the value for InstanceName to be an explicit nil
+func (o *PatchInstance) SetInstanceNameNil() {
+	o.InstanceName.Set(nil)
+}
+
+// UnsetInstanceName ensures that no value is present for InstanceName, not even an explicit nil
+func (o *PatchInstance) UnsetInstanceName() {
+	o.InstanceName.Unset()
 }
 
 // GetIpAllowList returns the IpAllowList field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -602,11 +731,17 @@ func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	if o.AppServices != nil {
 		toSerialize["app_services"] = o.AppServices
 	}
+	if o.Autoscaling.IsSet() {
+		toSerialize["autoscaling"] = o.Autoscaling.Get()
+	}
 	if o.ConnectionPooler.IsSet() {
 		toSerialize["connection_pooler"] = o.ConnectionPooler.Get()
 	}
 	if o.Cpu.IsSet() {
 		toSerialize["cpu"] = o.Cpu.Get()
+	}
+	if o.DedicatedNetworking.IsSet() {
+		toSerialize["dedicated_networking"] = o.DedicatedNetworking.Get()
 	}
 	if o.Environment.IsSet() {
 		toSerialize["environment"] = o.Environment.Get()
@@ -619,6 +754,9 @@ func (o PatchInstance) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ExtraDomainsRw != nil {
 		toSerialize["extra_domains_rw"] = o.ExtraDomainsRw
+	}
+	if o.InstanceName.IsSet() {
+		toSerialize["instance_name"] = o.InstanceName.Get()
 	}
 	if o.IpAllowList != nil {
 		toSerialize["ip_allow_list"] = o.IpAllowList
@@ -664,12 +802,15 @@ func (o *PatchInstance) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "autoscaling")
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "dedicated_networking")
 		delete(additionalProperties, "environment")
 		delete(additionalProperties, "experimental")
 		delete(additionalProperties, "extensions")
 		delete(additionalProperties, "extra_domains_rw")
+		delete(additionalProperties, "instance_name")
 		delete(additionalProperties, "ip_allow_list")
 		delete(additionalProperties, "memory")
 		delete(additionalProperties, "postgres_configs")

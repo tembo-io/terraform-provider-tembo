@@ -5,12 +5,15 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **AppServices** | Pointer to [**[]AppType**](AppType.md) |  | [optional] 
+**Autoscaling** | Pointer to [**NullablePatchAutoscaling**](PatchAutoscaling.md) |  | [optional] 
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | Pointer to [**NullableCpu**](Cpu.md) |  | [optional] 
+**DedicatedNetworking** | Pointer to [**NullableDedicatedNetworking**](DedicatedNetworking.md) |  | [optional] 
 **Environment** | Pointer to [**NullableEnvironment**](Environment.md) |  | [optional] 
 **Experimental** | Pointer to [**NullableExperimental**](Experimental.md) |  | [optional] 
 **Extensions** | Pointer to [**[]Extension**](Extension.md) |  | [optional] 
 **ExtraDomainsRw** | Pointer to **[]string** |  | [optional] 
+**InstanceName** | Pointer to **NullableString** |  | [optional] 
 **IpAllowList** | Pointer to **[]string** |  | [optional] 
 **Memory** | Pointer to [**NullableMemory**](Memory.md) |  | [optional] 
 **PostgresConfigs** | Pointer to [**[]PgConfig**](PgConfig.md) |  | [optional] 
@@ -73,6 +76,41 @@ HasAppServices returns a boolean if a field has been set.
 `func (o *PatchInstance) UnsetAppServices()`
 
 UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetAutoscaling
+
+`func (o *PatchInstance) GetAutoscaling() PatchAutoscaling`
+
+GetAutoscaling returns the Autoscaling field if non-nil, zero value otherwise.
+
+### GetAutoscalingOk
+
+`func (o *PatchInstance) GetAutoscalingOk() (*PatchAutoscaling, bool)`
+
+GetAutoscalingOk returns a tuple with the Autoscaling field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAutoscaling
+
+`func (o *PatchInstance) SetAutoscaling(v PatchAutoscaling)`
+
+SetAutoscaling sets Autoscaling field to given value.
+
+### HasAutoscaling
+
+`func (o *PatchInstance) HasAutoscaling() bool`
+
+HasAutoscaling returns a boolean if a field has been set.
+
+### SetAutoscalingNil
+
+`func (o *PatchInstance) SetAutoscalingNil(b bool)`
+
+ SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+
+### UnsetAutoscaling
+`func (o *PatchInstance) UnsetAutoscaling()`
+
+UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
 ### GetConnectionPooler
 
 `func (o *PatchInstance) GetConnectionPooler() ConnectionPooler`
@@ -143,6 +181,41 @@ HasCpu returns a boolean if a field has been set.
 `func (o *PatchInstance) UnsetCpu()`
 
 UnsetCpu ensures that no value is present for Cpu, not even an explicit nil
+### GetDedicatedNetworking
+
+`func (o *PatchInstance) GetDedicatedNetworking() DedicatedNetworking`
+
+GetDedicatedNetworking returns the DedicatedNetworking field if non-nil, zero value otherwise.
+
+### GetDedicatedNetworkingOk
+
+`func (o *PatchInstance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool)`
+
+GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDedicatedNetworking
+
+`func (o *PatchInstance) SetDedicatedNetworking(v DedicatedNetworking)`
+
+SetDedicatedNetworking sets DedicatedNetworking field to given value.
+
+### HasDedicatedNetworking
+
+`func (o *PatchInstance) HasDedicatedNetworking() bool`
+
+HasDedicatedNetworking returns a boolean if a field has been set.
+
+### SetDedicatedNetworkingNil
+
+`func (o *PatchInstance) SetDedicatedNetworkingNil(b bool)`
+
+ SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+
+### UnsetDedicatedNetworking
+`func (o *PatchInstance) UnsetDedicatedNetworking()`
+
+UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
 ### GetEnvironment
 
 `func (o *PatchInstance) GetEnvironment() Environment`
@@ -283,6 +356,41 @@ HasExtraDomainsRw returns a boolean if a field has been set.
 `func (o *PatchInstance) UnsetExtraDomainsRw()`
 
 UnsetExtraDomainsRw ensures that no value is present for ExtraDomainsRw, not even an explicit nil
+### GetInstanceName
+
+`func (o *PatchInstance) GetInstanceName() string`
+
+GetInstanceName returns the InstanceName field if non-nil, zero value otherwise.
+
+### GetInstanceNameOk
+
+`func (o *PatchInstance) GetInstanceNameOk() (*string, bool)`
+
+GetInstanceNameOk returns a tuple with the InstanceName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInstanceName
+
+`func (o *PatchInstance) SetInstanceName(v string)`
+
+SetInstanceName sets InstanceName field to given value.
+
+### HasInstanceName
+
+`func (o *PatchInstance) HasInstanceName() bool`
+
+HasInstanceName returns a boolean if a field has been set.
+
+### SetInstanceNameNil
+
+`func (o *PatchInstance) SetInstanceNameNil(b bool)`
+
+ SetInstanceNameNil sets the value for InstanceName to be an explicit nil
+
+### UnsetInstanceName
+`func (o *PatchInstance) UnsetInstanceName()`
+
+UnsetInstanceName ensures that no value is present for InstanceName, not even an explicit nil
 ### GetIpAllowList
 
 `func (o *PatchInstance) GetIpAllowList() []string`

@@ -14,7 +14,7 @@ terraform {
   required_providers {
     tembo = {
       source  = "tembo-io/tembo"
-      version = ">= 0.1.0"
+      version = ">= 1.8.0"
     }
   }
 }
@@ -31,6 +31,16 @@ resource "tembo_instance" "test_db" {
   memory        = "4Gi"
   storage       = "10Gi"
   replicas      = 1
+  provider_id   = "aws"
+  region_id     = "us-east-1"
+  autoscaling = {
+    autostop = {
+      enabled = false
+    }
+    storage = {
+      enabled = false
+    }
+  }
   # ip_allow_list = ["71.190.46.69"]
   # extra_domains_rw = ["sample-invalid-domain.test.tembo-development.com"]
   postgres_configs = [
@@ -150,7 +160,10 @@ Go to `internal/provider/temboclient` directory in your terminal.
 Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
 
 ```bash
-openapi-generator generate -i https://api.coredb.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=temboclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+    -i https://api.tembo.io/api-docs/openapi.json \
+    -g go \
+    -o ./local  --additional-properties=packageName=temboclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
 ```
 
 Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`
@@ -162,7 +175,10 @@ Go to `internal/provider/tembodataclient` directory in your terminal.
 Delete the contents of the directory first and then run following command to re-generate the go client code for the API.
 
 ```bash
-openapi-generator generate -i https://api.data-1.use1.tembo.io/api-docs/openapi.json  -g go -o . --additional-properties=packageName=tembodataclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+    -i https://api.data-1.use1.tembo.io/api-docs/openapi.json \
+    -g go \
+    -o ./local  --additional-properties=packageName=tembodataclient --additional-properties=disallowAdditionalPropertiesIfNotPresent=false
 ```
 
 Replace everywhere it says `github.com/GIT_USER_ID/GIT_REPO_ID` to `github.com/tembo-io/terraform-provider-tembo/temboclient`

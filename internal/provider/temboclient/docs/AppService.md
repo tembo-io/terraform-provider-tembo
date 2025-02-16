@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **Command** | Pointer to **[]string** | Defines the command into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container). | [optional] 
 **Env** | Pointer to [**[]EnvVar**](EnvVar.md) | Defines the environment variables to pass into the container if needed. You define this in the same manner as you would for all Kubernetes containers. See the [Kubernetes docs](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container). | [optional] 
 **Image** | **string** | Defines the container image to use for the appService. | 
+**Metrics** | Pointer to [**NullableAppMetrics**](AppMetrics.md) |  | [optional] 
 **Middlewares** | Pointer to [**[]Middleware**](Middleware.md) | Defines the ingress middeware configuration for the appService. This is specifically configured for the ingress controller Traefik. | [optional] 
 **Name** | **string** | Defines the name of the appService. | 
 **Probes** | Pointer to [**NullableProbes**](Probes.md) |  | [optional] 
@@ -159,6 +160,41 @@ and a boolean to check if the value has been set.
 SetImage sets Image field to given value.
 
 
+### GetMetrics
+
+`func (o *AppService) GetMetrics() AppMetrics`
+
+GetMetrics returns the Metrics field if non-nil, zero value otherwise.
+
+### GetMetricsOk
+
+`func (o *AppService) GetMetricsOk() (*AppMetrics, bool)`
+
+GetMetricsOk returns a tuple with the Metrics field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMetrics
+
+`func (o *AppService) SetMetrics(v AppMetrics)`
+
+SetMetrics sets Metrics field to given value.
+
+### HasMetrics
+
+`func (o *AppService) HasMetrics() bool`
+
+HasMetrics returns a boolean if a field has been set.
+
+### SetMetricsNil
+
+`func (o *AppService) SetMetricsNil(b bool)`
+
+ SetMetricsNil sets the value for Metrics to be an explicit nil
+
+### UnsetMetrics
+`func (o *AppService) UnsetMetrics()`
+
+UnsetMetrics ensures that no value is present for Metrics, not even an explicit nil
 ### GetMiddlewares
 
 `func (o *AppService) GetMiddlewares() []Middleware`

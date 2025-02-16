@@ -28,6 +28,7 @@ type AppService struct {
 	Env []EnvVar `json:"env,omitempty"`
 	// Defines the container image to use for the appService.
 	Image string `json:"image"`
+	Metrics NullableAppMetrics `json:"metrics,omitempty"`
 	// Defines the ingress middeware configuration for the appService. This is specifically configured for the ingress controller Traefik.
 	Middlewares []Middleware `json:"middlewares,omitempty"`
 	// Defines the name of the appService.
@@ -182,6 +183,48 @@ func (o *AppService) GetImageOk() (*string, bool) {
 // SetImage sets field value
 func (o *AppService) SetImage(v string) {
 	o.Image = v
+}
+
+// GetMetrics returns the Metrics field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AppService) GetMetrics() AppMetrics {
+	if o == nil || IsNil(o.Metrics.Get()) {
+		var ret AppMetrics
+		return ret
+	}
+	return *o.Metrics.Get()
+}
+
+// GetMetricsOk returns a tuple with the Metrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppService) GetMetricsOk() (*AppMetrics, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Metrics.Get(), o.Metrics.IsSet()
+}
+
+// HasMetrics returns a boolean if a field has been set.
+func (o *AppService) HasMetrics() bool {
+	if o != nil && o.Metrics.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMetrics gets a reference to the given NullableAppMetrics and assigns it to the Metrics field.
+func (o *AppService) SetMetrics(v AppMetrics) {
+	o.Metrics.Set(&v)
+}
+// SetMetricsNil sets the value for Metrics to be an explicit nil
+func (o *AppService) SetMetricsNil() {
+	o.Metrics.Set(nil)
+}
+
+// UnsetMetrics ensures that no value is present for Metrics, not even an explicit nil
+func (o *AppService) UnsetMetrics() {
+	o.Metrics.Unset()
 }
 
 // GetMiddlewares returns the Middlewares field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -410,6 +453,9 @@ func (o AppService) ToMap() (map[string]interface{}, error) {
 		toSerialize["env"] = o.Env
 	}
 	toSerialize["image"] = o.Image
+	if o.Metrics.IsSet() {
+		toSerialize["metrics"] = o.Metrics.Get()
+	}
 	if o.Middlewares != nil {
 		toSerialize["middlewares"] = o.Middlewares
 	}
@@ -474,6 +520,7 @@ func (o *AppService) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "command")
 		delete(additionalProperties, "env")
 		delete(additionalProperties, "image")
+		delete(additionalProperties, "metrics")
 		delete(additionalProperties, "middlewares")
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "probes")

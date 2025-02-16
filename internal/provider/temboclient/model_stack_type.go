@@ -20,32 +20,30 @@ type StackType string
 
 // List of StackType
 const (
-	STANDARD StackType = "Standard"
-	MESSAGE_QUEUE StackType = "MessageQueue"
-	MACHINE_LEARNING StackType = "MachineLearning"
-	OLAP StackType = "OLAP"
-	OLTP StackType = "OLTP"
-	VECTOR_DB StackType = "VectorDB"
-	DATA_WAREHOUSE StackType = "DataWarehouse"
+	ANALYTICS StackType = "Analytics"
 	GEOSPATIAL StackType = "Geospatial"
+	MACHINE_LEARNING StackType = "MachineLearning"
+	MESSAGE_QUEUE StackType = "MessageQueue"
 	MONGO_ALTERNATIVE StackType = "MongoAlternative"
-	RAG StackType = "RAG"
+	OLTP StackType = "OLTP"
+	PARADE_DB StackType = "ParadeDB"
+	STANDARD StackType = "Standard"
 	TIMESERIES StackType = "Timeseries"
+	VECTOR_DB StackType = "VectorDB"
 )
 
 // All allowed values of StackType enum
 var AllowedStackTypeEnumValues = []StackType{
-	"Standard",
-	"MessageQueue",
-	"MachineLearning",
-	"OLAP",
-	"OLTP",
-	"VectorDB",
-	"DataWarehouse",
+	"Analytics",
 	"Geospatial",
+	"MachineLearning",
+	"MessageQueue",
 	"MongoAlternative",
-	"RAG",
+	"OLTP",
+	"ParadeDB",
+	"Standard",
 	"Timeseries",
+	"VectorDB",
 }
 
 func (v *StackType) UnmarshalJSON(src []byte) error {

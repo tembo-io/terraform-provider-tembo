@@ -20,6 +20,7 @@ type Memory string
 
 // List of Memory
 const (
+	_512_MI Memory = "512Mi"
 	_1_GI Memory = "1Gi"
 	_2_GI Memory = "2Gi"
 	_4_GI Memory = "4Gi"
@@ -28,10 +29,12 @@ const (
 	_16_GI Memory = "16Gi"
 	_24_GI Memory = "24Gi"
 	_32_GI Memory = "32Gi"
+	_64_GI Memory = "64Gi"
 )
 
 // All allowed values of Memory enum
 var AllowedMemoryEnumValues = []Memory{
+	"512Mi",
 	"1Gi",
 	"2Gi",
 	"4Gi",
@@ -40,6 +43,7 @@ var AllowedMemoryEnumValues = []Memory{
 	"16Gi",
 	"24Gi",
 	"32Gi",
+	"64Gi",
 }
 
 func (v *Memory) UnmarshalJSON(src []byte) error {

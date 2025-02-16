@@ -21,6 +21,7 @@ var _ MappedNullable = &RestoreInstance{}
 // RestoreInstance struct for RestoreInstance
 type RestoreInstance struct {
 	AppServices []AppType `json:"app_services,omitempty"`
+	Autoscaling NullablePatchAutoscaling `json:"autoscaling,omitempty"`
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu NullableCpu `json:"cpu,omitempty"`
 	Environment NullableEnvironment `json:"environment,omitempty"`
@@ -84,6 +85,48 @@ func (o *RestoreInstance) HasAppServices() bool {
 // SetAppServices gets a reference to the given []AppType and assigns it to the AppServices field.
 func (o *RestoreInstance) SetAppServices(v []AppType) {
 	o.AppServices = v
+}
+
+// GetAutoscaling returns the Autoscaling field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RestoreInstance) GetAutoscaling() PatchAutoscaling {
+	if o == nil || IsNil(o.Autoscaling.Get()) {
+		var ret PatchAutoscaling
+		return ret
+	}
+	return *o.Autoscaling.Get()
+}
+
+// GetAutoscalingOk returns a tuple with the Autoscaling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RestoreInstance) GetAutoscalingOk() (*PatchAutoscaling, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Autoscaling.Get(), o.Autoscaling.IsSet()
+}
+
+// HasAutoscaling returns a boolean if a field has been set.
+func (o *RestoreInstance) HasAutoscaling() bool {
+	if o != nil && o.Autoscaling.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoscaling gets a reference to the given NullablePatchAutoscaling and assigns it to the Autoscaling field.
+func (o *RestoreInstance) SetAutoscaling(v PatchAutoscaling) {
+	o.Autoscaling.Set(&v)
+}
+// SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+func (o *RestoreInstance) SetAutoscalingNil() {
+	o.Autoscaling.Set(nil)
+}
+
+// UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
+func (o *RestoreInstance) UnsetAutoscaling() {
+	o.Autoscaling.Unset()
 }
 
 // GetConnectionPooler returns the ConnectionPooler field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -390,6 +433,9 @@ func (o RestoreInstance) ToMap() (map[string]interface{}, error) {
 	if o.AppServices != nil {
 		toSerialize["app_services"] = o.AppServices
 	}
+	if o.Autoscaling.IsSet() {
+		toSerialize["autoscaling"] = o.Autoscaling.Get()
+	}
 	if o.ConnectionPooler.IsSet() {
 		toSerialize["connection_pooler"] = o.ConnectionPooler.Get()
 	}
@@ -455,6 +501,7 @@ func (o *RestoreInstance) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "autoscaling")
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
 		delete(additionalProperties, "environment")

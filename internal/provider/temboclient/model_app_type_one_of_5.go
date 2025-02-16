@@ -20,7 +20,7 @@ var _ MappedNullable = &AppTypeOneOf5{}
 
 // AppTypeOneOf5 struct for AppTypeOneOf5
 type AppTypeOneOf5 struct {
-	Custom AppService `json:"custom"`
+	Sqlrunner NullableAppConfig `json:"sqlrunner"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -30,9 +30,9 @@ type _AppTypeOneOf5 AppTypeOneOf5
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAppTypeOneOf5(custom AppService) *AppTypeOneOf5 {
+func NewAppTypeOneOf5(sqlrunner NullableAppConfig) *AppTypeOneOf5 {
 	this := AppTypeOneOf5{}
-	this.Custom = custom
+	this.Sqlrunner = sqlrunner
 	return &this
 }
 
@@ -44,28 +44,30 @@ func NewAppTypeOneOf5WithDefaults() *AppTypeOneOf5 {
 	return &this
 }
 
-// GetCustom returns the Custom field value
-func (o *AppTypeOneOf5) GetCustom() AppService {
-	if o == nil {
-		var ret AppService
+// GetSqlrunner returns the Sqlrunner field value
+// If the value is explicit nil, the zero value for AppConfig will be returned
+func (o *AppTypeOneOf5) GetSqlrunner() AppConfig {
+	if o == nil || o.Sqlrunner.Get() == nil {
+		var ret AppConfig
 		return ret
 	}
 
-	return o.Custom
+	return *o.Sqlrunner.Get()
 }
 
-// GetCustomOk returns a tuple with the Custom field value
+// GetSqlrunnerOk returns a tuple with the Sqlrunner field value
 // and a boolean to check if the value has been set.
-func (o *AppTypeOneOf5) GetCustomOk() (*AppService, bool) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AppTypeOneOf5) GetSqlrunnerOk() (*AppConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Custom, true
+	return o.Sqlrunner.Get(), o.Sqlrunner.IsSet()
 }
 
-// SetCustom sets field value
-func (o *AppTypeOneOf5) SetCustom(v AppService) {
-	o.Custom = v
+// SetSqlrunner sets field value
+func (o *AppTypeOneOf5) SetSqlrunner(v AppConfig) {
+	o.Sqlrunner.Set(&v)
 }
 
 func (o AppTypeOneOf5) MarshalJSON() ([]byte, error) {
@@ -78,7 +80,7 @@ func (o AppTypeOneOf5) MarshalJSON() ([]byte, error) {
 
 func (o AppTypeOneOf5) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["custom"] = o.Custom
+	toSerialize["sqlrunner"] = o.Sqlrunner.Get()
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -92,7 +94,7 @@ func (o *AppTypeOneOf5) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"custom",
+		"sqlrunner",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -122,7 +124,7 @@ func (o *AppTypeOneOf5) UnmarshalJSON(data []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "custom")
+		delete(additionalProperties, "sqlrunner")
 		o.AdditionalProperties = additionalProperties
 	}
 

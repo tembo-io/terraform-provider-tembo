@@ -21,8 +21,10 @@ var _ MappedNullable = &CreateInstance{}
 // CreateInstance struct for CreateInstance
 type CreateInstance struct {
 	AppServices []AppType `json:"app_services,omitempty"`
+	Autoscaling NullablePatchAutoscaling `json:"autoscaling,omitempty"`
 	ConnectionPooler NullableConnectionPooler `json:"connection_pooler,omitempty"`
 	Cpu Cpu `json:"cpu"`
+	DedicatedNetworking NullableDedicatedNetworking `json:"dedicated_networking,omitempty"`
 	Environment Environment `json:"environment"`
 	Experimental NullableExperimental `json:"experimental,omitempty"`
 	Extensions []Extension `json:"extensions,omitempty"`
@@ -32,6 +34,8 @@ type CreateInstance struct {
 	Memory Memory `json:"memory"`
 	PgVersion *int32 `json:"pg_version,omitempty"`
 	PostgresConfigs []PgConfig `json:"postgres_configs,omitempty"`
+	ProviderId *string `json:"provider_id,omitempty"`
+	RegionId *string `json:"region_id,omitempty"`
 	Replicas *int32 `json:"replicas,omitempty"`
 	Spot NullableBool `json:"spot,omitempty"`
 	StackType StackType `json:"stack_type"`
@@ -98,6 +102,48 @@ func (o *CreateInstance) SetAppServices(v []AppType) {
 	o.AppServices = v
 }
 
+// GetAutoscaling returns the Autoscaling field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateInstance) GetAutoscaling() PatchAutoscaling {
+	if o == nil || IsNil(o.Autoscaling.Get()) {
+		var ret PatchAutoscaling
+		return ret
+	}
+	return *o.Autoscaling.Get()
+}
+
+// GetAutoscalingOk returns a tuple with the Autoscaling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateInstance) GetAutoscalingOk() (*PatchAutoscaling, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Autoscaling.Get(), o.Autoscaling.IsSet()
+}
+
+// HasAutoscaling returns a boolean if a field has been set.
+func (o *CreateInstance) HasAutoscaling() bool {
+	if o != nil && o.Autoscaling.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoscaling gets a reference to the given NullablePatchAutoscaling and assigns it to the Autoscaling field.
+func (o *CreateInstance) SetAutoscaling(v PatchAutoscaling) {
+	o.Autoscaling.Set(&v)
+}
+// SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+func (o *CreateInstance) SetAutoscalingNil() {
+	o.Autoscaling.Set(nil)
+}
+
+// UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
+func (o *CreateInstance) UnsetAutoscaling() {
+	o.Autoscaling.Unset()
+}
+
 // GetConnectionPooler returns the ConnectionPooler field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateInstance) GetConnectionPooler() ConnectionPooler {
 	if o == nil || IsNil(o.ConnectionPooler.Get()) {
@@ -162,6 +208,48 @@ func (o *CreateInstance) GetCpuOk() (*Cpu, bool) {
 // SetCpu sets field value
 func (o *CreateInstance) SetCpu(v Cpu) {
 	o.Cpu = v
+}
+
+// GetDedicatedNetworking returns the DedicatedNetworking field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateInstance) GetDedicatedNetworking() DedicatedNetworking {
+	if o == nil || IsNil(o.DedicatedNetworking.Get()) {
+		var ret DedicatedNetworking
+		return ret
+	}
+	return *o.DedicatedNetworking.Get()
+}
+
+// GetDedicatedNetworkingOk returns a tuple with the DedicatedNetworking field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateInstance) GetDedicatedNetworkingOk() (*DedicatedNetworking, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DedicatedNetworking.Get(), o.DedicatedNetworking.IsSet()
+}
+
+// HasDedicatedNetworking returns a boolean if a field has been set.
+func (o *CreateInstance) HasDedicatedNetworking() bool {
+	if o != nil && o.DedicatedNetworking.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDedicatedNetworking gets a reference to the given NullableDedicatedNetworking and assigns it to the DedicatedNetworking field.
+func (o *CreateInstance) SetDedicatedNetworking(v DedicatedNetworking) {
+	o.DedicatedNetworking.Set(&v)
+}
+// SetDedicatedNetworkingNil sets the value for DedicatedNetworking to be an explicit nil
+func (o *CreateInstance) SetDedicatedNetworkingNil() {
+	o.DedicatedNetworking.Set(nil)
+}
+
+// UnsetDedicatedNetworking ensures that no value is present for DedicatedNetworking, not even an explicit nil
+func (o *CreateInstance) UnsetDedicatedNetworking() {
+	o.DedicatedNetworking.Unset()
 }
 
 // GetEnvironment returns the Environment field value
@@ -442,6 +530,70 @@ func (o *CreateInstance) SetPostgresConfigs(v []PgConfig) {
 	o.PostgresConfigs = v
 }
 
+// GetProviderId returns the ProviderId field value if set, zero value otherwise.
+func (o *CreateInstance) GetProviderId() string {
+	if o == nil || IsNil(o.ProviderId) {
+		var ret string
+		return ret
+	}
+	return *o.ProviderId
+}
+
+// GetProviderIdOk returns a tuple with the ProviderId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInstance) GetProviderIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProviderId) {
+		return nil, false
+	}
+	return o.ProviderId, true
+}
+
+// HasProviderId returns a boolean if a field has been set.
+func (o *CreateInstance) HasProviderId() bool {
+	if o != nil && !IsNil(o.ProviderId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProviderId gets a reference to the given string and assigns it to the ProviderId field.
+func (o *CreateInstance) SetProviderId(v string) {
+	o.ProviderId = &v
+}
+
+// GetRegionId returns the RegionId field value if set, zero value otherwise.
+func (o *CreateInstance) GetRegionId() string {
+	if o == nil || IsNil(o.RegionId) {
+		var ret string
+		return ret
+	}
+	return *o.RegionId
+}
+
+// GetRegionIdOk returns a tuple with the RegionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInstance) GetRegionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RegionId) {
+		return nil, false
+	}
+	return o.RegionId, true
+}
+
+// HasRegionId returns a boolean if a field has been set.
+func (o *CreateInstance) HasRegionId() bool {
+	if o != nil && !IsNil(o.RegionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionId gets a reference to the given string and assigns it to the RegionId field.
+func (o *CreateInstance) SetRegionId(v string) {
+	o.RegionId = &v
+}
+
 // GetReplicas returns the Replicas field value if set, zero value otherwise.
 func (o *CreateInstance) GetReplicas() int32 {
 	if o == nil || IsNil(o.Replicas) {
@@ -610,10 +762,16 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	if o.AppServices != nil {
 		toSerialize["app_services"] = o.AppServices
 	}
+	if o.Autoscaling.IsSet() {
+		toSerialize["autoscaling"] = o.Autoscaling.Get()
+	}
 	if o.ConnectionPooler.IsSet() {
 		toSerialize["connection_pooler"] = o.ConnectionPooler.Get()
 	}
 	toSerialize["cpu"] = o.Cpu
+	if o.DedicatedNetworking.IsSet() {
+		toSerialize["dedicated_networking"] = o.DedicatedNetworking.Get()
+	}
 	toSerialize["environment"] = o.Environment
 	if o.Experimental.IsSet() {
 		toSerialize["experimental"] = o.Experimental.Get()
@@ -634,6 +792,12 @@ func (o CreateInstance) ToMap() (map[string]interface{}, error) {
 	}
 	if o.PostgresConfigs != nil {
 		toSerialize["postgres_configs"] = o.PostgresConfigs
+	}
+	if !IsNil(o.ProviderId) {
+		toSerialize["provider_id"] = o.ProviderId
+	}
+	if !IsNil(o.RegionId) {
+		toSerialize["region_id"] = o.RegionId
 	}
 	if !IsNil(o.Replicas) {
 		toSerialize["replicas"] = o.Replicas
@@ -695,8 +859,10 @@ func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "app_services")
+		delete(additionalProperties, "autoscaling")
 		delete(additionalProperties, "connection_pooler")
 		delete(additionalProperties, "cpu")
+		delete(additionalProperties, "dedicated_networking")
 		delete(additionalProperties, "environment")
 		delete(additionalProperties, "experimental")
 		delete(additionalProperties, "extensions")
@@ -706,6 +872,8 @@ func (o *CreateInstance) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "memory")
 		delete(additionalProperties, "pg_version")
 		delete(additionalProperties, "postgres_configs")
+		delete(additionalProperties, "provider_id")
+		delete(additionalProperties, "region_id")
 		delete(additionalProperties, "replicas")
 		delete(additionalProperties, "spot")
 		delete(additionalProperties, "stack_type")

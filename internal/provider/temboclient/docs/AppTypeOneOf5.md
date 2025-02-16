@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Custom** | [**AppService**](AppService.md) |  | 
+**Sqlrunner** | [**NullableAppConfig**](AppConfig.md) |  | 
 
 ## Methods
 
 ### NewAppTypeOneOf5
 
-`func NewAppTypeOneOf5(custom AppService, ) *AppTypeOneOf5`
+`func NewAppTypeOneOf5(sqlrunner NullableAppConfig, ) *AppTypeOneOf5`
 
 NewAppTypeOneOf5 instantiates a new AppTypeOneOf5 object
 This constructor will assign default values to properties that have it defined,
@@ -25,26 +25,36 @@ NewAppTypeOneOf5WithDefaults instantiates a new AppTypeOneOf5 object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetCustom
+### GetSqlrunner
 
-`func (o *AppTypeOneOf5) GetCustom() AppService`
+`func (o *AppTypeOneOf5) GetSqlrunner() AppConfig`
 
-GetCustom returns the Custom field if non-nil, zero value otherwise.
+GetSqlrunner returns the Sqlrunner field if non-nil, zero value otherwise.
 
-### GetCustomOk
+### GetSqlrunnerOk
 
-`func (o *AppTypeOneOf5) GetCustomOk() (*AppService, bool)`
+`func (o *AppTypeOneOf5) GetSqlrunnerOk() (*AppConfig, bool)`
 
-GetCustomOk returns a tuple with the Custom field if it's non-nil, zero value otherwise
+GetSqlrunnerOk returns a tuple with the Sqlrunner field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetCustom
+### SetSqlrunner
 
-`func (o *AppTypeOneOf5) SetCustom(v AppService)`
+`func (o *AppTypeOneOf5) SetSqlrunner(v AppConfig)`
 
-SetCustom sets Custom field to given value.
+SetSqlrunner sets Sqlrunner field to given value.
 
 
+### SetSqlrunnerNil
+
+`func (o *AppTypeOneOf5) SetSqlrunnerNil(b bool)`
+
+ SetSqlrunnerNil sets the value for Sqlrunner to be an explicit nil
+
+### UnsetSqlrunner
+`func (o *AppTypeOneOf5) UnsetSqlrunner()`
+
+UnsetSqlrunner ensures that no value is present for Sqlrunner, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

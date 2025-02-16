@@ -92,11 +92,11 @@ func (o *PoolerTemplateSpecContainersResources) GetLimits() map[string]IntOrStri
 // GetLimitsOk returns a tuple with the Limits field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PoolerTemplateSpecContainersResources) GetLimitsOk() (*map[string]IntOrString, bool) {
+func (o *PoolerTemplateSpecContainersResources) GetLimitsOk() (map[string]IntOrString, bool) {
 	if o == nil || IsNil(o.Limits) {
-		return nil, false
+		return map[string]IntOrString{}, false
 	}
-	return &o.Limits, true
+	return o.Limits, true
 }
 
 // HasLimits returns a boolean if a field has been set.
@@ -125,11 +125,11 @@ func (o *PoolerTemplateSpecContainersResources) GetRequests() map[string]IntOrSt
 // GetRequestsOk returns a tuple with the Requests field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PoolerTemplateSpecContainersResources) GetRequestsOk() (*map[string]IntOrString, bool) {
+func (o *PoolerTemplateSpecContainersResources) GetRequestsOk() (map[string]IntOrString, bool) {
 	if o == nil || IsNil(o.Requests) {
-		return nil, false
+		return map[string]IntOrString{}, false
 	}
-	return &o.Requests, true
+	return o.Requests, true
 }
 
 // HasRequests returns a boolean if a field has been set.

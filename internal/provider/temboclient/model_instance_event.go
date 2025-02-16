@@ -21,11 +21,15 @@ type InstanceEvent string
 // List of InstanceEvent
 const (
 	RESTART InstanceEvent = "restart"
+	STOP InstanceEvent = "stop"
+	START InstanceEvent = "start"
 )
 
 // All allowed values of InstanceEvent enum
 var AllowedInstanceEventEnumValues = []InstanceEvent{
 	"restart",
+	"stop",
+	"start",
 }
 
 func (v *InstanceEvent) UnmarshalJSON(src []byte) error {

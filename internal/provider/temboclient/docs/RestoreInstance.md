@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **AppServices** | Pointer to [**[]AppType**](AppType.md) |  | [optional] 
+**Autoscaling** | Pointer to [**NullablePatchAutoscaling**](PatchAutoscaling.md) |  | [optional] 
 **ConnectionPooler** | Pointer to [**NullableConnectionPooler**](ConnectionPooler.md) |  | [optional] 
 **Cpu** | Pointer to [**NullableCpu**](Cpu.md) |  | [optional] 
 **Environment** | Pointer to [**NullableEnvironment**](Environment.md) |  | [optional] 
@@ -68,6 +69,41 @@ HasAppServices returns a boolean if a field has been set.
 `func (o *RestoreInstance) UnsetAppServices()`
 
 UnsetAppServices ensures that no value is present for AppServices, not even an explicit nil
+### GetAutoscaling
+
+`func (o *RestoreInstance) GetAutoscaling() PatchAutoscaling`
+
+GetAutoscaling returns the Autoscaling field if non-nil, zero value otherwise.
+
+### GetAutoscalingOk
+
+`func (o *RestoreInstance) GetAutoscalingOk() (*PatchAutoscaling, bool)`
+
+GetAutoscalingOk returns a tuple with the Autoscaling field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAutoscaling
+
+`func (o *RestoreInstance) SetAutoscaling(v PatchAutoscaling)`
+
+SetAutoscaling sets Autoscaling field to given value.
+
+### HasAutoscaling
+
+`func (o *RestoreInstance) HasAutoscaling() bool`
+
+HasAutoscaling returns a boolean if a field has been set.
+
+### SetAutoscalingNil
+
+`func (o *RestoreInstance) SetAutoscalingNil(b bool)`
+
+ SetAutoscalingNil sets the value for Autoscaling to be an explicit nil
+
+### UnsetAutoscaling
+`func (o *RestoreInstance) UnsetAutoscaling()`
+
+UnsetAutoscaling ensures that no value is present for Autoscaling, not even an explicit nil
 ### GetConnectionPooler
 
 `func (o *RestoreInstance) GetConnectionPooler() ConnectionPooler`

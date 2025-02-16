@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -13,8 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -54,6 +57,10 @@ type temboInstanceResourceModel struct {
 	ConnectionPooler        *ConnectionPooler `tfsdk:"connection_pooler"`
 	Restore                 *Restore          `tfsdk:"restore"`
 	FirstRecoverabilityTime types.String      `tfsdk:"first_recoverability_time"`
+	ProviderId              types.String      `tfsdk:"provider_id"`
+	RegionId                types.String      `tfsdk:"region_id"`
+	Autoscaling             *AutoscalingModel `tfsdk:"autoscaling"`
+	PGVersion               types.String      `tfsdk:"pg_version"`
 }
 
 type Restore struct {
@@ -91,6 +98,20 @@ type ExtensionInstallLocation struct {
 	Enabled  types.Bool   `tfsdk:"enabled"`
 	Schema   types.String `tfsdk:"schema"`
 	Version  types.String `tfsdk:"version"`
+}
+
+type AutoscalingModel struct {
+	Autostop *AutoscalingAutostopModel `tfsdk:"autostop"`
+	Storage  *AutoscalingStorageModel  `tfsdk:"storage"`
+}
+
+type AutoscalingAutostopModel struct {
+	Enabled types.Bool `tfsdk:"enabled"`
+}
+
+type AutoscalingStorageModel struct {
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Maximum types.String `tfsdk:"maximum"`
 }
 
 // Configure adds the provider configured data to the resource.
@@ -315,6 +336,54 @@ func (r *temboInstanceResource) Schema(_ context.Context, _ resource.SchemaReque
 				Optional:    true,
 				Description: "The time at which the instance first became recoverable",
 			},
+			"provider_id": schema.StringAttribute{
+				MarkdownDescription: "The Cloud Provider ID where the instance will be created",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("aws"),
+			},
+			"region_id": schema.StringAttribute{
+				MarkdownDescription: "The cloud provider region where the instance will be created",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("us-east-1"),
+			},
+			"autoscaling": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"autostop": schema.SingleNestedAttribute{
+						Optional: true,
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"enabled": schema.BoolAttribute{
+								Optional: true,
+								Computed: true,
+								Default:  booldefault.StaticBool(false),
+							},
+						},
+					},
+					"storage": schema.SingleNestedAttribute{
+						Optional: true,
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"enabled": schema.BoolAttribute{
+								Optional: true,
+								Computed: true,
+								Default:  booldefault.StaticBool(false),
+							},
+							"maximum": schema.StringAttribute{
+								Optional: true,
+							},
+						},
+					},
+				},
+			},
+			"pg_version": schema.StringAttribute{
+				MarkdownDescription: "PostgresSQL version to deploy to Tembo Cloud",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("17"),
+			},
 		},
 	}
 }
@@ -397,8 +466,44 @@ func createInstance(plan temboInstanceResourceModel,
 
 	createInstance.SetIpAllowList(getStringArray(plan.IpAllowList))
 
+	createInstance.SetProviderId(plan.ProviderId.ValueString())
+	createInstance.SetRegionId(plan.RegionId.ValueString())
+
 	if plan.ConnectionPooler != nil {
 		createInstance.SetConnectionPooler(*getConnectionPooler(plan.ConnectionPooler))
+	}
+
+	if plan.Autoscaling != nil {
+		autoscaling := temboclient.NewPatchAutoscaling()
+
+		// Handle Autostop
+		if plan.Autoscaling.Autostop != nil {
+			autostop := temboclient.NewAutoStop(plan.Autoscaling.Autostop.Enabled.ValueBool())
+			autoscaling.SetAutostop(*autostop)
+		}
+
+		// Handle Storage
+		if plan.Autoscaling.Storage != nil {
+			storage := temboclient.NewAutoscalingStorage(plan.Autoscaling.Storage.Enabled.ValueBool())
+			if !plan.Autoscaling.Storage.Maximum.IsNull() {
+				storage.SetMaximum(temboclient.Storage(plan.Autoscaling.Storage.Maximum.ValueString()))
+			}
+			autoscaling.SetStorage(*storage)
+		}
+
+		createInstance.SetAutoscaling(*autoscaling)
+	}
+
+	if !plan.PGVersion.IsNull() {
+		pgVersion, err := strconv.ParseInt(plan.PGVersion.ValueString(), 10, 32)
+		if err != nil {
+			resp.Diagnostics.AddError("Error parsing the PostgreSQL version",
+				"Could not parse pg_version, unexpected error: "+err.Error(),
+			)
+			return nil, "", true
+		}
+		v := int32(pgVersion)
+		createInstance.SetPgVersion(v)
 	}
 
 	ctx = context.WithValue(ctx, temboclient.ContextAccessToken, r.temboInstanceConfig.accessToken)
@@ -728,6 +833,34 @@ func setTemboInstanceResourceModel(instanceResourceModel *temboInstanceResourceM
 		instanceResourceModel.FirstRecoverabilityTime = types.StringValue(instance.FirstRecoverabilityTime.Get().Format(time.RFC3339))
 	} else {
 		instanceResourceModel.FirstRecoverabilityTime = types.StringNull()
+	}
+
+	if autoscaling, ok := instance.GetAutoscalingOk(); ok && autoscaling != nil {
+		// Only set autoscaling if it was in the original plan
+		if instanceResourceModel.Autoscaling != nil {
+			autoscalingModel := &AutoscalingModel{}
+
+			// Handle Autostop
+			if autostop, ok := autoscaling.GetAutostopOk(); ok && autostop != nil {
+				autoscalingModel.Autostop = &AutoscalingAutostopModel{
+					Enabled: types.BoolValue(autostop.GetEnabled()),
+				}
+			}
+
+			// Handle Storage
+			if storage, ok := autoscaling.GetStorageOk(); ok && storage != nil {
+				storageModel := &AutoscalingStorageModel{
+					Enabled: types.BoolValue(storage.GetEnabled()),
+				}
+				// Safely handle maximum value
+				if maximum, ok := storage.GetMaximumOk(); ok && maximum != nil {
+					storageModel.Maximum = types.StringValue(string(*maximum))
+				}
+				autoscalingModel.Storage = storageModel
+			}
+
+			instanceResourceModel.Autoscaling = autoscalingModel
+		}
 	}
 }
 
