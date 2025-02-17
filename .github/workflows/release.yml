@@ -15,7 +15,9 @@ permissions:
 
 jobs:
   goreleaser:
+    name: Release with GoReleaser
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Add timeout
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,6 +27,13 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
+      # Add quick validation step
+      - name: Validate tag format
+        run: |
+          if [[ ! ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid tag format. Must be vX.Y.Z"
+            exit 1
+          fi
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         id: import_gpg
@@ -40,3 +49,8 @@ jobs:
           # GitHub sets the GITHUB_TOKEN secret automatically.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+      # Add notification on completion
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "🎉 Release ${{ github.ref_name }} published successfully!"

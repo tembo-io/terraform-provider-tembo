@@ -1,9 +1,9 @@
-HOSTNAME = registry.terraform.io
-NAMESPACE = tembo
+
+HOSTNAME = tembo
 NAME = tembo
-VERSION ?= v1.9.0-alpha1  # Can be overridden from command line
+VERSION ?= 1.9.0-alpha1
 BINARY = terraform-provider-${NAME}
-INSTALL_PATH = ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
+INSTALL_PATH = ~/.terraform.d/plugins/registry.terraform.io/${HOSTNAME}/${NAME}/${VERSION}/${OS_ARCH}
 
 # Dynamic OS and ARCH detection
 OS = $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -17,7 +17,38 @@ else
     OS_ARCH = $(OS)_$(ARCH)
 endif
 
-default: testacc
+default: check
+
+# Format, lint and generate targets
+.PHONY: fmt
+fmt:
+	go fmt ./...
+
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+
+.PHONY: generate
+generate:
+	go generate ./...
+
+# Combined check target
+.PHONY: check
+check: fmt lint generate
+	git diff --exit-code || (echo "Found changes after running formatters and generators. Please commit these changes." && exit 1)
+
+# Build and install provider locally
+.PHONY: install
+install: clean
+	GORELEASER_CURRENT_TAG=v${VERSION} goreleaser build --snapshot --clean --single-target
+	mkdir -p ${INSTALL_PATH}
+	cp dist/${BINARY}_${OS_ARCH}_v1/${BINARY}_v${VERSION}-SNAPSHOT-* ${INSTALL_PATH}/${BINARY}_v${VERSION}
+	chmod +x ${INSTALL_PATH}/${BINARY}_v${VERSION}
+
+# Example of how to clean previous installations
+.PHONY: clean
+clean:
+	rm -rf ${INSTALL_PATH}
 
 # Build and install provider locally
 .PHONY: install

@@ -7,9 +7,10 @@ on:
   pull_request:
     paths-ignore:
       - "README.md"
-  push:
-    paths-ignore:
-      - "README.md"
+      - "docs/**"
+      - ".gitignore"
+      - "CHANGELOG.md"
+      - "LICENSE"
 
 # Testing only needs permissions to read the repository contents.
 permissions:
@@ -18,7 +19,7 @@ permissions:
 jobs:
   # Ensure project builds before running testing matrix
   build:
-    name: Build
+    name: Build & Lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -54,20 +55,18 @@ jobs:
 
   # Run acceptance tests in a matrix with Terraform CLI versions
   test:
-    name: Terraform Provider Acceptance Tests
-    needs: build
+    name: Terraform Provider Tests
+    needs: [build, generate]
     runs-on:
       - self-hosted
       - dind
-
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:
-          - "1.7.*"
-          - "1.8.*"
+          # - "1.11.*" # Update to 1.11.x once it's released
           - "1.9.*"
           - "1.10.*"
     steps:
@@ -80,9 +79,12 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
-      - run: sudo apt-get update && sudo apt-get install -y build-essential gcc
-      - run: go mod download
-      - env:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y build-essential gcc
+          go mod download
+      - name: Run tests
+        env:
           TF_ACC: "1"
           TEMBO_ACCESS_TOKEN: ${{ secrets.TEMBO_ACCESS_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
