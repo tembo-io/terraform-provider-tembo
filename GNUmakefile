@@ -37,6 +37,11 @@ generate:
 check: fmt lint generate
 	git diff --exit-code || (echo "Found changes after running formatters and generators. Please commit these changes." && exit 1)
 
+# Build provider locally
+.PHONY: build
+build: clean
+	GORELEASER_CURRENT_TAG=v${VERSION} goreleaser build --snapshot --clean --single-target
+
 # Build and install provider locally
 .PHONY: install
 install: clean
