@@ -1,3 +1,4 @@
+
 HOSTNAME = tembo
 NAME = tembo
 VERSION ?= 1.9.0-alpha1
@@ -48,6 +49,19 @@ install: clean
 .PHONY: clean
 clean:
 	rm -rf ${INSTALL_PATH}
+
+# Build and install provider locally
+.PHONY: install
+install-local:
+	GORELEASER_CURRENT_TAG=${VERSION} goreleaser build --snapshot --clean --single-target
+	mkdir -p ${INSTALL_PATH}
+	cp dist/terraform-provider-tembo_${OS_ARCH}_v1/${BINARY}_${VERSION}-SNAPSHOT-* ${INSTALL_PATH}/${BINARY}_${VERSION}
+	chmod +x ${INSTALL_PATH}/${BINARY}_${VERSION}
+
+# Example of how to clean previous installations
+.PHONY: clean
+clean:
+	rm -rf ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}
 
 # Run acceptance tests
 .PHONY: testacc
