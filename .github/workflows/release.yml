@@ -17,7 +17,7 @@ jobs:
   goreleaser:
     name: Release with GoReleaser
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Add timeout
+    timeout-minutes: 15 # Add timeout
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,8 +30,8 @@ jobs:
       # Add quick validation step
       - name: Validate tag format
         run: |
-          if [[ ! ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Invalid tag format. Must be vX.Y.Z"
+          if [[ ! ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+            echo "Invalid tag format. Must be vX.Y.Z or vX.Y.Z-suffix"
             exit 1
           fi
       - name: Import GPG key
