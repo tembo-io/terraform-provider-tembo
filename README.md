@@ -4,8 +4,8 @@ The Terraform provider for [Tembo](https://tembo.io/)
 
 ## Requirements
 
-- [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.19
+- [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.3
+- [Go](https://golang.org/doc/install) >= 1.24
 
 ## Using the provider
 
@@ -14,7 +14,7 @@ terraform {
   required_providers {
     tembo = {
       source  = "tembo-io/tembo"
-      version = ">= 1.8.0"
+      version = ">= 1.9.0"
     }
   }
 }
