@@ -514,9 +514,13 @@ func createInstance(plan temboInstanceResourceModel,
 	instance, response, err := instanceRequest.CreateInstance(createInstance).Execute()
 
 	if err != nil {
+		errorDetails := ""
+		if response != nil {
+			errorDetails = getErrorFromResponse(response)
+		}
 		resp.Diagnostics.AddError(
 			"Error creating Tembo Instance",
-			"Could not create instance, unexpected error: "+err.Error()+" details:"+getErrorFromResponse(response),
+			"Could not create instance, unexpected error: "+err.Error()+" details:"+errorDetails,
 		)
 		return nil, "", true
 	}
@@ -957,6 +961,12 @@ func getTemboExtension(extension Extension) temboclient.Extension {
 }
 
 func getErrorFromResponse(response *http.Response) string {
+	if response == nil {
+		return "No response body available"
+	}
+	if response.Body == nil {
+		return "No response body available"
+	}
 	localVarBody, _ := io.ReadAll(response.Body)
 	response.Body.Close()
 
