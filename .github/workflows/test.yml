@@ -60,6 +60,7 @@ jobs:
     runs-on:
       - "runs-on=${{ github.run_id }}"
       - "cost-control"
+      - "private=true"
     timeout-minutes: 30
     strategy:
       fail-fast: false
