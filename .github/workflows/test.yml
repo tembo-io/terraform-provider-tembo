@@ -58,17 +58,16 @@ jobs:
     name: Terraform Provider Tests
     needs: [build, generate]
     runs-on:
-      - self-hosted
-      - dind
+      - "runs-on=${{ github.run_id }}"
+      - "cost-control"
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:
-          # - "1.11.*" # Update to 1.11.x once it's released
-          - "1.9.*"
           - "1.10.*"
+          - "1.11.*"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
